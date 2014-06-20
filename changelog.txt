@@ -63,3 +63,7 @@ v5	Added option for scanorder
 		endingcall, printval abilities, if clause expansion, arithmetic expansion
 	Backwards compatibility issue: breaks no longer exit scripts
 	Backwards compatibility issue: optionon endingtimestamp is replaced by optionon endingcall [label]
+
+v5.1	Added the ability to destroy created variables
+	Fixed a bug that was causing boolean clauses to erase themselves
+	Updated README with destroy command

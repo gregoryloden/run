@@ -230,13 +230,13 @@ public class run {
 					valid = false;
 				} else
 					putter.val[row][0] = "" + jumpline;
-			} else if (putter.action[row] == 20) {
+			} else if (putter.action[row] == 21) {
 				int jumpline = row + 1;
 				int layer = 1;
 				while (jumpline < linecount && layer > 0) {
-					if (putter.action[jumpline] == 20)
+					if (putter.action[jumpline] == 21)
 						layer = layer + 1;
-					else if (putter.action[jumpline] == 21)
+					else if (putter.action[jumpline] == 22)
 						layer = layer - 1;
 					jumpline = jumpline + 1;
 				}
@@ -245,7 +245,7 @@ public class run {
 					valid = false;
 				} else
 					putter.val[jumpline - 1] = new String[] {"" + row};
-			} else if (putter.action[row] == 21 && putter.val[row][0].equals("")) {
+			} else if (putter.action[row] == 22 && putter.val[row][0].equals("")) {
 				System.out.println("Missing content in " + putter.name + " on line " + putter.row[row] + ": end missing a for command");
 				valid = false;
 			} else if (putter.val[row][0].startsWith("[")) {
@@ -341,12 +341,16 @@ public class run {
 					vs.val[row][spot] = " " + vs.val[row][spot];
 			}
 			return 3;
-		} else if (line.startsWith("setargto")) {
+		} else if (line.startsWith("destroy")) {
 			vs.action[row] = 11;
+			vs.val[row] = split(line.substring(7, line.length()));
+			return 1;
+		} else if (line.startsWith("setargto")) {
+			vs.action[row] = 12;
 			vs.val[row] = split(line.substring(8, line.length()));
 			return 2;
 		} else if (line.startsWith("set")) {
-			vs.action[row] = 12;
+			vs.action[row] = 13;
 			vs.val[row] = split(line.substring(3, line.length()));
 			for (int spot = 0; spot < vs.val[row].length; spot += 1) {
 				if (	vs.val[row][spot].equals("not") ||
@@ -371,31 +375,31 @@ public class run {
 			}
 			return 2;
 		} else if (line.startsWith("+=")) {
-			vs.action[row] = 13;
-			vs.val[row] = split(line.substring(2, line.length()));
-			return 2;
-		} else if (line.startsWith("-=")) {
 			vs.action[row] = 14;
 			vs.val[row] = split(line.substring(2, line.length()));
 			return 2;
-		} else if (line.startsWith("*=")) {
+		} else if (line.startsWith("-=")) {
 			vs.action[row] = 15;
 			vs.val[row] = split(line.substring(2, line.length()));
 			return 2;
-		} else if (line.startsWith("/=")) {
+		} else if (line.startsWith("*=")) {
 			vs.action[row] = 16;
 			vs.val[row] = split(line.substring(2, line.length()));
 			return 2;
-		} else if (line.startsWith("%=")) {
+		} else if (line.startsWith("/=")) {
 			vs.action[row] = 17;
 			vs.val[row] = split(line.substring(2, line.length()));
 			return 2;
-		} else if (line.startsWith("treset")) {
+		} else if (line.startsWith("%=")) {
 			vs.action[row] = 18;
+			vs.val[row] = split(line.substring(2, line.length()));
+			return 2;
+		} else if (line.startsWith("treset")) {
+			vs.action[row] = 19;
 			vs.val[row] = new String[] {""};
 			return 0;
 		} else if (line.startsWith("if")) {
-			vs.action[row] = 19;
+			vs.action[row] = 20;
 			vs.val[row] = split(line.substring(2, line.length()));
 			for (int spot = 0; spot < vs.val[row].length; spot += 1) {
 				if (	vs.val[row][spot].equals("not") ||
@@ -414,7 +418,7 @@ public class run {
 			}
 			return 1;
 		} else if (line.startsWith("for")) {
-			vs.action[row] = 20;
+			vs.action[row] = 21;
 			vs.val[row] = split(line.substring(3, line.length()));
 			if (vs.val[row].length > 0 && vs.val[row][0].startsWith(".")) {
 				System.out.println("Bad syntax in " + vs.name + " on line " + (row + 1) + ": variables cannot start with \".\"");
@@ -422,23 +426,23 @@ public class run {
 			}
 			return 4;
 		} else if (line.startsWith("end")) {
-			vs.action[row] = 21;
-			vs.val[row] = new String[] {""};
-			return 0;
-		} else if (line.startsWith("break")) {
 			vs.action[row] = 22;
 			vs.val[row] = new String[] {""};
 			return 0;
-		} else if (line.startsWith("return")) {
+		} else if (line.startsWith("break")) {
 			vs.action[row] = 23;
 			vs.val[row] = new String[] {""};
 			return 0;
-		} else if (line.startsWith("quit")) {
+		} else if (line.startsWith("return")) {
 			vs.action[row] = 24;
 			vs.val[row] = new String[] {""};
 			return 0;
-		} else if (line.startsWith("type")) {
+		} else if (line.startsWith("quit")) {
 			vs.action[row] = 25;
+			vs.val[row] = new String[] {""};
+			return 0;
+		} else if (line.startsWith("type")) {
+			vs.action[row] = 26;
 			if (line.length() < 6) {
 				System.out.println("Bad syntax in " + vs.name + " on line " + (row + 1) + ": type must type at least one character");
 				vs.val[row] = new String[] {""};
@@ -447,34 +451,34 @@ public class run {
 			vs.val[row] = new String[] {line.substring(5, line.length())};
 			return 0;
 		} else if (line.startsWith("press")) {
-			vs.action[row] = 26;
+			vs.action[row] = 27;
 			vs.val[row] = split(line.substring(5, line.length()));
 			return 1;
 		} else if (line.startsWith("release")) {
-			vs.action[row] = 27;
+			vs.action[row] = 28;
 			vs.val[row] = split(line.substring(7, line.length()));
 			return 1;
 		} else if (line.startsWith("optionon")) {
-			vs.action[row] = 28;
+			vs.action[row] = 29;
 			vs.val[row] = split(line.substring(8, line.length()));
 			return 1;
 		} else if (line.startsWith("optionoff")) {
-			vs.action[row] = 29;
+			vs.action[row] = 30;
 			vs.val[row] = split(line.substring(9, line.length()));
 			return 1;
 		} else if (line.startsWith("printval")) {
-			vs.action[row] = 30;
+			vs.action[row] = 31;
 			vs.val[row] = split(line.substring(8, line.length()));
 			return 1;
 		} else if (line.startsWith("println")) {
-			vs.action[row] = 31;
+			vs.action[row] = 32;
 			String message = "";
 			if (line.length() > 8)
 				message = line.substring(8, line.length());
 			vs.val[row] = new String[] {message};
 			return 0;
 		} else if (line.startsWith("print")) {
-			vs.action[row] = 32;
+			vs.action[row] = 33;
 			if (line.length() < 7) {
 				System.out.println("Bad syntax in " + vs.name + " on line " + (row + 1) + ": print must print at least one character");
 				vs.val[row] = new String[] {""};
@@ -654,7 +658,7 @@ public class run {
 					pos = oldpos;
 					rows = oldrows;
 				}
-			} else if (action < 19) {
+			} else if (action < 20) {
 				//create
 				if (action == 10) {
 					if (scripts[0].equals("int")) {
@@ -674,9 +678,23 @@ public class run {
 							gbvars = new VarsColor(scripts[1], new int[] {ints[2], ints[3], ints[4]}, gbvars);
 						}
 					}
+				//destroy
+				} else if (action == 11) {
+					if (gbvars.name.equals(scripts[0]))
+						gbvars = gbvars.next;
+					else {
+						varcalled = gbvars;
+						while (varcalled.next != null) {
+							if (varcalled.next.name.equals(scripts[0])) {
+								varcalled.next = varcalled.next.next;
+								break;
+							}
+							varcalled = varcalled.next;
+						}
+					}
 				//setargto, set
-				} else if (action == 11 || action == 12) {
-					if (action == 11) {
+				} else if (action == 12 || action == 13) {
+					if (action == 12) {
 						for (int spot = 0; spot < input.length; spot += 1) {
 							if (input[spot].startsWith(scripts[0])) {
 								scripts = commasplit(scripts[1] + "," + input[spot].substring(scripts[0].length(), input[spot].length()));
@@ -708,7 +726,7 @@ public class run {
 						}
 					}
 				//+=, -=, *=, /=, %=
-				} else if (action > 12 && action < 18) {
+				} else if (action > 13 && action < 19) {
 					varcalled = varcalled(scripts[0], vars);
 					if (varcalled != null && varcalled.type().equals("int")) {
 						VarsInt vi = (VarsInt)(varcalled);
@@ -724,11 +742,11 @@ public class run {
 							vi.val %= intsolve(scripts, 1);
 					}
 				//treset
-				} else if (action == 18)
+				} else if (action == 19)
 					timer = System.currentTimeMillis();
-			} else if (action < 25) {
+			} else if (action < 26) {
 				//if
-				if (action == 19) {
+				if (action == 20) {
 					if (lines[pos + 1][0].startsWith("[")) {
 						if (!evaluate(scripts, 0))
 							pos = inteval(lines[pos + 1][1]);
@@ -737,11 +755,11 @@ public class run {
 					} else if (!evaluate(scripts, 0))
 						pos = pos + 1;
 				//for
-				} else if (action == 20) {
+				} else if (action == 21) {
 					int val = inteval(scripts[1]);
 					vars = new VarsInt(scripts[0], val, vars);
 				//end
-				} else if (action == 21) {
+				} else if (action == 22) {
 					int jumpline = inteval(scripts[0]);
 					vars.val = vars.val + inteval(lines[jumpline][3]);
 					if (vars.val > inteval(lines[jumpline][2]))
@@ -749,7 +767,7 @@ public class run {
 					else
 						pos = jumpline;
 				//break
-				} else if (action == 22) {
+				} else if (action == 23) {
 					int layer = 0;
 					Varslist vl = vars;
 					while (vl != null) {
@@ -758,26 +776,26 @@ public class run {
 					}
 					while (layer > 0 && pos < linecount) {
 						pos = pos + 1;
-						if (actions[pos] == 20)
-							layer = layer + 1;
 						if (actions[pos] == 21)
+							layer = layer + 1;
+						if (actions[pos] == 22)
 							layer = layer - 1;
 					}
 				//return
-				} else if (action == 23)
+				} else if (action == 24)
 					return;
 				//quit
-				else if (action == 24)
+				else if (action == 25)
 					end("Quitting script \"" + mainscript.name + "\" from line " + rows[pos] + ".");
 			} else {
 				//type
-				if (action == 25)
+				if (action == 26)
 					auto.type(scripts[0]);
 				//press, release
-				else if (action == 26 || action == 27)
-					auto.button(scripts[0], action * 2 - 49);
+				else if (action == 27 || action == 28)
+					auto.button(scripts[0], action * 2 - 53);
 				//optionon
-				else if (action == 28) {
+				else if (action == 29) {
 					if (scripts[0].equals("quitafter"))
 						quitafter = inteval(scripts[1]);
 					else if (scripts[0].equals("endingcall")) {
@@ -815,7 +833,7 @@ public class run {
 						}
 					}
 				//optionoff
-				} else if (action == 29) {
+				} else if (action == 30) {
 					if (scripts[0].equals("quitafter"))
 						quitafter = -1;
 					else if (scripts[0].equals("endingcall")) {
@@ -828,7 +846,7 @@ public class run {
 					else if (scripts[0].equals("scanorder"))
 						scanorder = new int[] {3, 4};
 				//printval
-				} else if (action == 30) {
+				} else if (action == 31) {
 					if (scripts[0].startsWith(".")) {
 						if (scripts[0].equals(".timestamp"))
 							System.out.print(timestamp());
@@ -848,10 +866,10 @@ public class run {
 							System.out.print("" + varcalled);
 					}
 				//println
-				} else if (action == 31)
+				} else if (action == 32)
 					System.out.println(scripts[0]);
 				//print
-				else if (action == 32)
+				else if (action == 33)
 					System.out.print(scripts[0]);
 			}
 			pos = pos + 1;
@@ -910,7 +928,6 @@ public class run {
 				}
 				length = length - add;
 				for (int loc = spot + 1; loc < length; loc += 1) {
-					vals[loc] = vals[loc + add];
 					ints[loc] = ints[loc + add];
 				}
 			} else
@@ -1092,7 +1109,6 @@ public class run {
 				}
 				length = length - add;
 				for (int loc = spot + 1; loc < length; loc += 1) {
-					vals[loc] = vals[loc + add];
 					ints[loc] = ints[loc + add];
 				}
 			} else {
@@ -1178,7 +1194,7 @@ public class run {
 			pos = pos + 1;
 			while (pos < linecount) {
 				//printval
-				if (scriptlist.action[pos] == 30) {
+				if (scriptlist.action[pos] == 31) {
 					if (scriptlist.val[pos][0].startsWith(".")) {
 						if (scriptlist.val[pos][0].equals(".timestamp"))
 							System.out.print(timestamp());
@@ -1198,10 +1214,10 @@ public class run {
 							System.out.print("" + varcalled);
 					}
 				//println
-				} else if (scriptlist.action[pos] == 31)
+				} else if (scriptlist.action[pos] == 32)
 					System.out.println(scriptlist.val[pos][0]);
 				//print
-				else if (scriptlist.action[pos] == 32)
+				else if (scriptlist.action[pos] == 33)
 					System.out.print(scriptlist.val[pos][0]);
 				pos = pos + 1;
 			}

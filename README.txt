@@ -250,7 +250,15 @@ will quit out after a second.
  Creating multiple variables with names that are used elsewhere will not cause an error, but may
 cause problems when running the script. Be careful when naming variables!
 
- In addition to creating variables, variables already created can be set to new values like this:
+ If you ever create a variable and later decide you want to get rid of it, then the destroy command
+is for you! Destroy works like this:
+
+	destroy	[name]
+
+ Pretty simple, destroy will search the name of the variable called [name] and remove it from the
+variable list, so that it can no longer be used.
+
+ In addition to creating and destroying variables, variables can be set to new values like this:
 
 	set	[name]	[value...]
 
@@ -266,12 +274,15 @@ the most recent entry first, but this is generally not recommended.
 
 	left	x	y
 
-would left click at x-200, y-100. If a variable has not been created when set is called, set will
-not make a new variable. This means that
+would left click at x-200, y-100. If a variable has not been created when set is called, or it has
+been destroyed, set will not make a new variable. This means that
 
+	create	w	0
 	set	z	100
+	destroy	w
+	set	w	100
 
-would do nothing to any variables, since z has not been created.
+would do nothing to any variables, since z has not been created and w was destroyed.
  There is also a special set command for using arguments to the script:
 
 	setargto	[prefix]	[name]
@@ -701,8 +712,8 @@ varying power:
  Break will exit out of the current loop, and do nothing if it is not in a loop. Return will exit
 out of the current script but the program will keep running if another script called it. Quit will
 stop all autoclicking and end the program.
- You'll notice that there is no while loop, this is because the same effect can be acheived with the
-following pattern:
+ You'll notice that there is no while loop, this is because the same effect can be acheived with
+either of the following patterns:
 
 	:label1
 	if	not	[condition to keep it running]
@@ -710,6 +721,14 @@ following pattern:
 	[some commands]
 	jump	label1
 	:label2
+
+	:label1
+	if	[condition to keep it running]
+	[
+		[some commands]
+		jump	label1
+	]
+
  This gives loops more versatility when running.
 
 ================================================================
