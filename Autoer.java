@@ -5,6 +5,8 @@ import java.awt.Toolkit;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
+import java.awt.MouseInfo;
+import java.awt.Point;
 public class Autoer {
 	public Robot auto;
 	public Autoer() {
@@ -20,8 +22,24 @@ public class Autoer {
 		auto.mousePress(InputEvent.BUTTON1_MASK);
 		auto.mouseRelease(InputEvent.BUTTON1_MASK);
 	}
+	public void leftEnsure(int x, int y) {
+		auto.mouseMove(x, y);
+		Point loc = MouseInfo.getPointerInfo().getLocation();
+		while (loc.x != x || loc.y != y)
+			loc = MouseInfo.getPointerInfo().getLocation();
+		auto.mousePress(InputEvent.BUTTON1_MASK);
+		auto.mouseRelease(InputEvent.BUTTON1_MASK);
+	}
 	public void right(int x, int y) {
 		auto.mouseMove(x, y);
+		auto.mousePress(InputEvent.BUTTON3_MASK);
+		auto.mouseRelease(InputEvent.BUTTON3_MASK);
+	}
+	public void rightEnsure(int x, int y) {
+		auto.mouseMove(x, y);
+		Point loc = MouseInfo.getPointerInfo().getLocation();
+		while (loc.x != x || loc.y != y)
+			loc = MouseInfo.getPointerInfo().getLocation();
 		auto.mousePress(InputEvent.BUTTON3_MASK);
 		auto.mouseRelease(InputEvent.BUTTON3_MASK);
 	}
@@ -39,6 +57,12 @@ public class Autoer {
 	}
 	public void move(int x, int y) {
 		auto.mouseMove(x, y);
+	}
+	public void moveEnsure(int x, int y) {
+		auto.mouseMove(x, y);
+		Point loc = MouseInfo.getPointerInfo().getLocation();
+		while (loc.x != x || loc.y != y)
+			loc = MouseInfo.getPointerInfo().getLocation();
 	}
 	public void wait(int wait) {
 		auto.delay(wait);

@@ -916,20 +916,20 @@ System.out.println();
 				//left
 				if (action == CLEFT) {
 					if (args.length > 1)
-						auto.left(vars[cptrs[0]].ival() + offx, vars[cptrs[1]].ival() + offy);
+						auto.leftEnsure(vars[cptrs[0]].ival() + offx, vars[cptrs[1]].ival() + offy);
 					else
 						auto.left(vars[cptrs[0]].ival());
 				//right
 				} else if (action == CRIGHT) {
 					if (args.length > 1)
-						auto.right(vars[cptrs[0]].ival() + offx, vars[cptrs[1]].ival() + offy);
+						auto.rightEnsure(vars[cptrs[0]].ival() + offx, vars[cptrs[1]].ival() + offy);
 					else
 						auto.right(vars[cptrs[0]].ival());
 				//move
-				} else if (action == CMOVE) {
-					auto.move(vars[cptrs[0]].ival() + offx, vars[cptrs[1]].ival() + offy);
+				} else if (action == CMOVE)
+					auto.moveEnsure(vars[cptrs[0]].ival() + offx, vars[cptrs[1]].ival() + offy);
 				//scroll
-				} else if (action == CSCROLL) {
+				else if (action == CSCROLL) {
 					if (args.length < 2)
 						auto.scroll(args[0]);
 					else

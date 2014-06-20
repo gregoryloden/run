@@ -118,3 +118,5 @@ v7.1	Added single argument optionon variance
 	Added single argument optionon mousetolerance
 	Fixed a bug that with endingcall
 	Updated README with optionon variance + mousetolerance changes
+
+v7.2	Fixed a problem with Java's mouse movements only executing after a delay
