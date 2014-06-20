@@ -17,11 +17,13 @@ public class Autoer {
 	}
 	public void left(int x, int y) {
 		auto.mouseMove(x, y);
-		left(2);
+		auto.mousePress(InputEvent.BUTTON1_MASK);
+		auto.mouseRelease(InputEvent.BUTTON1_MASK);
 	}
 	public void right(int x, int y) {
 		auto.mouseMove(x, y);
-		right(2);
+		auto.mousePress(InputEvent.BUTTON3_MASK);
+		auto.mouseRelease(InputEvent.BUTTON3_MASK);
 	}
 	public void left(int type) {
 		if (type < 3)
@@ -79,8 +81,6 @@ public class Autoer {
 		}
 	}
 	public void button(char button, int type) {
-		if (type < 1 || type >= 3)
-			return;
 		boolean shift = false;
 		int buttonnum = 0;
 		if (button == ' ')
@@ -336,8 +336,6 @@ public class Autoer {
 			auto.keyRelease(KeyEvent.VK_SHIFT);
 	}
 	public void button(String button, int type) {
-		if (type < 1 || type > 3)
-			return;
 		int buttonnum = 0;
 		if (button.equals("enter"))
 			buttonnum = KeyEvent.VK_ENTER;
@@ -367,6 +365,14 @@ public class Autoer {
 			buttonnum = KeyEvent.VK_CAPS_LOCK;
 		else if (button.equals("escape"))
 			buttonnum = KeyEvent.VK_ESCAPE;
+		else if (button.equals("home"))
+			buttonnum = KeyEvent.VK_HOME;
+		else if (button.equals("end"))
+			buttonnum = KeyEvent.VK_END;
+		else if (button.equals("pageup"))
+			buttonnum = KeyEvent.VK_PAGE_UP;
+		else if (button.equals("pagedown"))
+			buttonnum = KeyEvent.VK_PAGE_DOWN;
 		if (type < 3)
 			auto.keyPress(buttonnum);
 		if (type > 1)

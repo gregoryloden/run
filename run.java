@@ -1,9 +1,44 @@
 import java.awt.image.BufferedImage;
 import java.util.Calendar;
 import java.awt.MouseInfo;
+import java.util.Scanner;
+import java.util.TreeMap;
+import java.util.Stack;
 //TO ADD:
 //?backwards compatibility?
 public class run {
+	public static final int CLEFT = 1;
+	public static final int CRIGHT = 2;
+	public static final int CMOVE = 3;
+	public static final int CSCROLL = 4;
+	public static final int CPAUSENOT = 5;
+	public static final int CPAUSE = 6;
+	public static final int CJUMPBACK = 7;
+	public static final int CJUMP = 8;
+	public static final int CCALL = 9;
+	public static final int CRUN = 10;
+	public static final int CSET = 11;
+	public static final int CPLUSEQUALS = 12;
+	public static final int CMINUSEQUALS = 13;
+	public static final int CTIMESEQUALS = 14;
+	public static final int CDIVIDEEQUALS = 15;
+	public static final int CMODEQUALS = 16;
+	public static final int CCREATE = 17;
+	public static final int CSETARGTO = 18;
+	public static final int CIF = 19;
+	public static final int CFOR = 20;
+	public static final int CEND = 21;
+	public static final int CBREAK = 22;
+	public static final int CRETURN = 23;
+	public static final int CQUIT = 24;
+	public static final int CTYPE = 25;
+	public static final int CPRESS = 26;
+	public static final int CRELEASE = 27;
+	public static final int COPTIONON = 28;
+	public static final int COPTIONOFF = 29;
+	public static final int CPRINTVAL = 30;
+	public static final int CPRINTLN = 31;
+	public static final int CPRINT = 31;
 	public static String timestamp() {
 		Calendar c = Calendar.getInstance();
 		String s = ":";
@@ -38,12 +73,8 @@ public class run {
 				digit = digit - 48;
 			else if (digit == 45 && number == 0)
 				negative = true;
-			if (digit >= 0 && digit < 10) {
-				if (number < 214748364 || (number == 214748364 && digit <= 7))
-					number = number * 10 + digit;
-				else
-					return number;
-			}
+			if (digit >= 0 && digit < 10)
+				number = number * 10 + digit;
 			pos = pos + 1;
 		}
 		if (negative)
@@ -51,30 +82,35 @@ public class run {
 		return number;
 	}
 	public static Autoer auto = new Autoer();
-	public static int waittime = 0;
-	public static Varslist[] mainvars = null;
-	public static Varslist[] vars = null;
-	public static Varslist variable = null;
-	public static int variance = 5;
-	public static int quitafter = -1;
-	public static int endingcall = -1;
-	public static VarsInt jumpback = null;
-	public static boolean mousequit = true;
-	public static int scanx = 0;
-	public static int scany = 0;
 	public static Script scriptlist = null;
-	public static Script mainscript = null;
-	public static int[] rows = null;
-	public static int pos = 0;
-	public static int[] scanorder = new int[] {3, 4};
-	public static int offx = 0;
-	public static int offy = 0;
-	public static String[] input = null;
+	public static Varslist variable = null;
+	public static run mainrun = null;
+	public Script mainscript = null;
+	public String[] input = null;
+	public Varslist[] vars = null;
+	public int variancer = 5;
+	public int varianceg = 5;
+	public int varianceb = 5;
+	public int quitafter = -1;
+	public int endingcall = -1;
+	public VarsInt jumpback = null;
+	public int mousetoly = 0;
+	public int mousetolx = 0;
+	public int scanx = 0;
+	public int scany = 0;
+	public int[] rows = null;
+	public int pos = 0;
+	public int[] scanorder = new int[] {3, 4};
+	public int offx = 0;
+	public int offy = 0;
+	public boolean returnval = false;
+	public boolean endmessages = true;
 	public static class Varslist {
 		public static final int INT = 1;
 		public static final int BOOLEAN = 2;
 		public static final int COLOR = 3;
 		public static final int TIMER = 4;
+		public static final int SPECIAL = 100;
 		public String name;
 		public Varslist next;
 		public Varslist(String n, Varslist vl) {
@@ -87,10 +123,13 @@ public class run {
 		public int ival() {
 			return 0;
 		}
-		public void setto(String[] args, int[] cvars, int[] cints) {
+		public void setto(String[] args, int[] cptrs) {
 		}
 		public String toString() {
-			return "";
+			return name;
+		}
+		public Varslist clone() {
+			return new Varslist(name, next);
 		}
 	}
 	public static class VarsInt extends Varslist {
@@ -105,11 +144,14 @@ public class run {
 		public int ival() {
 			return val;
 		}
-		public void setto(String[] args, int[] cvars, int[] cints) {
-			val = evaluate(args, cvars, cints, 1);
+		public void setto(String[] args, int[] cptrs) {
+			val = mainrun.evaluate(args, cptrs, 1);
 		}
 		public String toString() {
-			return "" + val;
+			return String.valueOf(val);
+		}
+		public VarsInt clone() {
+			return new VarsInt(name, val, next);
 		}
 	}
 	public static class VarsBoolean extends Varslist {
@@ -126,11 +168,14 @@ public class run {
 				return 1;
 			return 0;
 		}
-		public void setto(String[] args, int[] cvars, int[] cints) {
-			val = evaluate(args, cvars, cints, 1) != 0;
+		public void setto(String[] args, int[] cptrs) {
+			val = mainrun.evaluate(args, cptrs, 1) != 0;
 		}
 		public String toString() {
-			return "" + val;
+			return String.valueOf(val);
+		}
+		public VarsBoolean clone() {
+			return new VarsBoolean(name, val, next);
 		}
 	}
 	public static class VarsColor extends Varslist {
@@ -145,20 +190,22 @@ public class run {
 		public int ival() {
 			return (val[0] << 16) + (val[1] << 8) + val[2];
 		}
-		public void setto(String[] args, int[] cvars, int[] cints) {
-			variable = vars[cvars[1]];
-			if (variable != null && variable.istype(Varslist.COLOR)) {
+		public void setto(String[] args, int[] cptrs) {
+			Varslist[] vars = mainrun.vars;
+			variable = vars[cptrs[1]];
+			if (variable.istype(Varslist.COLOR)) {
 				VarsColor vc2 = (VarsColor)(variable);
 				val = vc2.val;
 			} else if (args[1].equals("at"))
-				val = auto.colorsat(inteval(args[2], vars[cvars[2]], cints[2]), inteval(args[3], vars[cvars[3]], cints[3]));
-			else {
-				int[] ints = intsplit(args, cvars, cints);
-				val = new int[] {ints[1], ints[2], ints[3]};
-			}
+				val = auto.colorsat(vars[cptrs[2]].ival() + mainrun.offx, vars[cptrs[3]].ival() + mainrun.offy);
+			else
+				val = new int[] {vars[cptrs[1]].ival(), vars[cptrs[2]].ival(), vars[cptrs[3]].ival()};
 		}
 		public String toString() {
 			return val[0] + ", " + val[1] + ", " + val[2];
+		}
+		public VarsColor clone() {
+			return new VarsColor(name, val, next);
 		}
 	}
 	public static class VarsTimer extends Varslist {
@@ -173,84 +220,136 @@ public class run {
 		public int ival() {
 			return (int)(System.currentTimeMillis() - val);
 		}
-		public void setto(String[] args, int[] cvars, int[] cints) {
-			val = inteval(args[1], vars[cvars[1]], cints[1]) + System.currentTimeMillis();
+		public void setto(String[] args, int[] cptrs) {
+			val = mainrun.vars[cptrs[1]].ival() + System.currentTimeMillis();
 		}
 		public String toString() {
-			return (System.currentTimeMillis() - val) + "";
+			return String.valueOf(System.currentTimeMillis() - val);
+		}
+		public VarsTimer clone() {
+			return new VarsTimer(name, val, next);
+		}
+	}
+	public static class VarsSpecial extends Varslist {
+		public int val;
+		public VarsSpecial(String n) {
+			super(n, null);
+			if (n.equals(".mousex"))
+				val = 1;
+			else if (n.equals(".mousey"))
+				val = 2;
+			else if (n.equals(".scanx"))
+				val = 3;
+			else if (n.equals(".scany"))
+				val = 4;
+			else if (n.equals(".timestamp"))
+				val = 5;
+		}
+		public boolean istype(int t) {
+			return t == SPECIAL;
+		}
+		public int ival() {
+			if (val == 1)
+				return mousex() - mainrun.offx;
+			else if (val == 2)
+				return mousey() - mainrun.offy;
+			else if (val == 3)
+				return mainrun.scanx;
+			else if (val == 4)
+				return mainrun.scany;
+			else if (val == 5)
+				return (int)(System.currentTimeMillis());
+			return 0;
+		}
+		public String toString() {
+			if (val == 1)
+				return String.valueOf(mousex() - mainrun.offx);
+			else if (val == 2)
+				return String.valueOf(mousey() - mainrun.offy);
+			else if (val == 3)
+				return String.valueOf(mainrun.scanx);
+			else if (val == 4)
+				return String.valueOf(mainrun.scany);
+			else if (val == 5)
+				return timestamp();
+			return name;
+		}
+		public VarsSpecial clone() {
+			return new VarsSpecial(name);
 		}
 	}
 	public static class Script {
 		public String name;
 		public String[][] val;
-		public int[][] ival;
-		public int[][] vval;
+		public int[][] pval;
 		public int[] action;
 		public int[] row;
 		public int varcount = 0;
 		public Script next = null;
+		public Varslist[] startvals = null;
 		public Script(String n, int lines) {
 			name = n;
 			val = new String[lines][0];
-			ival = new int[lines][0];
-			vval = new int[lines][0];
+			pval = new int[lines][0];
 			action = new int[lines];
 			row = new int[lines];
 		}
 		//get rid of all lines of a specific action
-		public void purgelines(int purge) {
+		public int purgelines(int purge) {
 			int length = action.length;
 			for (int spot = 0; spot < action.length; spot += 1) {
 				if (action[spot] == purge)
-					length = length - 1;
+					length -= 1;
 			}
 			String[][] newval = new String[length][0];
-			int[][] newival = new int[length][0];
-			int[][] newvval = new int[length][0];
+			int[][] newpval = new int[length][0];
 			int[] newaction = new int[length];
 			int[] newrow = new int[length];
 			int index = 0;
 			for (int spot = 0; spot < action.length; spot += 1) {
 				if (action[spot] != purge) {
 					newval[index] = val[spot];
-					newival[index] = ival[spot];
-					newvval[index] = vval[spot];
+					newpval[index] = pval[spot];
 					newaction[index] = action[spot];
 					newrow[index] = row[spot];
 					index += 1;
 				}
 			}
 			val = newval;
-			ival = newival;
-			vval = newvval;
+			pval = newpval;
 			action = newaction;
 			row = newrow;
+			return length;
 		}
 	}
 	public static void main(String[] args) {
-		if (args.length < 1)
-			end("You need a script to run.");
+		if (args.length < 1) {
+			System.out.println("You need a script to run.");
+			return;
+		}
 		Filer filer = new Filer("scripts/" + args[0] + ".txt");
-		if (!filer.fileisthere())
-			end("Script \"" + args[0] + "\" does not exist.");
+		if (!filer.fileisthere()) {
+			System.out.println("Script \"" + args[0] + "\" does not exist.");
+			return;
+		}
 		filer.readfile();
 		String[] lines = filer.getlines();
 		scriptlist = new Script(args[0], lines.length);
 		//quit if there are errors
-		if (!verify(lines, scriptlist))
-			System.exit(0);
-		input = args;
-		try {
-			runscript(scriptlist, true);
-		} catch(Exception e) {
-			System.out.println("Error: script \"" + mainscript.name + "\" at line " + rows[pos] + " caused this exception:");
-			e.printStackTrace();
+		if (verify(lines, scriptlist)) {
+			try {
+				run runner = new run();
+				runner.runscript(scriptlist, args);
+			} catch(Exception e) {
+				System.out.println("Error: script \"" + mainrun.mainscript.name + "\" at line " + mainrun.rows[mainrun.pos] + " caused this exception:");
+				e.printStackTrace();
+			}
 		}
 	}
 	//format the script and make sure it's valid
 	public static boolean verify(String[] lines, Script putter) {
-		int linecount = lines.length;
 		boolean valid = true;
+		int linecount = lines.length;
 		//clip all the lines
 		for (int row = 0; row < linecount; row += 1) {
 			lines[row] = clip(lines[row]);
@@ -260,7 +359,7 @@ public class run {
 			//make sure the line was validly built
 			valid = build(putter, lines, row) && valid;
 			//verify other scripts used
-			if (putter.action[row] == 10 && putter.val[row].length > 0 && scriptcalled(putter.val[row][0], scriptlist) == null) {
+			if (putter.action[row] == CRUN && putter.val[row].length > 0 && scriptcalled(putter.val[row][0], scriptlist) == null) {
 				Filer inner = new Filer("scripts/" + putter.val[row][0] + ".txt");
 				if (inner.fileisthere()) {
 					inner.readfile();
@@ -276,18 +375,19 @@ public class run {
 		if (!valid)
 			return false;
 		//get rid of comments
-		putter.purgelines(0);
-		linecount = putter.action.length;
+		linecount = putter.purgelines(0);
+		int action = 0;
 		//assign the values to commands that need to know the line number
 		for (int row = 0; row < linecount; row += 1) {
+			action = putter.action[row];
 			//set the jumpline for jump & call, and for endingcall labels
-			if (putter.action[row] == 8 || putter.action[row] == 9 || (putter.action[row] == 28 && putter.val[row][0].equals("endingcall"))) {
+			if (action == CJUMP || action == CCALL || (action == COPTIONON && putter.val[row][0].equals("endingcall"))) {
 				int index = 0;
-				if (putter.action[row] == 28)
+				if (action == COPTIONON)
 					index = 1;
 				String label = ":" + putter.val[row][index];
 				int jumpline = 0;
-				while (jumpline < linecount && !putter.val[jumpline][0].equals(label))
+				while (jumpline < linecount && (putter.val[jumpline].length < 1 || !putter.val[jumpline][0].equals(label)))
 					jumpline = jumpline + 1;
 				if (jumpline >= linecount) {
 					System.out.println("Missing content in " + putter.name + " on line " + putter.row[row] + ": no label called \"" + putter.val[row][index] + "\"");
@@ -298,17 +398,17 @@ public class run {
 						if (putter.action[line] < 1)
 							newjumpline -= 1;
 					}
-					putter.ival[row][index] = newjumpline;
+					putter.pval[row][index] = newjumpline;
 				}
 			//find the end command for the for line, rearrange the values
-			} else if (putter.action[row] == 20) {
+			} else if (action == CFOR) {
 				int jumpline = row;
 				int layer = 1;
 				while (jumpline + 1 < linecount && layer > 0) {
 					jumpline += 1;
-					if (putter.action[jumpline] == 20)
+					if (putter.action[jumpline] == CFOR)
 						layer = layer + 1;
-					else if (putter.action[jumpline] == 21)
+					else if (putter.action[jumpline] == CEND)
 						layer = layer - 1;
 				}
 				if (layer > 0) {
@@ -322,18 +422,16 @@ public class run {
 					}
 					//reassign the data
 					putter.val[jumpline] = new String[] {"", putter.val[row][0], putter.val[row][2], putter.val[row][3]};
-					putter.ival[jumpline] = new int[] {newrow, putter.ival[row][0], putter.ival[row][2], putter.ival[row][3]};
-					putter.vval[jumpline] = new int[] {0, putter.vval[row][0], putter.vval[row][2], putter.vval[row][3]};
+					putter.pval[jumpline] = new int[] {newrow, putter.pval[row][0], putter.pval[row][2], putter.pval[row][3]};
 					putter.val[row] = new String[] {putter.val[row][0], putter.val[row][1]};
-					putter.ival[row] = new int[] {putter.ival[row][0], putter.ival[row][1]};
-					putter.vval[row] = new int[] {putter.vval[row][0], putter.vval[row][1]};
+					putter.pval[row] = new int[] {putter.pval[row][0], putter.pval[row][1]};
 				}
 			//make sure end commands have already been found
-			} else if (putter.action[row] == 21 && putter.ival[row].length < 3) {
+			} else if (action == CEND && putter.pval[row].length < 3) {
 				System.out.println("Missing content in " + putter.name + " on line " + putter.row[row] + ": end missing a for command");
 				valid = false;
 			//set the if command's next line
-			} else if (putter.action[row] == 19) {
+			} else if (action == CIF) {
 				int jumpline = row + 1;
 				int layer = 0;
 				if (jumpline < linecount && putter.val[jumpline][0].equals("[")) {
@@ -355,49 +453,145 @@ public class run {
 						if (putter.action[line] < 1)
 							newjumpline -= 1;
 					}
-					putter.ival[row][0] = newjumpline;
+					putter.pval[row][0] = newjumpline;
+				}
+			//find the end command for the break
+			} else if (action == CBREAK) {
+				int jumpline = row;
+				int layer = 1;
+				while (jumpline + 1 < linecount && layer > 0) {
+					jumpline += 1;
+					if (putter.action[jumpline] == CFOR)
+						layer = layer + 1;
+					else if (putter.action[jumpline] == CEND)
+						layer = layer - 1;
+				}
+				if (layer > 0) {
+					System.out.println("Missing content in " + putter.name + " on line " + putter.row[row] + ": break missing an end command");
+					valid = false;
+				} else {
+					int newjumpline = jumpline;
+					for (int line = 0; line < jumpline; line += 1) {
+						if (putter.action[line] < 1)
+							newjumpline -= 1;
+					}
+					putter.pval[row][0] = newjumpline;
 				}
 			}
 		}
 		//get rid of labels and brackets
-		putter.purgelines(-1);
+		linecount = putter.purgelines(-1);
 		//find all possible variable names
-		VarsInt names = null;
-		Varslist head;
-		linecount = putter.action.length;
 		String name = "";
+		TreeMap<String, Integer> tm = new TreeMap<String, Integer>();
 		for (int row = 0; row < linecount; row += 1) {
-			//new variable storage
-			if (putter.action[row] == 11 || putter.action[row] == 20) {
-				if (putter.action[row] == 11)
-					name = putter.val[row][1];
-				else
-					name = putter.val[row][0];
-				if (name.startsWith(" ") || name.equals("true") || name.equals("false")) {
-					System.out.println("Bad syntax in " + putter.name + " on line " + putter.row[row] + ": that name is reserved");
-					valid = false;
-				} else {
-					for (head = names; head != null; head = head.next) {
-						if (name.equals(head.name))
-							break;
+			action = putter.action[row];
+			int i = -1;
+			switch(action) {
+				case CLEFT:
+				case CRIGHT:
+				case CMOVE:
+				case CSCROLL:
+				case CPAUSENOT:
+				case CPAUSE:
+				case CSET:
+				case CPLUSEQUALS:
+				case CMINUSEQUALS:
+				case CTIMESEQUALS:
+				case CDIVIDEEQUALS:
+				case CMODEQUALS:
+				case CPRINTVAL:
+				case CFOR:
+					i = 0;
+					break;
+				case CSETARGTO:
+				case CIF:
+				case CEND:
+				case COPTIONON:
+				case CCREATE:
+					i = 1;
+					break;
+			}
+			switch(action) {
+				case CCREATE:
+				case CFOR:
+				case CSET:
+				case CSETARGTO:
+				case CPLUSEQUALS:
+				case CMINUSEQUALS:
+				case CTIMESEQUALS:
+				case CDIVIDEEQUALS:
+				case CMODEQUALS:
+					name = putter.val[row][i];
+					if (name.startsWith(" ") || name.equals("true") || name.equals("false") || name.startsWith(".")) {
+						System.out.println("Bad syntax in " + putter.name + " on line " + putter.row[row] + ": that variable is reserved");
+						valid = false;
 					}
-					if (head == null) {
+					break;
+			}
+			//new variable storage
+			if (i != -1) {
+				for (; i < putter.val[row].length; i += 1) {
+					name = putter.val[row][i];
+					if (!name.startsWith(" ") && !tm.containsKey(name)) {
+						tm.put(name, putter.varcount);
 						putter.varcount += 1;
-						names = new VarsInt(name, putter.varcount, names);
 					}
 				}
 			}
 		}
+		//stop if invalid
+		if (!valid)
+			return false;
+		putter.startvals = new Varslist[putter.varcount];
+		Stack<Integer> forvars = new Stack<Integer>();
 		//link all values with their variable name if they have one
-		VarsInt vi;
 		for (int row = 0; row < linecount; row += 1) {
-			for (int col = 0; col < putter.vval[row].length; col += 1) {
-				name = putter.val[row][col];
-				for (head = names; head != null; head = head.next) {
-					if (name.equals(head.name)) {
-						vi = (VarsInt)(head);
-						putter.vval[row][col] = vi.val;
-						break;
+			action = putter.action[row];
+			//push or pop a for variable
+			if (putter.action[row] == CFOR)
+				forvars.push(putter.pval[row][0]);
+			else if (putter.action[row] == CEND)
+				forvars.pop();
+			//put the variable in break
+			else if (putter.action[row] == CBREAK)
+				putter.pval[row][1] = forvars.peek();
+			int col = -1;
+			switch(action) {
+				case CLEFT:
+				case CRIGHT:
+				case CMOVE:
+				case CSCROLL:
+				case CPAUSENOT:
+				case CPAUSE:
+				case CSET:
+				case CPLUSEQUALS:
+				case CMINUSEQUALS:
+				case CTIMESEQUALS:
+				case CDIVIDEEQUALS:
+				case CMODEQUALS:
+				case CPRINTVAL:
+				case CFOR:
+					col = 0;
+					break;
+				case CSETARGTO:
+				case CIF:
+				case CEND:
+				case COPTIONON:
+				case CCREATE:
+					col = 1;
+					break;
+			}
+			if (col != -1) {
+				for (; col < putter.pval[row].length; col += 1) {
+					name = putter.val[row][col];
+					if (!name.startsWith(" ")) {
+						int ptr = tm.get(name);
+						if (name.startsWith("."))
+							putter.startvals[ptr] = new VarsSpecial(name);
+						else
+							putter.startvals[ptr] = new VarsInt(name, putter.pval[row][col], null);
+						putter.pval[row][col] = ptr;
 					}
 				}
 			}
@@ -418,172 +612,149 @@ public class run {
 		int argnum = 0;
 		boolean valid = true;
 		if (line.startsWith("left")) {
-			s.action[row] = 1;
+			s.action[row] = CLEFT;
 			s.val[row] = split(line.substring(4, line.length()), true);
 			argnum = 1;
 		} else if (line.startsWith("right")) {
-			s.action[row] = 2;
+			s.action[row] = CRIGHT;
 			s.val[row] = split(line.substring(5, line.length()), true);
 			argnum = 1;
 		} else if (line.startsWith("move")) {
-			s.action[row] = 3;
+			s.action[row] = CMOVE;
 			s.val[row] = split(line.substring(4, line.length()), true);
 			argnum = 2;
 		} else if (line.startsWith("scroll")) {
-			s.action[row] = 4;
-			s.val[row] = split(line.substring(5, line.length()), true);
+			s.action[row] = CSCROLL;
+			s.val[row] = split(line.substring(6, line.length()), true);
 			argnum = 1;
 		} else if (line.startsWith("pausenot")) {
-			s.action[row] = 5;
+			s.action[row] = CPAUSENOT;
 			s.val[row] = split(line.substring(8, line.length()), true);
 			argnum = 3;
 		} else if (line.startsWith("pause")) {
-			s.action[row] = 6;
+			s.action[row] = CPAUSE;
 			s.val[row] = split(line.substring(5, line.length()), true);
-			argnum = 1;
 		} else if (line.startsWith("jumpback")) {
-			s.action[row] = 7;
+			s.action[row] = CJUMPBACK;
 			s.val[row] = new String[] {""};
-			argnum = 0;
 		} else if (line.startsWith("jump")) {
-			s.action[row] = 8;
+			s.action[row] = CJUMP;
 			s.val[row] = split(line.substring(4, line.length()), true);
 			argnum = 1;
 		} else if (line.startsWith("call")) {
-			s.action[row] = 9;
+			s.action[row] = CCALL;
 			s.val[row] = split(line.substring(4, line.length()), true);
 			argnum = 1;
 		} else if (line.startsWith("run")) {
-			s.action[row] = 10;
+			s.action[row] = CRUN;
 			s.val[row] = split(line.substring(3, line.length()), true);
 			argnum = 1;
-		} else if (line.startsWith("create")) {
-			s.action[row] = 11;
-			s.val[row] = split(line.substring(6, line.length()), true);
-			if (s.val[row].length > 1 && s.val[row][1].startsWith(".")) {
-				System.out.println("Bad syntax in " + s.name + " on line " + (row + 1) + ": variables cannot start with \".\"");
-				valid = false;
-			}
-			argnum = 3;
+		//setargto has to come before set, even though its num is higher
 		} else if (line.startsWith("setargto")) {
-			s.action[row] = 12;
+			s.action[row] = CSETARGTO;
 			s.val[row] = split(line.substring(8, line.length()), true);
 			argnum = 2;
 		} else if (line.startsWith("set")) {
-			s.action[row] = 13;
+			s.action[row] = CSET;
 			s.val[row] = split(line.substring(3, line.length()), true);
 			argnum = 2;
 		} else if (line.startsWith("+=")) {
-			s.action[row] = 14;
+			s.action[row] = CPLUSEQUALS;
 			s.val[row] = split(line.substring(2, line.length()), true);
 			argnum = 2;
 		} else if (line.startsWith("-=")) {
-			s.action[row] = 15;
+			s.action[row] = CMINUSEQUALS;
 			s.val[row] = split(line.substring(2, line.length()), true);
 			argnum = 2;
 		} else if (line.startsWith("*=")) {
-			s.action[row] = 16;
+			s.action[row] = CTIMESEQUALS;
 			s.val[row] = split(line.substring(2, line.length()), true);
 			argnum = 2;
 		} else if (line.startsWith("/=")) {
-			s.action[row] = 17;
+			s.action[row] = CDIVIDEEQUALS;
 			s.val[row] = split(line.substring(2, line.length()), true);
 			argnum = 2;
 		} else if (line.startsWith("%=")) {
-			s.action[row] = 18;
+			s.action[row] = CMODEQUALS;
 			s.val[row] = split(line.substring(2, line.length()), true);
 			argnum = 2;
+		} else if (line.startsWith("create")) {
+			s.action[row] = CCREATE;
+			s.val[row] = split(line.substring(6, line.length()), true);
+			argnum = 3;
 		} else if (line.startsWith("if")) {
-			s.action[row] = 19;
+			s.action[row] = CIF;
 			s.val[row] = split(". " + line.substring(2, line.length()), true);
 			argnum = 2;
 		} else if (line.startsWith("for")) {
-			s.action[row] = 20;
+			s.action[row] = CFOR;
 			s.val[row] = split(line.substring(3, line.length()), true);
-			if (s.val[row].length > 0 && s.val[row][0].startsWith(".")) {
-				System.out.println("Bad syntax in " + s.name + " on line " + (row + 1) + ": variables cannot start with \".\"");
-				valid = false;
-			}
 			argnum = 4;
 		} else if (line.startsWith("end")) {
-			s.action[row] = 21;
+			s.action[row] = CEND;
 			s.val[row] = new String[] {""};
-			argnum = 0;
 		} else if (line.startsWith("break")) {
-			s.action[row] = 22;
-			s.val[row] = new String[] {""};
-			argnum = 0;
+			s.action[row] = CBREAK;
+			s.val[row] = new String[] {"", ""};
 		} else if (line.startsWith("return")) {
-			s.action[row] = 23;
+			s.action[row] = CRETURN;
 			s.val[row] = new String[] {""};
-			argnum = 0;
 		} else if (line.startsWith("quit")) {
-			s.action[row] = 24;
+			s.action[row] = CQUIT;
 			s.val[row] = new String[] {""};
-			argnum = 0;
 		} else if (line.startsWith("type")) {
-			s.action[row] = 25;
+			s.action[row] = CTYPE;
 			int begin = 4;
 			while (begin < line.length() && line.charAt(begin) != '.')
 				begin += 1;
 			s.val[row] = new String[] {line.substring(begin, line.length())};
-			argnum = 0;
 		} else if (line.startsWith("press")) {
-			s.action[row] = 26;
+			s.action[row] = CPRESS;
 			s.val[row] = split(line.substring(5, line.length()), true);
 			argnum = 1;
 		} else if (line.startsWith("release")) {
-			s.action[row] = 27;
+			s.action[row] = CRELEASE;
 			s.val[row] = split(line.substring(7, line.length()), true);
 			argnum = 1;
 		} else if (line.startsWith("optionon")) {
-			s.action[row] = 28;
+			s.action[row] = COPTIONON;
 			s.val[row] = split(line.substring(8, line.length()), true);
 			argnum = 1;
 		} else if (line.startsWith("optionoff")) {
-			s.action[row] = 29;
+			s.action[row] = COPTIONOFF;
 			s.val[row] = split(line.substring(9, line.length()), true);
 			argnum = 1;
 		} else if (line.startsWith("printval")) {
-			s.action[row] = 30;
+			s.action[row] = CPRINTVAL;
 			s.val[row] = split(line.substring(8, line.length()), true);
 			argnum = 1;
 		} else if (line.startsWith("println")) {
-			s.action[row] = 31;
-			int begin = 6;
-			while (begin + 1 < line.length() && line.charAt(begin) != '.')
+			s.action[row] = CPRINTLN;
+			int begin = 7;
+			while (begin < line.length() && line.charAt(begin - 1) != '.')
 				begin += 1;
-			s.val[row] = new String[] {line.substring(begin + 1, line.length()) + "\n"};
-			argnum = 0;
+			s.val[row] = new String[] {line.substring(begin, line.length()) + "\n"};
 		} else if (line.startsWith("print")) {
-			s.action[row] = 31;
-			int begin = 4;
-			while (begin + 1 < line.length() && line.charAt(begin) != '.')
+			s.action[row] = CPRINT;
+			int begin = 5;
+			while (begin < line.length() && line.charAt(begin - 1) != '.')
 				begin += 1;
-			s.val[row] = new String[] {line.substring(begin + 1, line.length())};
-			argnum = 0;
+			s.val[row] = new String[] {line.substring(begin, line.length())};
 		} else if (line.startsWith(":")) {
 			s.action[row] = -1;
 			s.val[row] = split(line, true);
-			argnum = 0;
 		} else if (line.startsWith("[") || line.startsWith("(") || line.startsWith("{")) {
 			s.action[row] = -1;
 			s.val[row] = new String[] {"["};
-			argnum = 0;
 		} else if (line.startsWith("]") || line.startsWith(")") || line.startsWith("}")) {
 			s.action[row] = -1;
 			s.val[row] = new String[] {"]"};
-			argnum = 0;
-		} else {
-			s.val[row] = new String[] {line};
-			argnum = 0;
 		}
 		//give string values an int value
-		s.ival[row] = ibuild(s.val[row]);
-		s.vval[row] = new int[s.val[row].length];
+		s.pval[row] = ibuild(s.val[row]);
 		s.row[row] = row + 1;
 		if (argnum > s.val[row].length) {
-			if (s.action[row] == 19)
+			if (s.action[row] == CIF)
 				System.out.println("Bad syntax in " + s.name + " on line " + (row + 1) + ": only 0 arguments instead of 1");
 			else
 				System.out.println("Bad syntax in " + s.name + " on line " + (row + 1) + ": only " + s.val[row].length + " arguments instead of " + argnum + "");
@@ -599,29 +770,29 @@ public class run {
 		int begin = 0;
 		int length = theline.length();
 		if (whitespace) {
+			while (index < length && (theline.charAt(index) == '\t' || theline.charAt(index) == ' '))
+				index = index + 1;
 			while (index < length) {
-				while (index < length && (theline.charAt(index) == '\t' || theline.charAt(index) == ' '))
-					index = index + 1;
 				begin = index;
 				while (index < length && theline.charAt(index) != '\t' && theline.charAt(index) != ' ')
 					index = index + 1;
 				vl = new Varslist(theline.substring(begin, index), vl);
 				count = count + 1;
+				while (index < length && (theline.charAt(index) == '\t' || theline.charAt(index) == ' '))
+					index = index + 1;
 			}
 		} else {
+			while (index < length && theline.charAt(index) == ',')
+				index = index + 1;
 			while (index < length) {
-				while (index < length && theline.charAt(index) == ',')
-					index = index + 1;
 				begin = index;
 				while (index < length && theline.charAt(index) != ',')
 					index = index + 1;
 				vl = new Varslist(theline.substring(begin, index), vl);
 				count = count + 1;
+				while (index < length && theline.charAt(index) == ',')
+					index = index + 1;
 			}
-		}
-		if (count == 0) {
-			count = 1;
-			vl = new Varslist("", null);
 		}
 		String[] list = new String[count];
 		for (int spot = count - 1; spot >= 0; spot -= 1) {
@@ -633,7 +804,7 @@ public class run {
 	//get the int values of the strings
 	public static int[] ibuild(String[] val) {
 		int[] ival = new int[val.length];
-		int op = 0;
+		int op;
 		for (int spot = 0; spot < val.length; spot += 1) {
 			if (val[spot].equals("+"))
 				op = 1;
@@ -665,12 +836,18 @@ public class run {
 				op = 14;
 			else if (val[spot].equals("and"))
 				op = 15;
-			else if (val[spot].equals("input"))
+			else if (val[spot].equals("redpart"))
 				op = 16;
-			else if (val[spot].equals("colorat"))
+			else if (val[spot].equals("greenpart"))
 				op = 17;
-			else if (val[spot].equals("scan"))
+			else if (val[spot].equals("bluepart"))
 				op = 18;
+			else if (val[spot].equals("input"))
+				op = 19;
+			else if (val[spot].equals("colorat"))
+				op = 20;
+			else if (val[spot].equals("scan"))
+				op = 21;
 			else
 				op = 0;
 			if (op != 0) {
@@ -683,7 +860,7 @@ public class run {
 		}
 		return ival;
 	}
-	//find the variable with the right name
+	//find the script with the right name
 	public static Script scriptcalled(String s, Script sc) {
 		while (sc != null) {
 			if (sc.name.equals(s))
@@ -693,246 +870,237 @@ public class run {
 		return null;
 	}
 	//run the script
-	public static void runscript(Script s, boolean ismainvars) {
+	public boolean runscript(Script s, String[] theinput) {
+		input = theinput;
+		mainrun = this;
 		mainscript = s;
 		//extract all the data
 		String[][] lines = s.val;
-		int[][] cilist = s.ival;
-		int[][] cvlist = s.vval;
+		int[][] cplist = s.pval;
 		int[] actions = s.action;
 		rows = s.row;
-		vars = new Varslist[s.varcount + 1];
-		if (ismainvars)
-			mainvars = vars;
+		//build the vars
+		vars = new Varslist[s.varcount];
+		for (int i = 0; i < s.startvals.length; i += 1) {
+			vars[i] = s.startvals[i].clone();
+		}
+/*
+System.out.println("Vars:");
+for (int i = 0; i < vars.length; i += 1) {
+System.out.println(vars[i].name + ": " + vars[i].ival());
+}
+*/
 		//prepare to extract the data even further
 		String[] args = null;
-		int[] cvars = null;
-		int[] cints = null;
+		int[] cptrs = null;
 		int action = 0;
 		//parse the script
 		int linecount = lines.length;
 		pos = 0;
-		int[] ints = null;
 		while (pos < linecount) {
 			args = lines[pos];
-			cvars = cvlist[pos];
-			cints = cilist[pos];
+			cptrs = cplist[pos];
 			action = actions[pos];
 /*
 System.out.print(s.name + " @ L" + rows[pos] + "- A" + action + ": ");
 for (int i = 0; i < args.length; i += 1) {
-System.out.print(args[i] + ", ");
+System.out.print(args[i] + "(" + cptrs[i] + "), ");
+//System.out.print(args[i] + ", ");
 }
 System.out.println();
 */
-			if (action < 7) {
+			if (action <= CPAUSE) {
 				//left
-				if (action == 1) {
-					ints = intsplit(args, cvars, cints);
+				if (action == CLEFT) {
 					if (args.length > 1)
-						auto.left(ints[0] + offx, ints[1] + offy);
+						auto.left(vars[cptrs[0]].ival() + offx, vars[cptrs[1]].ival() + offy);
 					else
-						auto.left(ints[0]);
+						auto.left(vars[cptrs[0]].ival());
 				//right
-				} else if (action == 2) {
-					ints = intsplit(args, cvars, cints);
+				} else if (action == CRIGHT) {
 					if (args.length > 1)
-						auto.right(ints[0] + offx, ints[1] + offy);
+						auto.right(vars[cptrs[0]].ival() + offx, vars[cptrs[1]].ival() + offy);
 					else
-						auto.right(ints[0]);
+						auto.right(vars[cptrs[0]].ival());
 				//move
-				} else if (action == 3) {
-					ints = intsplit(args, cvars, cints);
-					auto.move(ints[0] + offx, ints[1] + offy);
+				} else if (action == CMOVE) {
+					auto.move(vars[cptrs[0]].ival() + offx, vars[cptrs[1]].ival() + offy);
 				//scroll
-				} else if (action == 4) {
+				} else if (action == CSCROLL) {
 					if (args.length < 2)
 						auto.scroll(args[0]);
 					else
-						auto.scroll(args[0], inteval(args[1], vars[cvars[1]], cints[1]));
+						auto.scroll(args[0], vars[cptrs[1]].ival());
 				//pausenot
-				} else if (action == 5) {
-					ints = intsplit(args, cvars, cints);
-					variable = vars[cvars[2]];
-					if (variable != null && variable.istype(Varslist.COLOR)) {
+				} else if (action == CPAUSENOT) {
+					variable = vars[cptrs[2]];
+					if (variable.istype(Varslist.COLOR)) {
 						VarsColor vc = (VarsColor)(variable);
-						if (ints.length < 4)
-							pausenot(ints[0] + offx, ints[1] + offy, vc.val[0], vc.val[1], vc.val[2], false);
-						else {
-							waittime = ints[3];
-							pausenot(ints[0] + offx, ints[1] + offy, vc.val[0], vc.val[1], vc.val[2], true);
-						}
+						if (cptrs.length < 4)
+							pausenot(vars[cptrs[0]].ival() + offx, vars[cptrs[1]].ival() + offy, vc.val[0], vc.val[1], vc.val[2], -1);
+						else
+							pausenot(vars[cptrs[0]].ival() + offx, vars[cptrs[1]].ival() + offy, vc.val[0], vc.val[1], vc.val[2], vars[cptrs[3]].ival());
 					} else {
-						if (ints.length < 6)
-							pausenot(ints[0] + offx, ints[1] + offy, ints[2], ints[3], ints[4], false);
-						else {
-							waittime = ints[5];
-							pausenot(ints[0] + offx, ints[1] + offy, ints[2], ints[3], ints[4], true);
-						}
+						if (cptrs.length < 6)
+							pausenot(vars[cptrs[0]].ival() + offx, vars[cptrs[1]].ival() + offy, vars[cptrs[2]].ival(), vars[cptrs[3]].ival(), vars[cptrs[4]].ival(), -1);
+						else
+							pausenot(vars[cptrs[0]].ival() + offx, vars[cptrs[1]].ival() + offy, vars[cptrs[2]].ival(), vars[cptrs[3]].ival(), vars[cptrs[4]].ival(), vars[cptrs[5]].ival());
 					}
 				//pause
-				} else if (action == 6) {
-					ints = intsplit(args, cvars, cints);
-					if (ints.length < 3)
-						pause(ints[0]);
+				} else {
+					if (cptrs.length < 1)
+						pause();
+					else if (cptrs.length < 3)
+						pause(vars[cptrs[0]].ival());
 					else {
-						variable = vars[cvars[2]];
-						if (variable != null && variable.istype(Varslist.COLOR)) {
+						variable = vars[cptrs[2]];
+						if (variable.istype(Varslist.COLOR)) {
 							VarsColor vc = (VarsColor)(variable);
-							if (ints.length < 4)
-								pause(ints[0] + offx, ints[1] + offy, vc.val[0], vc.val[1], vc.val[2], false);
-							else {
-								waittime = ints[3];
-								pause(ints[0] + offx, ints[1] + offy, vc.val[0], vc.val[1], vc.val[2], true);
-							}
+							if (cptrs.length < 4)
+								pause(vars[cptrs[0]].ival() + offx, vars[cptrs[1]].ival() + offy, vc.val[0], vc.val[1], vc.val[2], -1);
+							else
+								pause(vars[cptrs[0]].ival() + offx, vars[cptrs[1]].ival() + offy, vc.val[0], vc.val[1], vc.val[2], vars[cptrs[3]].ival());
 						} else {
-							if (ints.length < 6)
-								pause(ints[0] + offx, ints[1] + offy, ints[2], ints[3], ints[4], false);
-							else {
-								waittime = ints[5];
-								pause(ints[0] + offx, ints[1] + offy, ints[2], ints[3], ints[4], true);
-							}
+							if (cptrs.length < 6)
+								pause(vars[cptrs[0]].ival() + offx, vars[cptrs[1]].ival() + offy, vars[cptrs[2]].ival(), vars[cptrs[3]].ival(), vars[cptrs[4]].ival(), -1);
+							else
+								pause(vars[cptrs[0]].ival() + offx, vars[cptrs[1]].ival() + offy, vars[cptrs[2]].ival(), vars[cptrs[3]].ival(), vars[cptrs[4]].ival(), vars[cptrs[5]].ival());
 						}
 					}
 				}
-			} else if (action < 11) {
+			} else if (action <= CRUN) {
 				//jumpback
-				if (action == 7) {
+				if (action == CJUMPBACK) {
 					if (jumpback != null) {
 						pos = jumpback.val;
 						jumpback = (VarsInt)(jumpback.next);
 					}
 				//jump
-				} else if (action == 8)
-					pos = cints[0];
+				} else if (action == CJUMP)
+					pos = cptrs[0];
 				//call
-				else if (action == 9) {
+				else if (action == CCALL) {
 					jumpback = new VarsInt("", pos, jumpback);
-					pos = cints[0];
+					pos = cptrs[0];
 				//run
-				} else if (action == 10) {
-					Varslist[] oldvars = vars;
-					Script oldmainscript = mainscript;
-					int[] oldrows = rows;
-					int oldpos = pos;
-					String[] oldinput = input;
-					input = args;
-					runscript(scriptcalled(args[0], scriptlist), false);
-					vars = oldvars;
-					mainscript = oldmainscript;
-					rows = oldrows;
-					pos = oldpos;
-					input = oldinput;
+				} else {
+					run runner = new run();
+					if (runner.runscript(scriptcalled(args[0], scriptlist), args))
+						end("Called from script \"" + mainscript.name + "\" at line " + rows[pos] + ".");
+					mainrun = this;
 				}
-			} else if (action < 19) {
+			} else if (action <= CSETARGTO) {
+				//set
+				if (action == CSET)
+					vars[cptrs[0]].setto(args, cptrs);
+				//+=, -=, *=, /=, %=
+				else if (action <= CMODEQUALS) {
+					variable = vars[cptrs[0]];
+					VarsInt vi = (VarsInt)(variable);
+					if (action == CPLUSEQUALS)
+						vi.val += vars[cptrs[1]].ival();
+					else if (action == CMINUSEQUALS)
+						vi.val -= vars[cptrs[1]].ival();
+					else if (action == CTIMESEQUALS)
+						vi.val *= vars[cptrs[1]].ival();
+					else if (action == CDIVIDEEQUALS)
+						vi.val /= vars[cptrs[1]].ival();
+					else
+						vi.val %= vars[cptrs[1]].ival();
 				//create
-				if (action == 11) {
+				} else if (action == CCREATE) {
 					if (args[0].equals("int"))
-						vars[cvars[1]] = new VarsInt(args[1], evaluate(args, cvars, cints, 2), vars[cvars[1]]);
+						vars[cptrs[1]] = new VarsInt(args[1], evaluate(args, cptrs, 2), vars[cptrs[1]]);
 					else if (args[0].equals("boolean"))
-						vars[cvars[1]] = new VarsBoolean(args[1], evaluate(args, cvars, cints, 2) != 0, vars[cvars[1]]);
+						vars[cptrs[1]] = new VarsBoolean(args[1], evaluate(args, cptrs, 2) != 0, vars[cptrs[1]]);
 					else if (args[0].equals("color")) {
-						variable = vars[cvars[2]];
-						if (variable != null && variable.istype(Varslist.COLOR)) {
+						variable = vars[cptrs[2]];
+						if (variable.istype(Varslist.COLOR)) {
 							VarsColor vc = (VarsColor)(variable);
-							vars[cvars[1]] = new VarsColor(args[1], vc.val, vars[cvars[1]]);
+							vars[cptrs[1]] = new VarsColor(args[1], vc.val, vars[cptrs[1]]);
 						} else if (args[2].equals("at"))
-							vars[cvars[1]] = new VarsColor(args[1], auto.colorsat(inteval(args[3], vars[cvars[3]], cints[3]), inteval(args[4], vars[cvars[4]], cints[4])), vars[cvars[1]]);
-						else {
-							ints = intsplit(args, cvars, cints);
-							vars[cvars[1]] = new VarsColor(args[1], new int[] {ints[2], ints[3], ints[4]}, vars[cvars[1]]);
-						}
+							vars[cptrs[1]] = new VarsColor(args[1], auto.colorsat(vars[cptrs[3]].ival() + offx, vars[cptrs[4]].ival() + offy), vars[cptrs[1]]);
+						else
+							vars[cptrs[1]] = new VarsColor(args[1], new int[] {vars[cptrs[2]].ival(), vars[cptrs[3]].ival(), vars[cptrs[4]].ival()}, vars[cptrs[1]]);
 					} else if (args[0].equals("timer"))
-						vars[cvars[1]] = new VarsTimer(args[1], inteval(args[2], vars[cvars[2]], cints[2]), vars[cvars[1]]);
+						vars[cptrs[1]] = new VarsTimer(args[1], vars[cptrs[2]].ival(), vars[cptrs[1]]);
 				//setargto
-				} else if (action == 12) {
-					variable = vars[cvars[1]];
+				} else {
+					variable = vars[cptrs[1]];
 					for (int spot = 1; spot < input.length; spot += 1) {
-						if (input[spot].startsWith(args[0]) && variable != null) {
+						if (input[spot].startsWith(args[0])) {
 							args = split(" ," + input[spot].substring(args[0].length(), input[spot].length()), false);
-							variable.setto(args, new int[args.length], ibuild(args));
+							Varslist[] oldvars = vars;
+							int[] vals = ibuild(args);
+							vars = new Varslist[args.length];
+							for (int i = 0; i < vars.length; i += 1) {
+								vars[i] = new VarsInt(args[i], vals[i], null);
+								if (!args[i].startsWith(" "))
+									vals[i] = i;
+							}
+							variable.setto(args, vals);
+							vars = oldvars;
 							break;
 						}
 					}
-				//set
-				} else if (action == 13) {
-					variable = vars[cvars[0]];
-					if (variable != null)
-						variable.setto(args, cvars, cints);
-				//+=, -=, *=, /=, %=
-				} else if (action < 19) {
-					variable = vars[cvars[0]];
-					if (variable != null && variable.istype(Varslist.INT)) {
-						VarsInt vi = (VarsInt)(variable);
-						if (action == 14)
-							vi.val += inteval(args[1], vars[cvars[1]], cints[1]);
-						else if (action == 15)
-							vi.val -= inteval(args[1], vars[cvars[1]], cints[1]);
-						else if (action == 16)
-							vi.val *= inteval(args[1], vars[cvars[1]], cints[1]);
-						else if (action == 17)
-							vi.val /= inteval(args[1], vars[cvars[1]], cints[1]);
-						else
-							vi.val %= inteval(args[1], vars[cvars[1]], cints[1]);
-					}
 				}
-			} else if (action < 25) {
+			} else if (action <= CQUIT) {
 				//if
-				if (action == 19) {
-					if (evaluate(args, cvars, cints, 1) == 0)
-						pos = cilist[pos][0];
+				if (action == CIF) {
+					if (evaluate(args, cptrs, 1) == 0)
+						pos = cptrs[0];
 				//for
-				} else if (action == 20)
-					vars[cvars[0]] = new VarsInt(args[0], inteval(args[1], vars[cvars[1]], cints[1]), vars[cvars[0]]);
+				} else if (action == CFOR)
+					vars[cptrs[0]] = new VarsInt(args[0], vars[cptrs[1]].ival(), vars[cptrs[0]]);
 				//end
-				else if (action == 21) {
-					VarsInt vi = (VarsInt)(vars[cvars[1]]);
-					vi.val += inteval(args[3], vars[cvars[3]], cints[3]);
-					if (vi.val > inteval(args[2], vars[cvars[2]], cints[2]))
-						vars[cvars[1]] = vi.next;
+				else if (action == CEND) {
+					VarsInt vi = (VarsInt)(vars[cptrs[1]]);
+					int add = vars[cptrs[3]].ival();
+					vi.val += add;
+					if ((add >= 0 && vi.val > vars[cptrs[2]].ival()) || (add < 0 && vi.val < vars[cptrs[2]].ival()))
+						vars[cptrs[1]] = vi.next;
 					else
-						pos = cints[0];
+						pos = cptrs[0];
 				//break
-				} else if (action == 22) {
-					pos += 1;
-					while (pos < linecount && actions[pos] != 21)
-						pos += 1;
-					if (pos < linecount)
-						vars[cvlist[pos][1]] = vars[cvlist[pos][1]].next;
+				} else if (action == CBREAK) {
+					pos = cptrs[0];
+					vars[cptrs[1]] = vars[cptrs[1]].next;
 				//return
-				} else if (action == 23)
-					return;
+				} else if (action == CRETURN)
+					return returnval;
 				//quit
-				else if (action == 24)
-					end("Quitting script \"" + s.name + "\" from line " + s.row[pos] + ".");
+				else
+					end("Quitting script \"" + mainscript.name + "\" from line " + rows[pos] + ".");
 			} else {
 				//type
-				if (action == 25)
+				if (action == CTYPE)
 					auto.type(args[0]);
 				//press
-				else if (action == 26) {
+				else if (action == CPRESS) {
 					if (args[0].length() > 1)
 						auto.button(args[0], 1);
 					else
 						auto.button(args[0].charAt(0), 1);
 				//release
-				} else if (action == 27) {
+				} else if (action == CRELEASE) {
 					if (args[0].length() > 1)
 						auto.button(args[0], 3);
 					else
 						auto.button(args[0].charAt(0), 3);
 				//optionon
-				} else if (action == 28) {
+				} else if (action == COPTIONON) {
 					if (args[0].equals("quitafter"))
-						quitafter = inteval(args[1], vars[cvars[1]], cints[1]);
-					else if (args[0].equals("endingcall")) {
-						if (s == scriptlist)
-							endingcall = cints[1];
-					} else if (args[0].equals("variance"))
-						variance = inteval(args[1], vars[cvars[1]], cints[1]);
-					else if (args[0].equals("mousequit"))
-						mousequit = true;
-					else if (args[0].equals("scanorder")) {
+						quitafter = vars[cptrs[1]].ival();
+					else if (args[0].equals("endingcall"))
+						endingcall = cptrs[1];
+					else if (args[0].equals("variance")) {
+						variancer = vars[cptrs[1]].ival();
+						varianceg = vars[cptrs[2]].ival();
+						varianceb = vars[cptrs[3]].ival();
+					} else if (args[0].equals("mousetolerance")) {
+						mousetolx = vars[cptrs[1]].ival();
+						mousetoly = vars[cptrs[2]].ival();
+					} else if (args[0].equals("scanorder")) {
 						if (args[1].equals("left")) {
 							scanorder[0] = 1;
 							if (args[2].equals("up"))
@@ -959,185 +1127,181 @@ System.out.println();
 								scanorder[1] = 3;
 						}
 					} else if (args[0].equals("offset")) {
-						offx = inteval(args[1], vars[cvars[1]], cints[1]);
-						offy = inteval(args[2], vars[cvars[2]], cints[2]);
-					}
+						offx = vars[cptrs[1]].ival();
+						offy = vars[cptrs[2]].ival();
+					} else if (args[0].equals("endmessages"))
+						endmessages = true;
 				//optionoff
-				} else if (action == 29) {
+				} else if (action == COPTIONOFF) {
 					if (args[0].equals("quitafter"))
 						quitafter = -1;
-					else if (args[0].equals("endingcall")) {
-						if (s == scriptlist)
-							endingcall = -1;
-					} else if (args[0].equals("variance"))
-						variance = 0;
-					else if (args[0].equals("mousequit"))
-						mousequit = false;
-					else if (args[0].equals("scanorder"))
-						scanorder = new int[] {3, 4};
-					else if (args[0].equals("offset")) {
+					else if (args[0].equals("endingcall"))
+						endingcall = -1;
+					else if (args[0].equals("variance")) {
+						variancer = 0;
+						varianceg = 0;
+						varianceb = 0;
+					} else if (args[0].equals("mousetolerance")) {
+						mousetolx = 0;
+						mousetoly = 0;
+					} else if (args[0].equals("scanorder")) {
+						scanorder[0] = 3;
+						scanorder[1] = 4;
+					} else if (args[0].equals("offset")) {
 						offx = 0;
 						offy = 0;
-					}
+					} else if (args[0].equals("endmessages"))
+						endmessages = false;
 				//printval
-				} else if (action == 30) {
-					if (args[0].startsWith(".")) {
-						if (args[0].equals(".timestamp"))
-							System.out.print(timestamp());
-						else if (args[0].equals(".mousex"))
-							System.out.print("" + mousex());
-						else if (args[0].equals(".mousey"))
-							System.out.print("" + mousey());
-						else if (args[0].equals(".scanx"))
-							System.out.print("" + scanx);
-						else if (args[0].equals(".scany"))
-							System.out.print("" + scany);
-					} else {
-						variable = vars[cvars[0]];
-						if (variable != null)
-							System.out.print("" + variable);
-					}
+				} else if (action == CPRINTVAL)
+					System.out.print(vars[cptrs[0]].toString());
 				//println, print
-				} else if (action == 31)
+				else
 					System.out.print(args[0]);
 			}
 			pos = pos + 1;
 		}
-	}
-	//get all the right int values
-	public static int[] intsplit(String[] vals, int[] cvars, int[] cints) {
-		int[] list = new int[vals.length];
-		for (int spot = 0; spot < vals.length; spot += 1) {
-			list[spot] = inteval(vals[spot], vars[cvars[spot]], cints[spot]);
-		}
-		return list;
-	}
-	//return the right int value
-	public static int inteval(String s, Varslist cvar, int cint) {
-		if (cvar != null)
-			return cvar.ival();
-		else if (s.startsWith(".")) {
-			if (s.equals(".mousex"))
-				return mousex();
-			else if (s.equals(".mousey"))
-				return mousey();
-			else if (s.equals(".scanx"))
-				return scanx;
-			else if (s.equals(".scany"))
-				return scany;
-		}
-		return cint;
+		return returnval;
 	}
 	//evaluate the arithmetic/boolean equation
-	public static int evaluate(String[] vals, int[] cvars, int[] cints, int off) {
+	public int evaluate(String[] vals, int[] cptrs, int off) {
 		int length = vals.length;
 		int[] ints = new int[length];
-		int add = 0;
+		int stack = length;
 		for (int spot = length - 1; spot >= off; spot -= 1) {
 			if (vals[spot].startsWith(" ")) {
-				if (cints[spot] < 7) {
+				if (cptrs[spot] < 7) {
 					// +
-					if (cints[spot] == 1) {
-						ints[spot] = ints[spot + 1] + ints[spot + 2];
-						add = 2;
+					if (cptrs[spot] == 1) {
+						stack += 1;
+						ints[stack] = ints[stack - 1] + ints[stack];
 					// -
-					} else if (cints[spot] == 2) {
-						ints[spot] = ints[spot + 1] - ints[spot + 2];
-						add = 2;
+					} else if (cptrs[spot] == 2) {
+						stack += 1;
+						ints[stack] = ints[stack - 1] - ints[stack];
 					// *
-					} else if (cints[spot] == 3) {
-						ints[spot] = ints[spot + 1] * ints[spot + 2];
-						add = 2;
+					} else if (cptrs[spot] == 3) {
+						stack += 1;
+						ints[stack] = ints[stack - 1] * ints[stack];
 					// /
-					} else if (cints[spot] == 4) {
-						ints[spot] = ints[spot + 1] / ints[spot + 2];
-						add = 2;
+					} else if (cptrs[spot] == 4) {
+						stack += 1;
+						ints[stack] = ints[stack - 1] / ints[stack];
 					// %
-					} else if (cints[spot] == 5) {
-						ints[spot] = ints[spot + 1] % ints[spot + 2];
-						add = 2;
+					} else if (cptrs[spot] == 5) {
+						stack += 1;
+						ints[stack] = ints[stack - 1] % ints[stack];
 					// random
-					} else if (cints[spot] == 6) {
-						ints[spot] = (int)(Math.random() * ints[spot + 1]);
-						add = 1;
-					}
-				} else if (cints[spot] < 13) {
+					} else if (cptrs[spot] == 6)
+						ints[stack] = (int)(Math.random() * ints[stack]);
+				} else if (cptrs[spot] < 13) {
 					// ==
-					if (cints[spot] == 7) {
-						if (ints[spot + 1] == ints[spot + 2])
-							ints[spot] = 1;
-						add = 2;
+					if (cptrs[spot] == 7) {
+						stack += 1;
+						if (ints[stack - 1] == ints[stack])
+							ints[stack] = 1;
+						else
+							ints[stack] = 0;
 					// !=
-					} else if (cints[spot] == 8) {
-						if (ints[spot + 1] != ints[spot + 2])
-							ints[spot] = 1;
-						add = 2;
+					} else if (cptrs[spot] == 8) {
+						stack += 1;
+						if (ints[stack - 1] != ints[stack])
+							ints[stack] = 1;
+						else
+							ints[stack] = 0;
 					// >=
-					} else if (cints[spot] == 9) {
-						if (ints[spot + 1] >= ints[spot + 2])
-							ints[spot] = 1;
-						add = 2;
+					} else if (cptrs[spot] == 9) {
+						stack += 1;
+						if (ints[stack - 1] >= ints[stack])
+							ints[stack] = 1;
+						else
+							ints[stack] = 0;
 					// >
-					} else if (cints[spot] == 10) {
-						if (ints[spot + 1] > ints[spot + 2])
-							ints[spot] = 1;
-						add = 2;
+					} else if (cptrs[spot] == 10) {
+						stack += 1;
+						if (ints[stack - 1] > ints[stack])
+							ints[stack] = 1;
+						else
+							ints[stack] = 0;
 					// <=
-					} else if (cints[spot] == 11) {
-						if (ints[spot + 1] <= ints[spot + 2])
-							ints[spot] = 1;
-						add = 2;
+					} else if (cptrs[spot] == 11) {
+						stack += 1;
+						if (ints[stack - 1] <= ints[stack])
+							ints[stack] = 1;
+						else
+							ints[stack] = 0;
 					// <
-					} else if (cints[spot] == 12) {
-						if (ints[spot + 1] < ints[spot + 2])
-							ints[spot] = 1;
-						add = 2;
+					} else if (cptrs[spot] == 12) {
+						stack += 1;
+						if (ints[stack - 1] < ints[stack])
+							ints[stack] = 1;
+						else
+							ints[stack] = 0;
 					}
-				} else if (cints[spot] < 16) {
+				} else if (cptrs[spot] < 16) {
 					// not
-					if (cints[spot] == 13) {
-						if (ints[spot + 1] == 0)
-							ints[spot] = 1;
-						add = 1;
+					if (cptrs[spot] == 13) {
+						if (ints[stack] == 0)
+							ints[stack] = 1;
+						else
+							ints[stack] = 0;
 					// or
-					} else if (cints[spot] == 14) {
-						if ((ints[spot + 1] | ints[spot + 2]) != 0)
-							ints[spot] = 1;
-						add = 2;
+					} else if (cptrs[spot] == 14) {
+						stack += 1;
+						if ((ints[stack - 1] | ints[stack]) != 0)
+							ints[stack] = 1;
+						else
+							ints[stack] = 0;
 					// and
-					} else if (cints[spot] == 15) {
-						if ((ints[spot + 1] & ints[spot + 2]) != 0)
-							ints[spot] = 1;
-						add = 2;
+					} else if (cptrs[spot] == 15) {
+						stack += 1;
+						if ((ints[stack - 1] & ints[stack]) != 0)
+							ints[stack] = 1;
 					}
 				} else {
+					// redpart
+					if (cptrs[spot] == 16) {
+						VarsColor vc = (VarsColor)(vars[cptrs[spot + 1]]);
+						ints[stack] = vc.val[0];
+					// greenpart
+					} else if (cptrs[spot] == 17) {
+						VarsColor vc = (VarsColor)(vars[cptrs[spot + 1]]);
+						ints[stack] = vc.val[1];
+					// bluepart
+					} else if (cptrs[spot] == 18) {
+						VarsColor vc = (VarsColor)(vars[cptrs[spot + 1]]);
+						ints[stack] = vc.val[2];
 					// input
-					if (cints[spot] == 16) {
+					} else if (cptrs[spot] == 19) {
+						ints[stack] = 0;
 						for (int loc = 1; loc < input.length; loc += 1) {
 							if (input[loc].equals(vals[spot + 1])) {
-								ints[spot] = 1;
+								ints[stack] = 1;
 								break;
 							}
 						}
-						add = 1;
 					// colorat
-					} else if (cints[spot] == 17) {
-						variable = vars[cvars[spot + 1]];
-						if (variable != null && variable.istype(Varslist.COLOR)) {
+					} else if (cptrs[spot] == 20) {
+						variable = vars[cptrs[spot + 3]];
+						if (variable.istype(Varslist.COLOR)) {
+							stack += 2;
 							VarsColor vc = (VarsColor)(variable);
-							if (colorat(ints[spot + 1] + offx, ints[spot + 2] + offy, vc.val[0], vc.val[1], vc.val[2]))
-								ints[spot] = 1;
-							add = 3;
+							if (colorat(ints[stack - 2] + offx, ints[stack - 1] + offy, vc.val[0], vc.val[1], vc.val[2]))
+								ints[stack] = 1;
+							else
+								ints[stack] = 0;
 						} else {
-							if (colorat(ints[spot + 1] + offx, ints[spot + 2] + offy, ints[spot + 3], ints[spot + 4], ints[spot + 5]))
-								ints[spot] = 1;
-							add = 5;
+							stack += 4;
+							if (colorat(ints[stack - 4] + offx, ints[stack - 3] + offy, ints[stack - 2], ints[stack - 1], ints[stack]))
+								ints[stack] = 1;
+							else
+								ints[stack] = 0;
 						}
 					// scan
-					} else if (cints[spot] == 18) {
+					} else if (cptrs[spot] == 21) {
 						scanx = -1;
 						scany = -1;
-						BufferedImage image = auto.screenshot(ints[spot + 1] + offx, ints[spot + 2] + offy, ints[spot + 3], ints[spot + 4]);
+						BufferedImage image = auto.screenshot(ints[stack] + offx, ints[stack + 1] + offy, ints[stack + 2], ints[stack + 3]);
 						int pixel = 0;
 						int r = 0;
 						int g = 0;
@@ -1145,18 +1309,19 @@ System.out.println();
 						int ir = 0;
 						int ig = 0;
 						int ib = 0;
-						variable = vars[cvars[spot + 5]];
-						if (variable != null && variable.istype(Varslist.COLOR)) {
+						int oldstack = stack;
+						variable = vars[cptrs[stack + 4]];
+						if (variable.istype(Varslist.COLOR)) {
+							stack += 4;
 							VarsColor vc = (VarsColor)(variable);
 							ir = vc.val[0];
 							ig = vc.val[1];
 							ib = vc.val[2];
-							add = 5;
 						} else {
-							ir = ints[spot + 5];
-							ig = ints[spot + 6];
-							ib = ints[spot + 7];
-							add = 7;
+							stack += 6;
+							ir = ints[stack - 2];
+							ig = ints[stack - 1];
+							ib = ints[stack];
 						}
 						int loc0 = 0;
 						int loc1 = 0;
@@ -1186,101 +1351,95 @@ System.out.println();
 							loc1 = max1 - 1;
 						}
 						int[] coords = new int[] {loc0, loc1};
+						ints[stack] = 0;
 						outer: for (int m = 0; m < max1; m += 1) {
 							for (int n = 0; n < max0; n += 1) {
 								pixel = image.getRGB(coords[getx], coords[gety]);
 								r = (pixel >> 16) & 255;
 								g = (pixel >> 8) & 255;
 								b = pixel & 255;
-								if (r <= ir + variance && r >= ir - variance && g <= ig + variance && g >= ig - variance && b <= ib + variance && b >= ib - variance) {
-									scanx = ints[spot + 1] + coords[getx];
-									scany = ints[spot + 2] + coords[gety];
-									ints[spot] = 1;
+								if (r <= ir + variancer && r >= ir - variancer && g <= ig + varianceg && g >= ig - varianceg && b <= ib + varianceb && b >= ib - varianceb) {
+									scanx = ints[oldstack] + coords[getx];
+									scany = ints[oldstack + 1] + coords[gety];
+									ints[stack] = 1;
 									break outer;
 								}
-								coords[0] = coords[0] + add0;
+								coords[0] += add0;
 							}
-							coords[1] = coords[1] + add1;
+							coords[1] += add1;
 							coords[0] = loc0;
 						}
 					}
 				}
-				length = length - add;
-				for (int loc = spot + 1; loc < length; loc += 1) {
-					ints[loc] = ints[loc + add];
-				}
-			} else
-				ints[spot] = inteval(vals[spot], vars[cvars[spot]], cints[spot]);
+			} else {
+				stack -= 1;
+				ints[stack] = vars[cptrs[spot]].ival();
+			}
 		}
-		return ints[off];
+		return ints[stack];
 	}
-	public static void pause(int time) {
+	public void pause() {
+		Scanner scan = new Scanner(System.in);
+		String temp = scan.nextLine();
+	}
+	public void pause(int time) {
 		int xx = mousex();
 		int yy = mousey();
 		long now = System.currentTimeMillis();
 		while (System.currentTimeMillis() - now < time) {
-			if (mousequit && (xx != mousex() || yy != mousey()))
-				end("You moved the mouse.");
-		}
-	}
-	public static void pause(int x, int y, int r, int g, int b, boolean endearly) {
-		int xx = mousex();
-		int yy = mousey();
-		long now = System.currentTimeMillis();
-		while (!colorat(x, y, r, g, b) && (!endearly || System.currentTimeMillis() - now < waittime)) {
-			if (mousequit && (xx != mousex() || yy != mousey()))
-				end("You moved the mouse.");
-			if (quitafter >= 0 && System.currentTimeMillis() - now >= quitafter)
-				end("Quitting a pause from script \"" + mainscript.name + "\" at line " + rows[pos] + ".");
-		}
-	}
-	public static void pausenot(int x, int y, int r, int g, int b, boolean endearly) {
-		int xx = mousex();
-		int yy = mousey();
-		long now = System.currentTimeMillis();
-		while (colorat(x, y, r, g, b) && (!endearly || System.currentTimeMillis() - now < waittime)) {
-			if (mousequit && (xx != mousex() || yy != mousey()))
-				end("You moved the mouse.");
-			if (quitafter >= 0 && System.currentTimeMillis() - now >= quitafter)
-				end("Quitting a pausenot from script \"" + mainscript.name + "\" at line " + rows[pos] + ".");
-		}
-	}
-	public static boolean colorat(int x, int y, int r, int g, int b) {
-		int[] cs = auto.colorsat(x, y);
-		return cs[0] <= r + variance && cs[0] >= r - variance && cs[1] <= g + variance && cs[1] >= g - variance && cs[2] <= b + variance && cs[2] >= b - variance;
-	}
-	public static void end(String s) {
-		System.out.println(s);
-		end();
-	}
-	public static void end() {
-		if (endingcall != -1) {
-			pos = endingcall;
-			while (pos < scriptlist.action.length) {
-				//printval
-				if (scriptlist.action[pos] == 30) {
-					if (scriptlist.val[pos][0].startsWith(".")) {
-						if (scriptlist.val[pos][0].equals(".timestamp"))
-							System.out.print(timestamp());
-						else if (scriptlist.val[pos][0].equals(".mousex"))
-							System.out.print("" + mousex());
-						else if (scriptlist.val[pos][0].equals(".mousey"))
-							System.out.print("" + mousey());
-						else if (scriptlist.val[pos][0].equals(".scanx"))
-							System.out.print("" + scanx);
-						else if (scriptlist.val[pos][0].equals(".scany"))
-							System.out.print("" + scany);
-					} else {
-						variable = mainvars[scriptlist.vval[pos][0]];
-						if (variable != null)
-							System.out.print("" + variable);
-					}
-				//println, print
-				} else if (scriptlist.action[pos] == 31)
-					System.out.print(scriptlist.val[pos][0]);
-				pos = pos + 1;
+			if (!mousewithin(xx, yy)) {
+				end("You moved the mouse at a pause on line " + rows[pos] + " from script \"" + mainscript.name + "\"");
+				return;
 			}
 		}
-		System.exit(0);
+	}
+	public boolean mousewithin(int xx, int yy) {
+		int mx = mousex();
+		int my = mousey();
+		return mx >= xx - mousetolx && mx <= xx + mousetolx && my >= yy - mousetoly && my <= yy + mousetoly;
+	}
+	public void pause(int x, int y, int r, int g, int b, int waittime) {
+		int xx = mousex();
+		int yy = mousey();
+		long now = System.currentTimeMillis();
+		while (!colorat(x, y, r, g, b) && (waittime < 0 || System.currentTimeMillis() - now < waittime)) {
+			if (!mousewithin(xx, yy)) {
+				end("You moved the mouse at a pause on line " + rows[pos] + " from script \"" + mainscript.name + "\"");
+				return;
+			}
+			if (quitafter >= 0 && System.currentTimeMillis() - now >= quitafter) {
+				end("Quitting a pause from script \"" + mainscript.name + "\" at line " + rows[pos] + ".");
+				return;
+			}
+		}
+	}
+	public void pausenot(int x, int y, int r, int g, int b, int waittime) {
+		int xx = mousex();
+		int yy = mousey();
+		long now = System.currentTimeMillis();
+		while (colorat(x, y, r, g, b) && (waittime < 0 || System.currentTimeMillis() - now < waittime)) {
+			if (!mousewithin(xx, yy)) {
+				end("You moved the mouse at a pausenot on line " + rows[pos] + " from script \"" + mainscript.name + "\"");
+				return;
+			}
+			if (quitafter >= 0 && System.currentTimeMillis() - now >= quitafter) {
+				end("Quitting a pausenot from script \"" + mainscript.name + "\" at line " + rows[pos] + ".");
+				return;
+			}
+		}
+	}
+	public boolean colorat(int x, int y, int r, int g, int b) {
+		int[] cs = auto.colorsat(x, y);
+		return cs[0] <= r + variancer && cs[0] >= r - variancer && cs[1] <= g + varianceg && cs[1] >= g - varianceg && cs[2] <= b + varianceb && cs[2] >= b - varianceb;
+	}
+	public void end(String s) {
+		if (endmessages)
+			System.out.println(s);
+		if (endingcall != -1) {
+			pos = endingcall;
+			endingcall = -1;
+		} else
+			pos = mainscript.val.length;
+		returnval = true;
 	}
 }

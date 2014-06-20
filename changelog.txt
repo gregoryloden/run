@@ -94,3 +94,22 @@ v6	Fixed a bug where scripts could not be run from within scripts
 
 v6.1	Added the ability to drag the mouse
 	Updated REAME with mouse dragging
+
+v?	Fixed scrolling not working
+	Fixed created colors not using the option offset for the at creator
+	Enabled endingcall calls to be used in every inner script that gets called, not just the outer one,
+		and for endingcalls to use more of the program than just the prints
+	Enabled for loops to perform descending loops when the last number is negative
+	Added ability to press/release home, end, page up, page down keys
+	Changed some underlying implementation to improve speed
+	Fixed colorats not recognizing colors
+	Added redpart, greenpart, bluepart clause operators
+	Added another pause form
+	Added endmessages option
+	Added mousetolerance option, removed mousequit option
+	Updated README with endingcall changes, for loop change, extra key presses, change to set command,
+		redpart + greenpart + bluepart operators for claueses, other pause form, endmessages option,
+		mousetolerance option
+	Put the README in HTML format
+	Backwards compatibility issue: breaks no longer exit scripts (reenabled accidentally in v6)
+	Backwards compatibility issue: mousequit is replaced by mousetolerance

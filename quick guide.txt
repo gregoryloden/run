@@ -1,8 +1,8 @@
  For those of you don't want to go through the entire README just for a quick lookup, here is a list
 of all the commands and their formats. Arguments are in brackets, arguments with a ... at the end
 signify a non-constant number of arguments. The clauses do not include any ... since the argument
-number changes due to evaluation. Some commands have more formats than are listed here, and are
-marked with a *.
+number changes due to evaluation. Some commands/clauses have more formats than are listed here, and
+are marked with a *.
 
 Commands:
 *	left		[x]	[y]
