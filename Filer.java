@@ -68,8 +68,10 @@ public class Filer {
 //	fileisthere
 //	readfile
 //	getline
+//	getline
 //	getlines
 //	row
+//	column
 	public boolean fileisthere() {
 		return file.exists();
 	}

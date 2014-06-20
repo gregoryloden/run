@@ -14,7 +14,7 @@ public class Autoer {
 			System.out.println("The robot could not be made.\n" + e);
 			System.exit(0);
 		}
-	};
+	}
 	public void left(int x, int y) {
 		auto.mouseMove(x, y);
 		left(2);
@@ -38,30 +38,6 @@ public class Autoer {
 	public void move(int x, int y) {
 		auto.mouseMove(x, y);
 	}
-	public void leftarrow(int option) {
-		if (option < 3)
-			auto.keyPress(KeyEvent.VK_LEFT);
-		if (option > 1)
-			auto.keyRelease(KeyEvent.VK_LEFT);
-	}
-	public void rightarrow(int option) {
-		if (option < 3)
-			auto.keyPress(KeyEvent.VK_RIGHT);
-		if (option > 1)
-			auto.keyRelease(KeyEvent.VK_RIGHT);
- 	}
-	public void uparrow(int option) {
-		if (option < 3)
-			auto.keyPress(KeyEvent.VK_UP);
-		if (option > 1)
-			auto.keyRelease(KeyEvent.VK_UP);
- 	}
-	public void downarrow(int option) {
-		if (option < 3)
-			auto.keyPress(KeyEvent.VK_DOWN);
-		if (option > 1)
-			auto.keyRelease(KeyEvent.VK_DOWN);
- 	}
 	public void wait(int wait) {
 		auto.delay(wait);
 	}
@@ -501,10 +477,10 @@ public class Autoer {
 		else if (button.equals("escape") && type > 1)
 			auto.keyRelease(KeyEvent.VK_ESCAPE);
 	}
-	public BufferedImage screenimage() {
+	public BufferedImage screenshot() {
 		return auto.createScreenCapture(new Rectangle(Toolkit.getDefaultToolkit().getScreenSize()));
 	}
-	public BufferedImage screenimage(int x, int y, int w, int h) {
+	public BufferedImage screenshot(int x, int y, int w, int h) {
 		return auto.createScreenCapture(new Rectangle(x, y, w, h));
 	}
 }
