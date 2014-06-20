@@ -95,7 +95,7 @@ v6	Fixed a bug where scripts could not be run from within scripts
 v6.1	Added the ability to drag the mouse
 	Updated REAME with mouse dragging
 
-v?	Fixed scrolling not working
+v7	Fixed scrolling not working
 	Fixed created colors not using the option offset for the at creator
 	Enabled endingcall calls to be used in every inner script that gets called, not just the outer one,
 		and for endingcalls to use more of the program than just the prints
@@ -113,3 +113,8 @@ v?	Fixed scrolling not working
 	Put the README in HTML format
 	Backwards compatibility issue: breaks no longer exit scripts (reenabled accidentally in v6)
 	Backwards compatibility issue: mousequit is replaced by mousetolerance
+
+v7.1	Added single argument optionon variance
+	Added single argument optionon mousetolerance
+	Fixed a bug that with endingcall
+	Updated README with optionon variance + mousetolerance changes

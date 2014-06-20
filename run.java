@@ -88,9 +88,9 @@ public class run {
 	public Script mainscript = null;
 	public String[] input = null;
 	public Varslist[] vars = null;
-	public int variancer = 5;
-	public int varianceg = 5;
-	public int varianceb = 5;
+	public int rvariance = 5;
+	public int gvariance = 5;
+	public int bvariance = 5;
 	public int quitafter = -1;
 	public int endingcall = -1;
 	public VarsInt jumpback = null;
@@ -577,9 +577,12 @@ public class run {
 				case CSETARGTO:
 				case CIF:
 				case CEND:
-				case COPTIONON:
 				case CCREATE:
 					col = 1;
+					break;
+				case COPTIONON:
+					if (!putter.val[row][0].equals("endingcall"))
+						col = 1;
 					break;
 			}
 			if (col != -1) {
@@ -849,8 +852,8 @@ public class run {
 			else if (val[spot].equals("scan"))
 				op = 21;
 			else
-				op = 0;
-			if (op != 0) {
+				op = -1;
+			if (op != -1) {
 				ival[spot] = op;
 				val[spot] = " " + val[spot];
 			} else if (val[spot].equals("true"))
@@ -1094,12 +1097,23 @@ System.out.println();
 					else if (args[0].equals("endingcall"))
 						endingcall = cptrs[1];
 					else if (args[0].equals("variance")) {
-						variancer = vars[cptrs[1]].ival();
-						varianceg = vars[cptrs[2]].ival();
-						varianceb = vars[cptrs[3]].ival();
+						if (cptrs.length < 4) {
+							rvariance = vars[cptrs[1]].ival();
+							gvariance = vars[cptrs[1]].ival();
+							bvariance = vars[cptrs[1]].ival();
+						} else {
+							rvariance = vars[cptrs[1]].ival();
+							gvariance = vars[cptrs[2]].ival();
+							bvariance = vars[cptrs[3]].ival();
+						}
 					} else if (args[0].equals("mousetolerance")) {
-						mousetolx = vars[cptrs[1]].ival();
-						mousetoly = vars[cptrs[2]].ival();
+						if (cptrs.length < 3) {
+							mousetolx = vars[cptrs[1]].ival();
+							mousetoly = vars[cptrs[1]].ival();
+						} else {
+							mousetolx = vars[cptrs[1]].ival();
+							mousetoly = vars[cptrs[2]].ival();
+						}
 					} else if (args[0].equals("scanorder")) {
 						if (args[1].equals("left")) {
 							scanorder[0] = 1;
@@ -1138,9 +1152,9 @@ System.out.println();
 					else if (args[0].equals("endingcall"))
 						endingcall = -1;
 					else if (args[0].equals("variance")) {
-						variancer = 0;
-						varianceg = 0;
-						varianceb = 0;
+						rvariance = 0;
+						gvariance = 0;
+						bvariance = 0;
 					} else if (args[0].equals("mousetolerance")) {
 						mousetolx = 0;
 						mousetoly = 0;
@@ -1358,7 +1372,7 @@ System.out.println();
 								r = (pixel >> 16) & 255;
 								g = (pixel >> 8) & 255;
 								b = pixel & 255;
-								if (r <= ir + variancer && r >= ir - variancer && g <= ig + varianceg && g >= ig - varianceg && b <= ib + varianceb && b >= ib - varianceb) {
+								if (r <= ir + rvariance && r >= ir - rvariance && g <= ig + gvariance && g >= ig - gvariance && b <= ib + bvariance && b >= ib - bvariance) {
 									scanx = ints[oldstack] + coords[getx];
 									scany = ints[oldstack + 1] + coords[gety];
 									ints[stack] = 1;
@@ -1388,7 +1402,7 @@ System.out.println();
 		long now = System.currentTimeMillis();
 		while (System.currentTimeMillis() - now < time) {
 			if (!mousewithin(xx, yy)) {
-				end("You moved the mouse at a pause on line " + rows[pos] + " from script \"" + mainscript.name + "\"");
+				end("You moved the mouse at a pause on line " + rows[pos] + " in script \"" + mainscript.name + "\"");
 				return;
 			}
 		}
@@ -1404,11 +1418,11 @@ System.out.println();
 		long now = System.currentTimeMillis();
 		while (!colorat(x, y, r, g, b) && (waittime < 0 || System.currentTimeMillis() - now < waittime)) {
 			if (!mousewithin(xx, yy)) {
-				end("You moved the mouse at a pause on line " + rows[pos] + " from script \"" + mainscript.name + "\"");
+				end("You moved the mouse at a pause on line " + rows[pos] + " in script \"" + mainscript.name + "\"");
 				return;
 			}
 			if (quitafter >= 0 && System.currentTimeMillis() - now >= quitafter) {
-				end("Quitting a pause from script \"" + mainscript.name + "\" at line " + rows[pos] + ".");
+				end("Quitting a pause from script \"" + mainscript.name + "\" at line " + rows[pos]);
 				return;
 			}
 		}
@@ -1419,18 +1433,18 @@ System.out.println();
 		long now = System.currentTimeMillis();
 		while (colorat(x, y, r, g, b) && (waittime < 0 || System.currentTimeMillis() - now < waittime)) {
 			if (!mousewithin(xx, yy)) {
-				end("You moved the mouse at a pausenot on line " + rows[pos] + " from script \"" + mainscript.name + "\"");
+				end("You moved the mouse at a pausenot on line " + rows[pos] + " in script \"" + mainscript.name + "\"");
 				return;
 			}
 			if (quitafter >= 0 && System.currentTimeMillis() - now >= quitafter) {
-				end("Quitting a pausenot from script \"" + mainscript.name + "\" at line " + rows[pos] + ".");
+				end("Quitting a pausenot from script \"" + mainscript.name + "\" at line " + rows[pos]);
 				return;
 			}
 		}
 	}
 	public boolean colorat(int x, int y, int r, int g, int b) {
 		int[] cs = auto.colorsat(x, y);
-		return cs[0] <= r + variancer && cs[0] >= r - variancer && cs[1] <= g + varianceg && cs[1] >= g - varianceg && cs[2] <= b + varianceb && cs[2] >= b - varianceb;
+		return cs[0] <= r + rvariance && cs[0] >= r - rvariance && cs[1] <= g + gvariance && cs[1] >= g - gvariance && cs[2] <= b + bvariance && cs[2] >= b - bvariance;
 	}
 	public void end(String s) {
 		if (endmessages)
