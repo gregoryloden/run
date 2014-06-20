@@ -789,6 +789,8 @@ public class run {
 						if (actions[pos] == 21)
 							layer = layer - 1;
 					}
+					if (vars != null)
+						vars = (VarsInt)(vars.next);
 				//return
 				} else if (action == 23)
 					return;

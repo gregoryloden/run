@@ -73,3 +73,5 @@ v5.2	Fixed a bug that prevented if brackets and for/ends being used at the end o
 	Fixed endingcall misinterpreting commands
 	Removed the ability to destroy created variables
 	Updated README with removal of destroy command
+
+v5.3	Fixed a bug where breaks wouldn't remove the for loop's variable
