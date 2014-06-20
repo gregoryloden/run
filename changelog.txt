@@ -42,3 +42,24 @@ v4	Made numbers.readint function run quicker
 	Updated README with expanded pauses, small bit about ifs and comments, option command usage for
 		quitafter & timestamps & variance & mousequit, printval timestamps, change in booleans, scanning,
 		call and jumpback
+
+v5	Added option for scanorder
+	Made timestamps show 00 instead of 0
+	Fixed jumps looking at nulls when label searching
+	Fixed quitting giving the wrong line number
+	Fixed run.commasplit function that caused setargto not to read arguments properly
+	Changed verify to display all syntax errors it can find
+	Allowed println to print strings just as print does, in addition to its current function
+	Made jumps run quicker
+	Made for loops to run quicker
+	Allowed jumps within for loops to use labels outside of the loop
+	Added bracket syntax for ifs
+	Breaks no longer exit scripts
+	Allowed printval to print all system variables
+	Added !=, or, & and to the if clauses
+	Added arithmetic, though change commands still remain
+	Added more exclamation points!
+	Updated README with option command usage for scanorder, println, if bracket syntax, break update,
+		endingcall, printval abilities, if clause expansion, arithmetic expansion
+	Backwards compatibility issue: breaks no longer exit scripts
+	Backwards compatibility issue: optionon endingtimestamp is replaced by optionon endingcall [label]
