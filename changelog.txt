@@ -67,3 +67,9 @@ v5	Added option for scanorder
 v5.1	Added the ability to destroy created variables
 	Fixed a bug that was causing boolean clauses to erase themselves
 	Updated README with destroy command
+
+v5.2	Fixed a bug that prevented if brackets and for/ends being used at the end of a script
+	Fixed setargto allowing variables to be set to the wrong values
+	Fixed endingcall misinterpreting commands
+	Removed the ability to destroy created variables
+	Updated README with removal of destroy command

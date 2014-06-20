@@ -2,8 +2,9 @@
 
  This wonderful piece of software allows you to write your own mouse-controlling programs using text
 files and a simple syntax, allowing for easy and quick program creation.
- To start off, create a folder named "scripts" in the same directory as the run.class file. This is
-where all autoclick scripts will live. To be recognized, all scripts should end with .txt.
+ To start off, there is a folder named "scripts" in the same directory as the run.class file. This
+is where all autoclick scripts will live. To be recognized, all scripts should end with .txt. A
+sample script has been provided.
 
 
 
@@ -189,9 +190,9 @@ have spaces in the name.
 SECTION 2- Programming Language Features- Variables
 ================================================================
 
- Yes, you heard me. Programming language. In addition to being an autoclicker, run serves as a fully
-functional programming language! Nothing super-fancy, but perfect for autoclicking applications. So
-back to the question: what programming language would be complete without variables?
+ Yeah, you heard me! In addition to being an autoclicker, run serves as a fully functional
+programming language! Nothing super-fancy, but perfect for autoclicking applications. So back to the
+question: what programming language would be complete without variables?
 
  Not this one! You can define variables with this command:
 
@@ -250,15 +251,7 @@ will quit out after a second.
  Creating multiple variables with names that are used elsewhere will not cause an error, but may
 cause problems when running the script. Be careful when naming variables!
 
- If you ever create a variable and later decide you want to get rid of it, then the destroy command
-is for you! Destroy works like this:
-
-	destroy	[name]
-
- Pretty simple, destroy will search the name of the variable called [name] and remove it from the
-variable list, so that it can no longer be used.
-
- In addition to creating and destroying variables, variables can be set to new values like this:
+ In addition to creating variables, variables already created can be set to new values like this:
 
 	set	[name]	[value...]
 
@@ -274,15 +267,12 @@ the most recent entry first, but this is generally not recommended.
 
 	left	x	y
 
-would left click at x-200, y-100. If a variable has not been created when set is called, or it has
-been destroyed, set will not make a new variable. This means that
+would left click at x-200, y-100. If a variable has not been created when set is called, set will
+not make a new variable. This means that
 
-	create	w	0
 	set	z	100
-	destroy	w
-	set	w	100
 
-would do nothing to any variables, since z has not been created and w was destroyed.
+would do nothing to any variables, since z has not been created.
  There is also a special set command for using arguments to the script:
 
 	setargto	[prefix]	[name]
