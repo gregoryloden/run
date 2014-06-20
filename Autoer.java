@@ -77,6 +77,10 @@ public class Autoer {
 	public int blueat(int x, int y) {
 		return auto.getPixelColor(x, y).getBlue();
 	}
+	public int[] colorsat(int x, int y) {
+		Color c = auto.getPixelColor(x, y);
+		return new int[] {c.getRed(), c.getGreen(), c.getBlue()};
+	}
 	public void scroll(String direction) {
 		if (direction.equalsIgnoreCase("up"))
 			auto.mouseWheel(-1);
