@@ -1,4 +1,4 @@
-Congratulations! You are now the proud owner of a Gregory Loden Run-class autoclicker!
+ Congratulations! You are now the proud owner of a Gregory Loden Run-class autoclicker!
 
  This wonderful piece of software allows you to write your own mouse-controlling programs using text
 files and a simple syntax, allowing for easy and quick program creation.
@@ -35,10 +35,10 @@ pausing.
 	left	[x]	[y]
 
  When the autoclicker's line pointer reaches a line, the command on that line is executed.
- In this case, a left click. The name goes at the beginning, followed by the variables. Anything
-within [] brackets stands for something that would get replaced by actual values written by the
-scriptmaker. In the left click, the mouse gets moved to the x-[x] and y-[y] coordinates provided,
-and left clicks that spot. For example:
+ In this case, a left click. The name goes at the beginning, followed by the variables. In this
+README file, anything, within [] brackets stands for something that would get replaced by actual
+values written by the scriptmaker. In the left click, the mouse gets moved to the x-[x] and y-[y]
+coordinates provided, and left clicks that spot. For example:
 
 	left	100	200
 
@@ -52,9 +52,9 @@ will left-click at x-100, y-200.
 
 	move	[x]	[y]
 
- Right will move and perform a right click, and move will move the mouse without clicking.
-Miscellaneous tabs and spaces can be added between arguments and commands, and the interpreter will
-pass right over them. That means that
+ Right will move and perform a right click, and move will move the mouse without clicking. Any
+number of tabs and spaces can be added between arguments and commands, and the interpreter will pass
+right over them. That means that
 
 	move	[x]	[y]
 
@@ -86,7 +86,7 @@ and
 
  These pause until something happens to the color of the pixel at x-[x] and y-[y]. Pause will pause
 until the red-green-blue color at x-[x], y-[y] is red-[r], green-[g], and blue-[b]. Pausenot does
-the opposite- it will pause WHILE the pixel is that color.
+the opposite- it will pause WHILE the pixel is that color. The command
 
 	pause	123	456	128	255	32
 
@@ -103,23 +103,23 @@ will move the line pointer to a label in the format
 
  For example:
 
-	:endless
-	jump	endless
+	:Endless
+	jump	Endless
 
 is an infinite loop. Here's a cumulative example:
 
 	:main
-	right	100	200
-	pause	110	210	255	255	255
-	left	110	210
+	right		100	200
+	pause		110	210	255	255	255
+	left		110	210
 	pausenot	110	210	255	255	255
-	move	90	190
-	pause	500
-	jump	main
+	move		90	190
+	pause		500
+	jump		main
 
  This will right click at x-100, y-200, wait until the pixel at x-110, y-210 is white (r-255, g-255,
-b-255), left click that pixel, wait for it to stop being white, move the mouse to x-90, y-190, wait
-half a second, and repeat.
+b-255), left click  at x-110, y-210, wait for it to stop being white, move the mouse to x-90, y-190,
+wait half a second, and repeat.
  Run will not perform any automatic looping. If the jump were removed, the code would end after the
 last pause.
 
@@ -128,7 +128,7 @@ last pause.
 	run	[script]	...
 
 will run the script [script] as if it was typed on the command line with the arguments ... like a
-regular command-line run execution.
+regular command-line run execution. Scripts cannot have spaces in the name.
 
 
 
@@ -143,73 +143,117 @@ regular command-line run execution.
 
  This will create a variable of type [type] called [name] with starting value [value]. These will
 probably be of type int, used to base clicks on other data, but they can also be booleans and
-strings. All variables are for use only within the active script. Scripts run from within that
-script will not be able to use those variables.
+colors. All variables are for use only within the active script. Scripts run from within that script
+will not be able to use those variables.
  Here are some variable creation examples:
 
 	create	int	x	100
+	create	int	z	random	30
+	create	boolean	Good?	true
+	create	color	white	255	255	255
+	create	color	brown	at	123	456
 	create	int	y	x
-	create	boolean	good?	true
+	create	boolean	Good?2	Good?
+	create	color	brown2	brown
 
- In the second example, a variable was used as the value to store another variable. The y variable
-would have a value of 100. This value checking happens in other commands too, so
+ Let's go over these examples.
+
+ In the first example, the variable x was created as an integer. To create an integer, the only
+argument supplied is the value to store to it.
+ In the second example, w was created with a random value. Using the word "random" as the first
+argument will assign the variable to a number ranging from 0 to the second argument - 1. In this
+case, z would be assigned a number from 0 to 29 inclusive.
+ In the third example, Good? is created as a boolean. Just like integers, the only argument is the
+value stored to it, and you can put other variables in place of the argument.
+ In the fourth example, white was created as a color, which is used for a special command. This is
+one of three ways to make a color, both of which take three arguments. The first way, used to create
+white, is to give the red, green, and blue values of a color, in that order.
+ In the fifth example, brown demonstrates the second way to create a color: the arguments are the
+word "at", followed by two more arguments- the x and y coordinates of a pixel location. The value
+stored to the variable is the color at that pixel.
+ In the sixth, seventh, and eigth examples, variables were created using other variables as a single
+argument. This will create a variable with the value of the argument variable. In addition to
+copying variables, they can also be used as regular arguments. This command,
+
+	create	color	brown	x	y	z
+
+would create a color with a red value of 100, green value of 100, and blue value between 0 and 29.
+ So now that we have variables, we can use them in other commands. Using the above variable
+assignments, the command
 
 	left	x	y
 
 would left click at x-100, y-100.
- Creating variables has 2 main perks, listed at the end of this readme file.
+
+ Creating multiple variables with names that are used elsewhere will not cause an error, but may
+cause problems when running the script. Be careful when naming variables.
+
  In addition to creating variables, variables already created can be set to new values like this:
 
-	set	[name]	[value]
+	set	[name]	[value...]
 
- This changes the variable of name [name] to have a value of [value]. Variables can also be changed
-with create, as the interpreter hits the most recent entry first and returns that value. This
-will take up more memory ane make getting other values slower, so set is not recommended for
-changing variables.
+ Setting variables works just like creating variables, for all types of variables, except you don't
+need a variable type. Set changes the variable of name [name] to the value that the arguments
+[value...] produce. Variables can also technically be changed with create, as the interpreter hit
+the most recent entry first, but this is generally not recommended.
  Here is an example of set:
 
-	set	y	200
+	set	x	200
 
- After creating y, this would change y's value to be 200. So now,
+ Assuming the same variable assignments, this would change x's value to be 200. So now,
 
 	left	x	y
 
-would left click at x-100, y-200. If a variable has not been created when set is called, set will
+would left click at x-200, y-100. If a variable has not been created when set is called, set will
 not make a new variable. This means that
 
 	set	z	100
 
-would do nothing to any variables.
- There is also a special set command for using arguments to the script, as mentioned earlier.
+would do nothing to any variables, since z has not been created.
+ There is also a special set command for using arguments to the script:
 
-	setargto	[prefix]	[type]	[name]
+	setargto	[prefix]	[name]
 
  This works almost as if you called
 
-	create	[type]	[name]	[prefix]
+	set	[name]	[value]
 
-except for 2 points:
-- The [prefix] value is a string that is the first argument to start with [prefix]
-- The value stored to the variable is the same as the argument, but with the [prefix] omitted.
- As an example, say you typed this on the command line:
+assuming that [prefix][value] is one argument, and is a single string of characters without spaces
+or tabs.
+ As an example, say you had a script called "test" and you typed this on the command line:
 
-	java run abc123
+	java run test abc123
 
- If you called
+ If you had
 
-	setargto	abc	int	doremi
+	create	int	doremi	0
+	setargto	abc	doremi
 
-it would end up creating a variable as if you called
+within that script, it would end up changing doremi as if you called
 
-	create	int	doremi	123
+	set	doremi	123
 
-which sets the variable doremi to 123, omitting the abc in the argument.
+which sets the variable to 123, omitting the abc in the argument.
+ Now, since some of the variable creations take in multiple arguments, but input arguments cannot
+include tabs or spaces, you will have to type commas between them when typing them on the command
+line. This means that arguments should be typed like "alphaat,123,456", "beta255,255,255", and
+"gammarandom,30" for the following commands:
+
+	create	color	test1	0	0	0
+	create	color	test2	0	0	0
+	create	int	test3	0
+	setargto	alpha	test1
+	setargto	beta	test2
+	setargto	gamma	test3
+
+ If you call setargto and there was no argument that started with [prefix], nothing will happen.
 
 
 	Now what good is a variable you can't change?
 
 
- Run couldn't tell you, because you CAN change variables! There are 4 change commands in run:
+ Run couldn't tell you, because you CAN change variables, integers at least! There are 4 change
+commands in run:
 
 	+=	[name]	[value]
 	-=	[name]	[value]
@@ -236,11 +280,20 @@ integer rounded down, overflows will make the number go crazy.
 
 represent the mouse's current x- and y-coordinates. So for example,
 
-	create	clickx	.mousex
-	create	clicky	.mousey
+	create	int	clickx	.mousex
+	create	int	clicky	.mousey
 
 would create two variables, each with a mouse coordinate. If the mouse was at x-145, y-234, clickx
 would have a value of 145 and clicky would have a value of 234.
+ There is also a timer variable,
+
+	.timer
+
+that tracks how many milliseconds have passed since the start of the program, or since the timer was
+last reset. You can reset it to 0 with the command
+
+	treset
+
  Variables created by the user cannot have a . at the beginning of the name. The autoclicker will
 not run if you try to do this.
 
@@ -281,17 +334,18 @@ with different comparisons. Here is one form:
 
 	if	input	[arg]
 
- This evaluates to true if [arg] was given as an argument to the program. For instance,
+ This evaluates to true if [arg] was given as an argument to the program. For instance, calling
 
-	java	run	thisisascript	hello
+	java run thisisascript hello
 
-and then
+would make "hello" be an argument. These ifs,
 
 	if	input	goodbye
 	if	input	hello
 	if	input	he
+	if	input	helloo
 
-would evaluate to false, true, and false respectively.
+would evaluate to false, true, false, and false respectively.
  There are three integer evaluation clauses:
 
 	if	==	[value1]	[value2]
@@ -300,12 +354,29 @@ would evaluate to false, true, and false respectively.
 
  These are pretty straightforward, they  evaluate to true if [value1] is equal to, greater-than-
 or-equal-to, or greater than [value2] respectively.
+ You can also have a not clause:
+
+	if	not	[clause]
+
+ This will skip the line if [clause] IS true. For example,
+
+	create	boolean	beta	false
+	if	not	beta
+		set	beta	true
+
+will end up setting the value of beta to true, since beta is NOT true.
+ You can nest nots, so two nots in a row will be treated like no nots, 3 nots is like 1, and so on,
+but only nots at the beginning of the clause will be considered.
  The last form,
 
 	if	colorat	[x]	[y]	[r]	[g]	[b]
 
-evaluates to true if the pixel at x-[x], y-[y] is r-[r], g-[g], b-[b].
- Of course, you can give ifs standard true or false and it will recognize it.
+evaluates to true if the pixel at x-[x], y-[y] is r-[r], g-[g], b-[b]. There is also
+
+	if	colorat	[x]	[y]	[color]
+
+which uses the color variables mentioned earlier.
+ Of course, you can give ifs a standard true or false and it will get recognized.
 
  Now on to for loops. A for loop has this form:
 
@@ -327,43 +398,76 @@ loop, they take on the following properties:
     available.
 - Nested for loops have access to all variables from the previous for loops.
 - Variables created with create commands are global, and will not disappear.
+ In addition, the jump command cannot jump to labels outside of the for loop.
 
- You may have noticed that there was no mention of a way to exit the for loop early. This is
-countered with 3 breaking commands of varying power:
+ Paired with for loops is the ability to exit them early. This is done with 3 breaking commands of
+varying power:
 
 	break
 	return
 	quit
 
- Break will exit out of the current loop, or exit out of the current script if not within a loop.
-Return will exit out of the current script but keep running another script if it called it. Quit
-will stop all autoclicking and end the program.
+ Break will exit out of the current loop, or exit out of the current script if it was not within a
+loop. Return will exit out of the current script but the program will keep running if another script
+called it. Quit will stop all autoclicking and end the program.
 
- One last feature, you can print lines almost just like you can in java.
+ In addition to clicking, run also allows you to type. There are three commands for key presses:
 
-	println
+	type	[text]
+	press	[button]
+	release	[button]
 
-will print an empty line,
+ Type will type all remaining characters on the line, tabs spaces and all, uppercase and lowercase
+letters. Press will press down one of the following buttons when substituting [button]:
 
-	println	[text]
+	enter
+	backspace
+	delete
+	control
+	up
+	down
+	left
+	right
+	shift
+	alt
+	capslock
+	escape
 
-will print everything after the println, tabs, spaces and all and then a new line, and
+ Release will release the key.
+
+ One last feature, you can print lines almost just like you can in java. The command
 
 	print	[text]
 
-will print out everything after the print, without a new line.
+will print everything after the print- tabs, spaces and all;
+
+	printval	[name]
+
+will print out the value of the variable named [name], and
+
+	println
+
+will print an empty line. Here's an example:
+
+	create	int	test	123
+	print	The value of "test" is 
+	printval	test
+	print	 , and here's a tab:	.
+	println
+
+ This would print out this line:
+
+The value of "test" is 123 , and here's a tab:	.
+
+ Notice the spaces at the end of the first print line, and at the beginning of the second one. Tabs
+and spaces get treated like regular characters until the end of the line.
 
 
 
  And that's that! You now know how to create autoclicker scripts! You can also leave comments by
 starting a line with //, or pretty much anything except one of the commands. The autoclicker will
-also automatically check the syntax of all scripts to be run.
+also automatically check the syntax of all scripts to be run. Any script can be stopped at any time
+by moving the mouse.
 
  Run is a growing program, there are always plenty of things that can be added or changed. Feel free
-to send an e-mail with suggestions, misspellings, or confusions to help improve this autoclicker and
-readme file.
-
-So now for the perks mentioned earlier:
-- You can actually give a variable any type you want, but this will likely cause them not to
-be usable. Types are only stored as strings, so anything can be put there.
-- Static values can be redefined. Calling "create int 1 2" will put 2 in any place where a 1 was.
+to send an e-mail with suggestions, misspellings, confusions, or bug reports.

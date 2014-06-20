@@ -6,17 +6,17 @@ import java.net.URI;
 public class Filer {
 	public class Stringlink {
 		String line = "";
-		Stringlink next;
-		Stringlink last;
+		Stringlink next = null;
+		Stringlink last = null;
 	}
-	private Stringlink thefile = null;
+	private Stringlink thefile = new Stringlink();
 	private File file = new File("null");
-	private Stringlink currentlink = thefile;
+	private Stringlink rowlink = thefile;
 	private File[] filelist = null;
-	private int currentline = 1;
-	public Filer() {
-		file = file.getAbsoluteFile();
-	}
+	private int row = 1;
+	private int lines = 1;
+	private int column = 0;
+	public Filer() {}
 	public Filer(String name) {
 		setfile(name);
 	}
@@ -31,19 +31,11 @@ public class Filer {
 		file = newfile;
 		file = file.getAbsoluteFile();
 	}
-	public boolean delete() {
+	public boolean deletefile() {
 		return file.delete();
 	}
 //file information stuff
 	public int lines() {
-		if (thefile == null)
-			return 0;
-		int lines = 1;
-		Stringlink templink = thefile;
-		while (templink.next != null) {
-			lines = lines + 1;
-			templink = templink.next;
-		}
 		return lines;
 	}
 	public int files() {
@@ -56,6 +48,10 @@ public class Filer {
 		return file;
 	}
 //folder changing stuff
+//contains:
+//	goup
+//	goupfull
+//	godown
 	public void goup() {
 		if (file.getParentFile() != null)
 			setfile(file.getParentFile());
@@ -68,15 +64,23 @@ public class Filer {
 		setfile(new File(file, folder));
 	}
 //reader stuff
+//contains:
+//	fileisthere
+//	readfile
+//	getline
+//	getlines
+//	row
 	public boolean fileisthere() {
 		return file.exists();
 	}
 	public void readfile() {
 		int next;
 		thefile = new Stringlink();
-		currentlink = thefile;
-		currentline = 1;
+		rowlink = thefile;
 		Stringlink templink = thefile;
+		row = 1;
+		lines = 1;
+		column = 0;
 		try {
 			FileInputStream input = new FileInputStream(file);
 			next = input.read();
@@ -87,6 +91,7 @@ public class Filer {
 					templink.next = new Stringlink();
 					templink.next.last = templink;
 					templink = templink.next;
+					lines = lines + 1;
 				}
 				next = input.read();
 			}
@@ -95,178 +100,181 @@ public class Filer {
 			System.out.println("Sorry, an error occured:\n" + e + "\nYour file could not be read.");
 		}
 	}
+	public String getline() {
+		return rowlink.line;
+	}
 	public String getline(int line) {
-		if (thefile != null && line != 0) {
-			while (line > currentline) {
-				if (currentlink.next != null)
-					currentlink = currentlink.next;
-				else
-					return null;
-				currentline = currentline + 1;
-			}
-			while (line < currentline) {
-				currentlink = currentlink.last;
-				currentline = currentline - 1;
-			}
-			return currentlink.line;
-		} else
-			return null;
+		moveto(line, 0);
+		return getline();
 	}
 	public String[] getlines() {
-		String[] thelines = new String[lines()];
-		for (int pos = 1; pos <= thelines.length; pos += 1) {
-			thelines[pos - 1] = getline(pos);
+		Stringlink templink = thefile;
+		String[] thelines = new String[lines];
+		for (int pos = 1; pos < thelines.length; pos += 1) {
+			thelines[pos - 1] = templink.line;
+			templink = templink.next;
 		}
+		thelines[thelines.length - 1] = templink.line;
 		return thelines;
 	}
+	public int row() {
+		return row;
+	}
+	public int column() {
+		return column;
+	}
 //writer stuff
-	public void write(String text, int line) {
-		setline(line);
-		currentlink.line = currentlink.line + text;
+//contains:
+//	write
+//	writeline
+//	move
+//	moveto
+//	delete
+//	savefile
+//	replace
+	public void write(String text) {
+		rowlink.line = rowlink.line.substring(0, column) + text + rowlink.line.substring(column, rowlink.line.length());
+		column = column + text.length();
 	}
-	public void writeover(String text, int line) {
-		setline(line);
-		currentlink.line = text;
+	public void writeline(String text) {
+		Stringlink templink = new Stringlink();
+		templink.line = rowlink.line.substring(column, rowlink.line.length());
+		templink.next = rowlink.next;
+		if (templink.next != null)
+			templink.next.last = templink;
+		templink.last = rowlink;
+		rowlink.next = templink;
+		rowlink.line = rowlink.line.substring(0, column) + text;
+		rowlink = templink;
+		column = 0;
+		row = row + 1;
 	}
-	public void writeline(String text, int line) {
-		write(text, line);
-		setline(line + 1);
-	}
-	public void setline(int line) {
-		if (line <= 0)
+	public void move(String direction, int amount) {
+		if (amount <= 0)
 			return;
-		if (thefile == null) {
-			thefile = new Stringlink();
-			currentlink = thefile;
-			currentline = 1;
-		}
-		while (line > currentline) {
-			if (currentlink.next == null) {
-				currentlink.next = new Stringlink();
-				currentlink.next.last = currentlink;
-			}
-			currentlink = currentlink.next;
-			currentline = currentline + 1;
-		}
-		while (line < currentline) {
-			currentlink = currentlink.last;
-			currentline = currentline - 1;
-		}
-	}
-	public void addline(String text) {
-		if (thefile == null) {
-			thefile = new Stringlink();
-			currentlink = thefile;
-			currentline = 1;
-		}
-		while (currentlink.next != null) {
-			currentlink = currentlink.next;
-			currentline = currentline + 1;
-		}
-		currentlink.next = new Stringlink();
-		currentlink.next.last = currentlink;
-		currentlink = currentlink.next;
-		currentline = currentline + 1;
-		currentlink.line = text;
-	}
-	public void removeline(int line) {
-		if (line <= 0)
-			return;
-		if (thefile == null)
-			return;
-		while (line > currentline) {
-			if (currentlink.next == null)
-				return;
-			currentlink = currentlink.next;
-			currentline = currentline + 1;
-		}
-		while (line < currentline) {
-			currentlink = currentlink.last;
-			currentline = currentline - 1;
-		}
-		if (currentlink.next != null && currentlink.last != null) {
-			currentlink.next.last = currentlink.last;
-			currentlink.last.next = currentlink.next;
-			currentlink = currentlink.next;
-		} else if (currentlink.last != null) {
-			currentlink = currentlink.last;
-			currentlink.next = null;
-			currentline = currentline - 1;
-		} else if (currentlink.next != null) {
-			currentlink = currentlink.next;
-			thefile = thefile.next;
-			currentlink.next.last = null;
-		} else
-			thefile = null;
-		return;
-	}
-	public void insertline(String text, int line) {
-		insertline(line);
-		currentlink.line = text;
-	}
-	public void insertline(int line) {
-		if (line <= 0)
-			return;
-		if (thefile == null) {
-			thefile = new Stringlink();
-			currentlink = thefile;
-			currentline = 1;
-		}
-		while (line > currentline) {
-			if (currentlink.next == null) {
-				currentlink.next = new Stringlink();
-				currentlink.next.last = currentlink;
-				currentlink = currentlink.next;
-				currentline = currentline + 1;
-				if (currentline == line)
+		if (direction.equals("up")) {
+			while (amount > 0) {
+				if (rowlink.last == null) {
+					column = 0;
 					return;
-			} else {
-				currentlink = currentlink.next;
-				currentline = currentline + 1;
+				}
+				rowlink = rowlink.last;
+				row = row - 1;
+				amount = amount - 1;
 			}
+			column = Math.min(column, rowlink.line.length());
+		} else if (direction.equals("down")) {
+			while (amount > 0) {
+				if (rowlink.next == null) {
+					column = rowlink.line.length();
+					return;
+				}
+				rowlink = rowlink.next;
+				row = row + 1;
+				amount = amount - 1;
+			}
+			column = Math.min(column, rowlink.line.length());
+		} else if (direction.equals("left")) {
+			while (column - amount < 0) {
+				if (rowlink.last == null) {
+					column = 0;
+					return;
+				}
+				amount = amount - column - 1;
+				rowlink = rowlink.last;
+				row = row - 1;
+				column = rowlink.line.length();
+			}
+			column = column - amount;
+		} else if (direction.equals("right")) {
+			while (amount + column > rowlink.line.length()) {
+				if (rowlink.next == null) {
+					column = rowlink.line.length();
+					return;
+				}
+				amount = amount - rowlink.line.length() + column - 1;
+				rowlink = rowlink.next;
+				row = row + 1;
+				column = 0;
+			}
+			column = column + amount;
 		}
-		while (line < currentline) {
-			currentlink = currentlink.last;
-			currentline = currentline - 1;
+	}
+	public void moveto(int r, int c) {
+		if (r < 1 || r > lines)
+			throw new NullPointerException("Row " + r + " is not between 1 and " + lines + ".");
+		while (row < r) {
+			rowlink = rowlink.next;
+			row = row + 1;
 		}
-		if (currentlink.last == null) {
-			currentlink.last = new Stringlink();
-			currentlink.last.next = currentlink;
-			currentlink = currentlink.last;
-			thefile = currentlink;
-		} else {
-			Stringlink templink = new Stringlink();
-			currentlink.last.next = templink;
-			templink.last = currentlink.last;
-			templink.next = currentlink;
-			currentlink.last = templink;
-			currentlink = templink;
+		while (row > r) {
+			rowlink = rowlink.last;
+			row = row - 1;
 		}
+		if (c < 0 || c > rowlink.line.length())
+			throw new NullPointerException("Column " + c + " is not between 0 and " + rowlink.line.length() + ".");
+		column = c;
+	}
+	public void delete(int amount) {
+		if (amount <= 0)
+			return;
+		if (amount <= column) {
+			rowlink.line = rowlink.line.substring(0, column - amount) + rowlink.line.substring(column, rowlink.line.length());
+			return;
+		}
+		rowlink.line = rowlink.line.substring(column, rowlink.line.length());
+		amount = amount - column;
+		column = 0;
+		if (rowlink.last == null)
+			return;
+		Stringlink eraseto = rowlink.last;
+		int length = eraseto.line.length() + 1;
+		while (amount >= length) {
+			if (eraseto.last == null) {
+				rowlink.last = null;
+				thefile = rowlink;
+				return;
+			}
+			amount = amount - length;
+			eraseto = eraseto.last;
+			length = eraseto.line.length() + 1;
+		}
+		if (amount == 0) {
+			eraseto.next = rowlink;
+			rowlink.last = eraseto;
+			return;
+		}
+		eraseto.line = eraseto.line.substring(0, length - amount) + rowlink.line;
+		eraseto.next = rowlink.next;
+		if (rowlink.next != null)
+			rowlink.next.last = eraseto;
+		rowlink = eraseto;
 	}
 	public boolean savefile() {
-		if (thefile == null) {
-			thefile = new Stringlink();
-			currentlink = thefile;
-			currentline = 1;
-		}
 		try {
 			FileWriter writer = new FileWriter(file);
-			currentlink = thefile;
-			if (thefile != null) {
-				while (currentlink.next != null) {
-					writer.write(currentlink.line + "\r\n");
-					currentlink = currentlink.next;
-				}
-					writer.write(currentlink.line);
+			rowlink = thefile;
+			while (rowlink.next != null) {
+				writer.write(rowlink.line + "\r\n");
+				rowlink = rowlink.next;
 			}
+			writer.write(rowlink.line);
 			writer.close();
-			currentlink = thefile;
-			currentline = 1;
+			rowlink = thefile;
+			row = 1;
+			column = 0;
 		} catch(Exception e) {
 			System.out.println("Sorry, an error occured:\n" + e + "\nYour file could not be written.");
 			return false;
 		}
 		return true;
+	}
+	public void replace(String[] newlines) {
+		thefile = new Stringlink();
+		for (int pos = 0; pos < newlines.length - 1; pos += 1) {
+			writeline(newlines[pos]);
+		}
+		write(newlines[newlines.length - 1]);
 	}
 //file stuff
 	public void storefilelist() {

@@ -17,49 +17,49 @@ public class Autoer {
 	};
 	public void left(int x, int y) {
 		auto.mouseMove(x, y);
-		left(3);
+		left(2);
 	}
 	public void right(int x, int y) {
 		auto.mouseMove(x, y);
-		right(3);
+		right(2);
 	}
 	public void left(int type) {
-		if (type == 1 || type == 3)
+		if (type < 3)
 			auto.mousePress(InputEvent.BUTTON1_MASK);
-		if (type == 2 || type == 3)
+		if (type > 1)
 			auto.mouseRelease(InputEvent.BUTTON1_MASK);
 	}
 	public void right(int type) {
-		if (type == 1 || type == 3)
+		if (type < 3)
 			auto.mousePress(InputEvent.BUTTON3_MASK);
-		if (type == 2 || type == 3)
+		if (type > 1)
 			auto.mouseRelease(InputEvent.BUTTON3_MASK);
 	}
 	public void move(int x, int y) {
 		auto.mouseMove(x, y);
 	}
 	public void leftarrow(int option) {
-		if (option == 1 || option == 3)
+		if (option < 3)
 			auto.keyPress(KeyEvent.VK_LEFT);
-		if (option == 2 || option == 3)
+		if (option > 1)
 			auto.keyRelease(KeyEvent.VK_LEFT);
 	}
 	public void rightarrow(int option) {
-		if (option == 1 || option == 3)
+		if (option < 3)
 			auto.keyPress(KeyEvent.VK_RIGHT);
-		if (option == 2 || option == 3)
+		if (option > 1)
 			auto.keyRelease(KeyEvent.VK_RIGHT);
  	}
 	public void uparrow(int option) {
-		if (option == 1 || option == 3)
+		if (option < 3)
 			auto.keyPress(KeyEvent.VK_UP);
-		if (option == 2 || option == 3)
+		if (option > 1)
 			auto.keyRelease(KeyEvent.VK_UP);
  	}
 	public void downarrow(int option) {
-		if (option == 1 || option == 3)
+		if (option < 3)
 			auto.keyPress(KeyEvent.VK_DOWN);
-		if (option == 2 || option == 3)
+		if (option > 1)
 			auto.keyRelease(KeyEvent.VK_DOWN);
  	}
 	public void wait(int wait) {
@@ -446,14 +446,60 @@ public class Autoer {
 					auto.keyPress(KeyEvent.VK_QUOTE);
 					auto.keyRelease(KeyEvent.VK_QUOTE);
 					break;
-				case '\b':
-					auto.keyPress(KeyEvent.VK_BACK_SPACE);
-					auto.keyRelease(KeyEvent.VK_BACK_SPACE);
-					break;
 			}
 			if ((int)(letter) >= 65 && (int)(letter) <= 90)
 				auto.keyRelease(KeyEvent.VK_SHIFT);
 		}
+	}
+	public void button(String button, int type) {
+		if (button.equals("enter") && type < 3)
+			auto.keyPress(KeyEvent.VK_ENTER);
+		else if (button.equals("backspace") && type < 3)
+			auto.keyPress(KeyEvent.VK_BACK_SPACE);
+		else if (button.equals("delete") && type < 3)
+			auto.keyPress(KeyEvent.VK_DELETE);
+		else if (button.equals("control") && type < 3)
+			auto.keyPress(KeyEvent.VK_CONTROL);
+		else if (button.equals("up") && type < 3)
+			auto.keyPress(KeyEvent.VK_UP);
+		else if (button.equals("down") && type < 3)
+			auto.keyPress(KeyEvent.VK_DOWN);
+		else if (button.equals("left") && type < 3)
+			auto.keyPress(KeyEvent.VK_LEFT);
+		else if (button.equals("right") && type < 3)
+			auto.keyPress(KeyEvent.VK_RIGHT);
+		else if (button.equals("shift") && type < 3)
+			auto.keyPress(KeyEvent.VK_SHIFT);
+		else if (button.equals("alt") && type < 3)
+			auto.keyPress(KeyEvent.VK_ALT);
+		else if (button.equals("capslock") && type < 3)
+			auto.keyPress(KeyEvent.VK_CAPS_LOCK);
+		else if (button.equals("escape") && type < 3)
+			auto.keyPress(KeyEvent.VK_ESCAPE);
+		if (button.equals("enter") && type > 1)
+			auto.keyRelease(KeyEvent.VK_ENTER);
+		else if (button.equals("backspace") && type > 1)
+			auto.keyRelease(KeyEvent.VK_BACK_SPACE);
+		else if (button.equals("delete") && type > 1)
+			auto.keyRelease(KeyEvent.VK_DELETE);
+		else if (button.equals("control") && type > 1)
+			auto.keyRelease(KeyEvent.VK_CONTROL);
+		else if (button.equals("up") && type > 1)
+			auto.keyRelease(KeyEvent.VK_UP);
+		else if (button.equals("down") && type > 1)
+			auto.keyRelease(KeyEvent.VK_DOWN);
+		else if (button.equals("left") && type > 1)
+			auto.keyRelease(KeyEvent.VK_LEFT);
+		else if (button.equals("right") && type > 1)
+			auto.keyRelease(KeyEvent.VK_RIGHT);
+		else if (button.equals("shift") && type > 1)
+			auto.keyRelease(KeyEvent.VK_SHIFT);
+		else if (button.equals("alt") && type > 1)
+			auto.keyRelease(KeyEvent.VK_ALT);
+		else if (button.equals("capslock") && type > 1)
+			auto.keyRelease(KeyEvent.VK_CAPS_LOCK);
+		else if (button.equals("escape") && type > 1)
+			auto.keyRelease(KeyEvent.VK_ESCAPE);
 	}
 	public BufferedImage screenimage() {
 		return auto.createScreenCapture(new Rectangle(Toolkit.getDefaultToolkit().getScreenSize()));

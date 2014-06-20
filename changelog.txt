@@ -1,0 +1,17 @@
+V1	Initial run, Autoer, Filer, and numbers
+V2	Added colorsat to Autoer
+	Added run.verify function, syntax checking, extended variables, added breaking, more if clauses
+	Created a README file
+v3	Added not clauses
+	Changed the format of printing to print, println, and printvar
+	Fixed run.split function
+	Added random variables
+	Changed Varslist format, removed obsolete run$Varslist functions
+	Changed the behavior of create, can also now hold colors
+	Expanded colorat
+	Changed the behavior and syntax of setargto
+	Changed the behavior of set
+	Added string typing
+	Updated README with new info: lots of variable syntax, random numbers, timer variable, not clauses,
+		colorat usage, printing format, typing, buttons
+	Backwards compatibility issue: setargto commands need to have the type removed
