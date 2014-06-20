@@ -63,419 +63,314 @@ public class Autoer {
 		else if (direction.equalsIgnoreCase("down"))
 			auto.mouseWheel(1);
 	}
+	public void scroll(String direction, int amount) {
+		if (direction.equalsIgnoreCase("up"))
+			auto.mouseWheel(-amount);
+		else if (direction.equalsIgnoreCase("down"))
+			auto.mouseWheel(amount);
+	}
+	public void scroll(int amount) {
+		auto.mouseWheel(amount);
+	}
 	public void type(String message) {
-		char letter = ' ';
-		for (int pos = 0; pos < message.length(); pos += 1) {
-			letter = message.charAt(pos);
-			if ((int)(letter) >= 65 && (int)(letter) <= 90)
-				auto.keyPress(KeyEvent.VK_SHIFT);
-			switch(letter) {
-				case ' ':
-					auto.keyPress(KeyEvent.VK_SPACE);
-					auto.keyRelease(KeyEvent.VK_SPACE);
-					break;
-				case 'A':
-				case 'a':
-					auto.keyPress(KeyEvent.VK_A);
-					auto.keyRelease(KeyEvent.VK_A);
-					break;
-				case 'B':
-				case 'b':
-					auto.keyPress(KeyEvent.VK_B);
-					auto.keyRelease(KeyEvent.VK_B);
-					break;
-				case 'C':
-				case 'c':
-					auto.keyPress(KeyEvent.VK_C);
-					auto.keyRelease(KeyEvent.VK_C);
-					break;
-				case 'D':
-				case 'd':
-					auto.keyPress(KeyEvent.VK_D);
-					auto.keyRelease(KeyEvent.VK_D);
-					break;
-				case 'E':
-				case 'e':
-					auto.keyPress(KeyEvent.VK_E);
-					auto.keyRelease(KeyEvent.VK_E);
-					break;
-				case 'F':
-				case 'f':
-					auto.keyPress(KeyEvent.VK_F);
-					auto.keyRelease(KeyEvent.VK_F);
-					break;
-				case 'G':
-				case 'g':
-					auto.keyPress(KeyEvent.VK_G);
-					auto.keyRelease(KeyEvent.VK_G);
-					break;
-				case 'H':
-				case 'h':
-					auto.keyPress(KeyEvent.VK_H);
-					auto.keyRelease(KeyEvent.VK_H);
-					break;
-				case 'I':
-				case 'i':
-					auto.keyPress(KeyEvent.VK_I);
-					auto.keyRelease(KeyEvent.VK_I);
-					break;
-				case 'J':
-				case 'j':
-					auto.keyPress(KeyEvent.VK_J);
-					auto.keyRelease(KeyEvent.VK_J);
-					break;
-				case 'K':
-				case 'k':
-					auto.keyPress(KeyEvent.VK_K);
-					auto.keyRelease(KeyEvent.VK_K);
-					break;
-				case 'L':
-				case 'l':
-					auto.keyPress(KeyEvent.VK_L);
-					auto.keyRelease(KeyEvent.VK_L);
-					break;
-				case 'M':
-				case 'm':
-					auto.keyPress(KeyEvent.VK_M);
-					auto.keyRelease(KeyEvent.VK_M);
-					break;
-				case 'N':
-				case 'n':
-					auto.keyPress(KeyEvent.VK_N);
-					auto.keyRelease(KeyEvent.VK_N);
-					break;
-				case 'O':
-				case 'o':
-					auto.keyPress(KeyEvent.VK_O);
-					auto.keyRelease(KeyEvent.VK_O);
-					break;
-				case 'P':
-				case 'p':
-					auto.keyPress(KeyEvent.VK_P);
-					auto.keyRelease(KeyEvent.VK_P);
-					break;
-				case 'Q':
-				case 'q':
-					auto.keyPress(KeyEvent.VK_Q);
-					auto.keyRelease(KeyEvent.VK_Q);
-					break;
-				case 'R':
-				case 'r':
-					auto.keyPress(KeyEvent.VK_R);
-					auto.keyRelease(KeyEvent.VK_R);
-					break;
-				case 'S':
-				case 's':
-					auto.keyPress(KeyEvent.VK_S);
-					auto.keyRelease(KeyEvent.VK_S);
-					break;
-				case 'T':
-				case 't':
-					auto.keyPress(KeyEvent.VK_T);
-					auto.keyRelease(KeyEvent.VK_T);
-					break;
-				case 'U':
-				case 'u':
-					auto.keyPress(KeyEvent.VK_U);
-					auto.keyRelease(KeyEvent.VK_U);
-					break;
-				case 'V':
-				case 'v':
-					auto.keyPress(KeyEvent.VK_V);
-					auto.keyRelease(KeyEvent.VK_V);
-					break;
-				case 'W':
-				case 'w':
-					auto.keyPress(KeyEvent.VK_W);
-					auto.keyRelease(KeyEvent.VK_W);
-					break;
-				case 'X':
-				case 'x':
-					auto.keyPress(KeyEvent.VK_X);
-					auto.keyRelease(KeyEvent.VK_X);
-					break;
-				case 'Y':
-				case 'y':
-					auto.keyPress(KeyEvent.VK_Y);
-					auto.keyRelease(KeyEvent.VK_Y);
-					break;
-				case 'Z':
-				case 'z':
-					auto.keyPress(KeyEvent.VK_Z);
-					auto.keyRelease(KeyEvent.VK_Z);
-					break;
-				case '0':
-					auto.keyPress(KeyEvent.VK_0);
-					auto.keyRelease(KeyEvent.VK_0);
-					break;
-				case '1':
-					auto.keyPress(KeyEvent.VK_1);
-					auto.keyRelease(KeyEvent.VK_1);
-					break;
-				case '2':
-					auto.keyPress(KeyEvent.VK_2);
-					auto.keyRelease(KeyEvent.VK_2);
-					break;
-				case '3':
-					auto.keyPress(KeyEvent.VK_3);
-					auto.keyRelease(KeyEvent.VK_3);
-					break;
-				case '4':
-					auto.keyPress(KeyEvent.VK_4);
-					auto.keyRelease(KeyEvent.VK_4);
-					break;
-				case '5':
-					auto.keyPress(KeyEvent.VK_5);
-					auto.keyRelease(KeyEvent.VK_5);
-					break;
-				case '6':
-					auto.keyPress(KeyEvent.VK_6);
-					auto.keyRelease(KeyEvent.VK_6);
-					break;
-				case '7':
-					auto.keyPress(KeyEvent.VK_7);
-					auto.keyRelease(KeyEvent.VK_7);
-					break;
-				case '8':
-					auto.keyPress(KeyEvent.VK_8);
-					auto.keyRelease(KeyEvent.VK_8);
-					break;
-				case '9':
-					auto.keyPress(KeyEvent.VK_9);
-					auto.keyRelease(KeyEvent.VK_9);
-					break;
-				case ')':
-					auto.keyPress(KeyEvent.VK_SHIFT);
-					auto.keyPress(KeyEvent.VK_0);
-					auto.keyRelease(KeyEvent.VK_0);
-					auto.keyRelease(KeyEvent.VK_SHIFT);
-					break;
-				case '!':
-					auto.keyPress(KeyEvent.VK_SHIFT);
-					auto.keyPress(KeyEvent.VK_1);
-					auto.keyRelease(KeyEvent.VK_1);
-					auto.keyRelease(KeyEvent.VK_SHIFT);
-					break;
-				case '@':
-					auto.keyPress(KeyEvent.VK_SHIFT);
-					auto.keyPress(KeyEvent.VK_2);
-					auto.keyRelease(KeyEvent.VK_2);
-					auto.keyRelease(KeyEvent.VK_SHIFT);
-					break;
-				case '#':
-					auto.keyPress(KeyEvent.VK_SHIFT);
-					auto.keyPress(KeyEvent.VK_3);
-					auto.keyRelease(KeyEvent.VK_3);
-					auto.keyRelease(KeyEvent.VK_SHIFT);
-					break;
-				case '$':
-					auto.keyPress(KeyEvent.VK_SHIFT);
-					auto.keyPress(KeyEvent.VK_4);
-					auto.keyRelease(KeyEvent.VK_4);
-					auto.keyRelease(KeyEvent.VK_SHIFT);
-					break;
-				case '%':
-					auto.keyPress(KeyEvent.VK_SHIFT);
-					auto.keyPress(KeyEvent.VK_5);
-					auto.keyRelease(KeyEvent.VK_5);
-					auto.keyRelease(KeyEvent.VK_SHIFT);
-					break;
-				case '^':
-					auto.keyPress(KeyEvent.VK_SHIFT);
-					auto.keyPress(KeyEvent.VK_6);
-					auto.keyRelease(KeyEvent.VK_6);
-					auto.keyRelease(KeyEvent.VK_SHIFT);
-					break;
-				case '&':
-					auto.keyPress(KeyEvent.VK_SHIFT);
-					auto.keyPress(KeyEvent.VK_7);
-					auto.keyRelease(KeyEvent.VK_7);
-					auto.keyRelease(KeyEvent.VK_SHIFT);
-					break;
-				case '*':
-					auto.keyPress(KeyEvent.VK_SHIFT);
-					auto.keyPress(KeyEvent.VK_8);
-					auto.keyRelease(KeyEvent.VK_8);
-					auto.keyRelease(KeyEvent.VK_SHIFT);
-					break;
-				case '(':
-					auto.keyPress(KeyEvent.VK_SHIFT);
-					auto.keyPress(KeyEvent.VK_9);
-					auto.keyRelease(KeyEvent.VK_9);
-					auto.keyRelease(KeyEvent.VK_SHIFT);
-					break;
-				case '`':
-					auto.keyPress(KeyEvent.VK_BACK_QUOTE);
-					auto.keyRelease(KeyEvent.VK_BACK_QUOTE);
-					break;
-				case '~':
-					auto.keyPress(KeyEvent.VK_SHIFT);
-					auto.keyPress(KeyEvent.VK_BACK_QUOTE);
-					auto.keyRelease(KeyEvent.VK_BACK_QUOTE);
-					auto.keyRelease(KeyEvent.VK_SHIFT);
-					break;
-				case '|':
-					auto.keyPress(KeyEvent.VK_SHIFT);
-					auto.keyPress(KeyEvent.VK_BACK_SLASH);
-					auto.keyRelease(KeyEvent.VK_BACK_SLASH);
-					auto.keyRelease(KeyEvent.VK_SHIFT);
-					break;
-				case '-':
-					auto.keyPress(KeyEvent.VK_MINUS);
-					auto.keyRelease(KeyEvent.VK_MINUS);
-					break;
-				case '_':
-					auto.keyPress(KeyEvent.VK_SHIFT);
-					auto.keyPress(KeyEvent.VK_MINUS);
-					auto.keyRelease(KeyEvent.VK_MINUS);
-					auto.keyRelease(KeyEvent.VK_SHIFT);
-					break;
-				case '=':
-					auto.keyPress(KeyEvent.VK_EQUALS);
-					auto.keyRelease(KeyEvent.VK_EQUALS);
-					break;
-				case '+':
-					auto.keyPress(KeyEvent.VK_SHIFT);
-					auto.keyPress(KeyEvent.VK_EQUALS);
-					auto.keyRelease(KeyEvent.VK_EQUALS);
-					auto.keyRelease(KeyEvent.VK_SHIFT);
-					break;
-				case '[':
-					auto.keyPress(KeyEvent.VK_BRACELEFT);
-					auto.keyRelease(KeyEvent.VK_BRACELEFT);
-					break;
-				case '{':
-					auto.keyPress(KeyEvent.VK_SHIFT);
-					auto.keyPress(KeyEvent.VK_BRACELEFT);
-					auto.keyRelease(KeyEvent.VK_BRACELEFT);
-					auto.keyRelease(KeyEvent.VK_SHIFT);
-					break;
-				case ']':
-					auto.keyPress(KeyEvent.VK_BRACERIGHT);
-					auto.keyRelease(KeyEvent.VK_BRACERIGHT);
-					break;
-				case '}':
-					auto.keyPress(KeyEvent.VK_SHIFT);
-					auto.keyPress(KeyEvent.VK_BRACERIGHT);
-					auto.keyRelease(KeyEvent.VK_BRACERIGHT);
-					auto.keyRelease(KeyEvent.VK_SHIFT);
-					break;
-				case ';':
-					auto.keyPress(KeyEvent.VK_SEMICOLON);
-					auto.keyRelease(KeyEvent.VK_SEMICOLON);
-					break;
-				case ':':
-					auto.keyPress(KeyEvent.VK_SHIFT);
-					auto.keyPress(KeyEvent.VK_SEMICOLON);
-					auto.keyRelease(KeyEvent.VK_SEMICOLON);
-					auto.keyRelease(KeyEvent.VK_SHIFT);
-					break;
-				case ',':
-					auto.keyPress(KeyEvent.VK_COMMA);
-					auto.keyRelease(KeyEvent.VK_COMMA);
-					break;
-				case '<':
-					auto.keyPress(KeyEvent.VK_SHIFT);
-					auto.keyPress(KeyEvent.VK_COMMA);
-					auto.keyRelease(KeyEvent.VK_COMMA);
-					auto.keyRelease(KeyEvent.VK_SHIFT);
-					break;
-				case '.':
-					auto.keyPress(KeyEvent.VK_PERIOD);
-					auto.keyRelease(KeyEvent.VK_PERIOD);
-					break;
-				case '>':
-					auto.keyPress(KeyEvent.VK_SHIFT);
-					auto.keyPress(KeyEvent.VK_PERIOD);
-					auto.keyRelease(KeyEvent.VK_PERIOD);
-					auto.keyRelease(KeyEvent.VK_SHIFT);
-					break;
-				case '/':
-					auto.keyPress(KeyEvent.VK_SLASH);
-					auto.keyRelease(KeyEvent.VK_SLASH);
-					break;
-				case '?':
-					auto.keyPress(KeyEvent.VK_SHIFT);
-					auto.keyPress(KeyEvent.VK_SLASH);
-					auto.keyRelease(KeyEvent.VK_SLASH);
-					auto.keyRelease(KeyEvent.VK_SHIFT);
-					break;
-				case '\\':
-					auto.keyPress(KeyEvent.VK_BACK_SLASH);
-					auto.keyRelease(KeyEvent.VK_BACK_SLASH);
-					break;
-				case '\n':
-					auto.keyPress(KeyEvent.VK_ENTER);
-					auto.keyRelease(KeyEvent.VK_ENTER);
-					break;
-				case '\t':
-					auto.keyPress(KeyEvent.VK_TAB);
-					auto.keyRelease(KeyEvent.VK_TAB);
-					break;
-				case '\"':
-					auto.keyPress(KeyEvent.VK_SHIFT);
-					auto.keyPress(KeyEvent.VK_QUOTE);
-					auto.keyRelease(KeyEvent.VK_QUOTE);
-					auto.keyRelease(KeyEvent.VK_SHIFT);
-					break;
-				case '\'':
-					auto.keyPress(KeyEvent.VK_QUOTE);
-					auto.keyRelease(KeyEvent.VK_QUOTE);
-					break;
-			}
-			if ((int)(letter) >= 65 && (int)(letter) <= 90)
-				auto.keyRelease(KeyEvent.VK_SHIFT);
+		int length = message.length();
+		for (int pos = 0; pos < length; pos += 1) {
+			button(message.charAt(pos), 2);
 		}
 	}
-	public void button(String button, int type) {
-		if (button.equals("enter") && type < 3)
-			auto.keyPress(KeyEvent.VK_ENTER);
-		else if (button.equals("backspace") && type < 3)
-			auto.keyPress(KeyEvent.VK_BACK_SPACE);
-		else if (button.equals("delete") && type < 3)
-			auto.keyPress(KeyEvent.VK_DELETE);
-		else if (button.equals("control") && type < 3)
-			auto.keyPress(KeyEvent.VK_CONTROL);
-		else if (button.equals("up") && type < 3)
-			auto.keyPress(KeyEvent.VK_UP);
-		else if (button.equals("down") && type < 3)
-			auto.keyPress(KeyEvent.VK_DOWN);
-		else if (button.equals("left") && type < 3)
-			auto.keyPress(KeyEvent.VK_LEFT);
-		else if (button.equals("right") && type < 3)
-			auto.keyPress(KeyEvent.VK_RIGHT);
-		else if (button.equals("shift") && type < 3)
+	public void button(char button, int type) {
+		if (type < 1 || type >= 3)
+			return;
+		boolean shift = false;
+		int buttonnum = 0;
+		if (button == ' ')
+			buttonnum = KeyEvent.VK_SPACE;
+		else if (button == 'a')
+			buttonnum = KeyEvent.VK_A;
+		else if (button == 'b')
+			buttonnum = KeyEvent.VK_B;
+		else if (button == 'c')
+			buttonnum = KeyEvent.VK_C;
+		else if (button == 'd')
+			buttonnum = KeyEvent.VK_D;
+		else if (button == 'e')
+			buttonnum = KeyEvent.VK_E;
+		else if (button == 'f')
+			buttonnum = KeyEvent.VK_F;
+		else if (button == 'g')
+			buttonnum = KeyEvent.VK_G;
+		else if (button == 'h')
+			buttonnum = KeyEvent.VK_H;
+		else if (button == 'i')
+			buttonnum = KeyEvent.VK_I;
+		else if (button == 'j')
+			buttonnum = KeyEvent.VK_J;
+		else if (button == 'k')
+			buttonnum = KeyEvent.VK_K;
+		else if (button == 'l')
+			buttonnum = KeyEvent.VK_L;
+		else if (button == 'm')
+			buttonnum = KeyEvent.VK_M;
+		else if (button == 'n')
+			buttonnum = KeyEvent.VK_N;
+		else if (button == 'o')
+			buttonnum = KeyEvent.VK_O;
+		else if (button == 'p')
+			buttonnum = KeyEvent.VK_P;
+		else if (button == 'q')
+			buttonnum = KeyEvent.VK_Q;
+		else if (button == 'r')
+			buttonnum = KeyEvent.VK_R;
+		else if (button == 's')
+			buttonnum = KeyEvent.VK_S;
+		else if (button == 't')
+			buttonnum = KeyEvent.VK_T;
+		else if (button == 'u')
+			buttonnum = KeyEvent.VK_U;
+		else if (button == 'v')
+			buttonnum = KeyEvent.VK_V;
+		else if (button == 'w')
+			buttonnum = KeyEvent.VK_W;
+		else if (button == 'x')
+			buttonnum = KeyEvent.VK_X;
+		else if (button == 'y')
+			buttonnum = KeyEvent.VK_Y;
+		else if (button == 'z')
+			buttonnum = KeyEvent.VK_Z;
+		else if (button == '1')
+			buttonnum = KeyEvent.VK_1;
+		else if (button == '2')
+			buttonnum = KeyEvent.VK_2;
+		else if (button == '3')
+			buttonnum = KeyEvent.VK_3;
+		else if (button == '4')
+			buttonnum = KeyEvent.VK_4;
+		else if (button == '5')
+			buttonnum = KeyEvent.VK_5;
+		else if (button == '6')
+			buttonnum = KeyEvent.VK_6;
+		else if (button == '7')
+			buttonnum = KeyEvent.VK_7;
+		else if (button == '8')
+			buttonnum = KeyEvent.VK_8;
+		else if (button == '9')
+			buttonnum = KeyEvent.VK_9;
+		else if (button == '0')
+			buttonnum = KeyEvent.VK_0;
+		else if (button == '`')
+			buttonnum = KeyEvent.VK_BACK_QUOTE;
+		else if (button == '-')
+			buttonnum = KeyEvent.VK_MINUS;
+		else if (button == '=')
+			buttonnum = KeyEvent.VK_EQUALS;
+		else if (button == '[')
+			buttonnum = KeyEvent.VK_BRACELEFT;
+		else if (button == ']')
+			buttonnum = KeyEvent.VK_BRACERIGHT;
+		else if (button == '\\')
+			buttonnum = KeyEvent.VK_BACK_SLASH;
+		else if (button == ';')
+			buttonnum = KeyEvent.VK_SEMICOLON;
+		else if (button == '\'')
+			buttonnum = KeyEvent.VK_QUOTE;
+		else if (button == ',')
+			buttonnum = KeyEvent.VK_COMMA;
+		else if (button == '.')
+			buttonnum = KeyEvent.VK_PERIOD;
+		else if (button == '/')
+			buttonnum = KeyEvent.VK_SLASH;
+		else if (button == 'A') {
+			shift = true;
+			buttonnum = KeyEvent.VK_A;
+		} else if (button == 'B') {
+			shift = true;
+			buttonnum = KeyEvent.VK_B;
+		} else if (button == 'C') {
+			shift = true;
+			buttonnum = KeyEvent.VK_C;
+		} else if (button == 'D') {
+			shift = true;
+			buttonnum = KeyEvent.VK_D;
+		} else if (button == 'E') {
+			shift = true;
+			buttonnum = KeyEvent.VK_E;
+		} else if (button == 'F') {
+			shift = true;
+			buttonnum = KeyEvent.VK_F;
+		} else if (button == 'G') {
+			shift = true;
+			buttonnum = KeyEvent.VK_G;
+		} else if (button == 'H') {
+			shift = true;
+			buttonnum = KeyEvent.VK_H;
+		} else if (button == 'I') {
+			shift = true;
+			buttonnum = KeyEvent.VK_I;
+		} else if (button == 'J') {
+			shift = true;
+			buttonnum = KeyEvent.VK_J;
+		} else if (button == 'K') {
+			shift = true;
+			buttonnum = KeyEvent.VK_K;
+		} else if (button == 'L') {
+			shift = true;
+			buttonnum = KeyEvent.VK_L;
+		} else if (button == 'M') {
+			shift = true;
+			buttonnum = KeyEvent.VK_M;
+		} else if (button == 'N') {
+			shift = true;
+			buttonnum = KeyEvent.VK_N;
+		} else if (button == 'O') {
+			shift = true;
+			buttonnum = KeyEvent.VK_O;
+		} else if (button == 'P') {
+			shift = true;
+			buttonnum = KeyEvent.VK_P;
+		} else if (button == 'Q') {
+			shift = true;
+			buttonnum = KeyEvent.VK_Q;
+		} else if (button == 'R') {
+			shift = true;
+			buttonnum = KeyEvent.VK_R;
+		} else if (button == 'S') {
+			shift = true;
+			buttonnum = KeyEvent.VK_S;
+		} else if (button == 'T') {
+			shift = true;
+			buttonnum = KeyEvent.VK_T;
+		} else if (button == 'U') {
+			shift = true;
+			buttonnum = KeyEvent.VK_U;
+		} else if (button == 'V') {
+			shift = true;
+			buttonnum = KeyEvent.VK_V;
+		} else if (button == 'W') {
+			shift = true;
+			buttonnum = KeyEvent.VK_W;
+		} else if (button == 'X') {
+			shift = true;
+			buttonnum = KeyEvent.VK_X;
+		} else if (button == 'Y') {
+			shift = true;
+			buttonnum = KeyEvent.VK_Y;
+		} else if (button == 'Z') {
+			shift = true;
+			buttonnum = KeyEvent.VK_Z;
+		} else if (button == '!') {
+			shift = true;
+			buttonnum = KeyEvent.VK_1;
+		} else if (button == '@') {
+			shift = true;
+			buttonnum = KeyEvent.VK_2;
+		} else if (button == '#') {
+			shift = true;
+			buttonnum = KeyEvent.VK_3;
+		} else if (button == '$') {
+			shift = true;
+			buttonnum = KeyEvent.VK_4;
+		} else if (button == '%') {
+			shift = true;
+			buttonnum = KeyEvent.VK_5;
+		} else if (button == '^') {
+			shift = true;
+			buttonnum = KeyEvent.VK_6;
+		} else if (button == '&') {
+			shift = true;
+			buttonnum = KeyEvent.VK_7;
+		} else if (button == '*') {
+			shift = true;
+			buttonnum = KeyEvent.VK_8;
+		} else if (button == '(') {
+			shift = true;
+			buttonnum = KeyEvent.VK_9;
+		} else if (button == ')') {
+			shift = true;
+			buttonnum = KeyEvent.VK_0;
+		} else if (button == '~') {
+			shift = true;
+			buttonnum = KeyEvent.VK_BACK_QUOTE;
+		} else if (button == '_') {
+			shift = true;
+			buttonnum = KeyEvent.VK_MINUS;
+		} else if (button == '+') {
+			shift = true;
+			buttonnum = KeyEvent.VK_EQUALS;
+		} else if (button == '{') {
+			shift = true;
+			buttonnum = KeyEvent.VK_BRACELEFT;
+		} else if (button == '}') {
+			shift = true;
+			buttonnum = KeyEvent.VK_BRACERIGHT;
+		} else if (button == '|') {
+			shift = true;
+			buttonnum = KeyEvent.VK_BACK_SLASH;
+		} else if (button == ':') {
+			shift = true;
+			buttonnum = KeyEvent.VK_SEMICOLON;
+		} else if (button == '\"') {
+			shift = true;
+			buttonnum = KeyEvent.VK_QUOTE;
+		} else if (button == '<') {
+			shift = true;
+			buttonnum = KeyEvent.VK_COMMA;
+		} else if (button == '>') {
+			shift = true;
+			buttonnum = KeyEvent.VK_PERIOD;
+		} else if (button == '?') {
+			shift = true;
+			buttonnum = KeyEvent.VK_SLASH;
+		} else if (button == '\n')
+			buttonnum = KeyEvent.VK_ENTER;
+		else if (button == '\t')
+			buttonnum = KeyEvent.VK_TAB;
+		else if (button == '\b')
+			buttonnum = KeyEvent.VK_BACK_SPACE;
+		if (shift)
 			auto.keyPress(KeyEvent.VK_SHIFT);
-		else if (button.equals("alt") && type < 3)
-			auto.keyPress(KeyEvent.VK_ALT);
-		else if (button.equals("capslock") && type < 3)
-			auto.keyPress(KeyEvent.VK_CAPS_LOCK);
-		else if (button.equals("escape") && type < 3)
-			auto.keyPress(KeyEvent.VK_ESCAPE);
-		if (button.equals("enter") && type > 1)
-			auto.keyRelease(KeyEvent.VK_ENTER);
-		else if (button.equals("backspace") && type > 1)
-			auto.keyRelease(KeyEvent.VK_BACK_SPACE);
-		else if (button.equals("delete") && type > 1)
-			auto.keyRelease(KeyEvent.VK_DELETE);
-		else if (button.equals("control") && type > 1)
-			auto.keyRelease(KeyEvent.VK_CONTROL);
-		else if (button.equals("up") && type > 1)
-			auto.keyRelease(KeyEvent.VK_UP);
-		else if (button.equals("down") && type > 1)
-			auto.keyRelease(KeyEvent.VK_DOWN);
-		else if (button.equals("left") && type > 1)
-			auto.keyRelease(KeyEvent.VK_LEFT);
-		else if (button.equals("right") && type > 1)
-			auto.keyRelease(KeyEvent.VK_RIGHT);
-		else if (button.equals("shift") && type > 1)
+		if (type < 3)
+			auto.keyPress(buttonnum);
+		if (type > 1)
+			auto.keyRelease(buttonnum);
+		if (shift)
 			auto.keyRelease(KeyEvent.VK_SHIFT);
-		else if (button.equals("alt") && type > 1)
-			auto.keyRelease(KeyEvent.VK_ALT);
-		else if (button.equals("capslock") && type > 1)
-			auto.keyRelease(KeyEvent.VK_CAPS_LOCK);
-		else if (button.equals("escape") && type > 1)
-			auto.keyRelease(KeyEvent.VK_ESCAPE);
+	}
+	public void button(String button, int type) {
+		if (type < 1 || type > 3)
+			return;
+		int buttonnum = 0;
+		if (button.equals("enter"))
+			buttonnum = KeyEvent.VK_ENTER;
+		else if (button.equals("space"))
+			buttonnum = KeyEvent.VK_SPACE;
+		else if (button.equals("up"))
+			buttonnum = KeyEvent.VK_UP;
+		else if (button.equals("down"))
+			buttonnum = KeyEvent.VK_DOWN;
+		else if (button.equals("left"))
+			buttonnum = KeyEvent.VK_LEFT;
+		else if (button.equals("right"))
+			buttonnum = KeyEvent.VK_RIGHT;
+		else if (button.equals("shift"))
+			buttonnum = KeyEvent.VK_SHIFT;
+		else if (button.equals("backspace"))
+			buttonnum = KeyEvent.VK_BACK_SPACE;
+		else if (button.equals("tab"))
+			buttonnum = KeyEvent.VK_TAB;
+		else if (button.equals("delete"))
+			buttonnum = KeyEvent.VK_DELETE;
+		else if (button.equals("control"))
+			buttonnum = KeyEvent.VK_CONTROL;
+		else if (button.equals("alt"))
+			buttonnum = KeyEvent.VK_ALT;
+		else if (button.equals("capslock"))
+			buttonnum = KeyEvent.VK_CAPS_LOCK;
+		else if (button.equals("escape"))
+			buttonnum = KeyEvent.VK_ESCAPE;
+		if (type < 3)
+			auto.keyPress(buttonnum);
+		if (type > 1)
+			auto.keyRelease(buttonnum);
 	}
 	public BufferedImage screenshot() {
 		return auto.createScreenCapture(new Rectangle(Toolkit.getDefaultToolkit().getScreenSize()));

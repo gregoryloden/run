@@ -3,8 +3,8 @@
  This wonderful piece of software allows you to write your own mouse-controlling programs using text
 files and a simple syntax, allowing for easy and quick program creation.
  To start off, there is a folder named "scripts" in the same directory as the run.class file. This
-is where all autoclick scripts will live. To be recognized, all scripts should end with .txt. A
-sample script has been provided.
+is where all autoclick scripts will live. To be recognized, all scripts should end with .txt. Two
+sample scripts have been provided.
 
 
 
@@ -48,14 +48,14 @@ coordinates provided, and left clicks that spot. For example:
 	left	100	200
 
 will left-click at x-100, y-200.
- All commands take up one line only, and contain only lowercase letters. You can also leave comments
-by starting a line with //, or pretty much anything except one of the commands.
- Right click:
+ All commands take up one line only, and contain only lowercase letters. Uppercase letters are not
+used by any words defined by the autoclicker. You can also leave yourself comments by starting a
+line with //, or pretty much anything except one of the commands.
 
+	// Right click:
 	right	[x]	[y]
 
- Move:
-
+	. Move:
 	move	[x]	[y]
 
  Right will move and perform a right click, and move will move the mouse without clicking. Any
@@ -72,8 +72,23 @@ but not
 
 	move	[x][y]
 
-as whitespace is needed to separate arguments. Here, the interpreter would interpret the two numbers
-as one bigger number.
+as whitespace is needed to separate arguments (so 53 4 is different than 534). In commands, when
+writing a number, only the digits (and possibly negative sign before the digits) are taken into
+account, so these two commands,
+
+	move	1000	234
+	move	1,000	2jrgfsd3j.4
+
+will perform the same action (move the mouse to x-1000, y-234).
+ You can also move the mouse scroll wheel in these different ways:
+
+	scroll	up
+	scroll	down
+	scroll	up	[number]
+	scroll	down	[number]
+
+ The scroll command will execute one scroll "click" in the given direction, or [number] "clicks" if
+a number is provided.
  Run also supports pausing for certain periods of time. The command
 
 	pause	[t]
@@ -122,7 +137,7 @@ will move the line pointer to a label in the format
 	:Endless
 	jump	Endless
 
-is an infinite loop. Here's a cumulative example:
+is an infinite loop. Labels must contain no whitespace. Here's a cumulative example:
 
 	:main
 	right		100	200
@@ -192,38 +207,49 @@ SECTION 2- Programming Language Features- Variables
 
  Yeah, you heard me! In addition to being an autoclicker, run serves as a fully functional
 programming language! Nothing super-fancy, but perfect for autoclicking applications. So back to the
-question: what programming language would be complete without variables?
+question: would this language be complete without variables?
 
- Not this one! You can define variables with this command:
+ It sure wouldn't! You can define variables with this command:
 
 	create	[type]	[name]	[value]
 
  This will create a variable of type [type] called [name] with starting value [value]. These will
-probably be of type int, used to base clicks on other data, but they can also be booleans and
-colors. All variables are for use only within the active script. Scripts run from within that script
-will not be able to use those variables. Variables are case-sensitive.
+probably be of type int (integer), used to base clicks on other data, but there are multiple other
+variable types. All variables are for use only within the active script. Scripts run from within
+that script will not be able to use those variables. Variables are case-sensitive.
  Here's a bunch of variable creation examples:
 
 	create	int	x	100
 	create	boolean	Good?	true
 	create	color	white	255	255	255
 	create	color	brown	at	123	456
+	create	timer	time	0
 	create	int	y	x
-	create	boolean	Good?2	Good?
-	create	color	brown2	brown
+	create	color	brown~2	brown
 
  Let's go over these examples!
 
- In the first example, the variable x was created as an integer. To create an integer, the only
-argument that must be supplied is the value to store to it.
- In the second example, Good? is created as a boolean. The value stored to it is the value produced
-by a variety of clauses which will be covered later in the README.
+ In the first example, the variable x was created as an integer, or a whole number. To create an
+integer, the only argument that must be supplied is the value to store to it.
+ In the second example, Good? is created as a boolean. A boolean value simply means either a true or
+a false. To create a boolean, the only value that must be provided is a true or a false. Booleans
+serve a special purpose which will be mentioned later on.
  In the third example, white was created as a color, a type used for special commands that track
 colors. This is one of two ways to initiate a color, both of which take three arguments. The first
 way, used to create white, is to give the red, green, and blue values of a color, in that order.
  In the fourth example, brown demonstrates the second way to create a color: the arguments are the
 word "at", followed by two more arguments- the x and y coordinates of a pixel location. The value
 stored to the variable is the color at that pixel.
+ In the fifth example, the variable time was created as a timer. This timer's value is an integer,
+and increases by 1 every millisecond. To create a timer, the only value that needs to be provided
+is its initial value.
+ In the sixth and seventh examples, variables were created using other variables as a single
+argument. This will create a variable with the value of the argument variable. All variable types
+can be made by providing another variable of the same type.
+
+ Your variable names can consist of any non-whitespace characters. Be careful with your naming
+conventions to avoid errors in your scripts related to variable overwriting. Some names are
+reserved by the autoclicker.
 
  So now that we have variables, we can use them in other commands! Using the above variable
 assignments, the command
@@ -231,15 +257,13 @@ assignments, the command
 	left	x	y
 
 would left click at x-100, y-100.
- In the fifth, sixth, and seventh examples, variables were created using other variables as an
-argument. This will create a variable with the value of the argument variable. In addition to
-copying variables, they can also be used as regular arguments. This command,
+ In addition to copying variables, they can also be used as regular arguments. This command,
 
-	create	color	brown	x	y	z
+	create	color	brown	x	y	0
 
-would create a color with a red value of 100, green value of 100, and blue value between 0 and 29.
- Color variables are used to replace sets of 3 arguments that make up a color. Right now, only
-pauses use colors, but they are used later in the README. Assuming the same variable assignments,
+would create a color with a red value of 100, green value of 100, and blue value of 0.
+ Color variables are used to replace sets of 3 arguments that make up a color. Assuming the same
+variable assignments,
 
 	pause	123	456	white
 
@@ -247,7 +271,8 @@ would pause until the pixel is white. The extra argument at the end will still f
 
 	pause	123	456	white	1000
 
-will quit out after a second.
+will quit out after a second. Right now, only pauses use colors, but they are used in commands
+later in the README.
  Creating multiple variables with names that are used elsewhere will not cause an error, but may
 cause problems when running the script. Be careful when naming variables!
 
@@ -257,8 +282,8 @@ cause problems when running the script. Be careful when naming variables!
 
  Setting variables works just like creating variables, for all types of variables, except you don't
 need a variable type. Set changes the variable of name [name] to the value that the arguments
-[value...] produce. Variables can also technically be changed with create, as the interpreter hits
-the most recent entry first, but this is generally not recommended.
+[value...] produce. Variables can also technically be changed with create, and you can change the
+type of the variable by doing this, but set is recommended for just changing the value.
  Here is an example of set:
 
 	set	x	200
@@ -273,7 +298,7 @@ not make a new variable. This means that
 	set	z	100
 
 would do nothing to any variables, since z has not been created.
- There is also a special set command for using arguments to the script:
+ There is also a special set command for using arguments with the script:
 
 	setargto	[prefix]	[name]
 
@@ -344,98 +369,7 @@ divide it by -8 to set it back to 1. All operators work like most programming la
 integers: division will result in an integer rounded down, overflows will make the number go crazy.
 
 
-	The purpose of these change commands is to give variables values relative to their own value, but
-	what if you have a more complex expression that you want to assign to your variable?
-
-
- Well fortunately for you, Run supports standard arithmetic! You can assign values to variables in
-relation to numbers and any variable, including itself. Let's go over how to use arithmetic:
-
-	set	var	+	[val1]	[val2]
-	set	var	-	[val1]	[val2]
-	set	var	*	[val1]	[val2]
-	set	var	/	[val1]	[val2]
-	set	var	%	[val1]	[val2]
-	set	var	random	[val1]
-
- Each of these symboles turns into a number depending on what the values following it are. All
-arithmetic can be used in both create and set, as well as in setargto. In the first example,
-
-	set	var	+	[val1]	[val2]
-
-the variable called var would be given a value equal to the addition of [val1] and [val2]; the
-following,
-
-	create	int	var	+	2	3
-
-
-will create a variable called var and set it to 5. If you then had a command,
-
-	set	var	+	var	2
-
-var would be set to 7, which is equivalent to
-
-	+=	var	2
-
- All of the first five symbols act equivalently to their change-command counterpart, in the same
-manner that addition was shown above.
- The sixth example,
-
-	set	var	random	[val1]
-
-var was set to random value. Using "random" will assign the variable to a number ranging from 0 to
-the argument that follows, minus 1. So in this example,
-
-	set	var	random	30
-
-var would be assigned a number from 0 to 29 inclusive.
- But arithmetic would be no good if we couldn't use it to create complex expressions! Say you had
-the following math expression:
-
-	(A + B - ((A + B) % 2))
-
- In order to turn it into an expression usable by Run, first separate the operators so that each
-operator only acts on two integers, as this is how Run interprets the expression:
-
-	((A + B) - ((A + B) % 2))
-
- Next, move all operators to the left side of the parentheses:
-
-	(- (+ A B) (% (+ A B) 2))
-
- Finally, after removing the parentheses,
-
-	- + A B % + A B 2
-
-the expression is usable in Run! So let's see how this works:
-
-	create	int	A	1
-	create	int	B	2
-	create	int	C	-	+	A	B	%	+	A	B	2
-
- The first step Run takes is to replace all variables with their values:
-
-	create	int	C	-	+	1	2	%	+	1	2	2
-
- After that, Run starts in on evaluating. How this works is that the pointer starts from the right,
-and goes left along the expression, evaluating the operators as they go. The last four are integers,
-so Run goes right by them. As soon as the pointer reaches an operator, it uses it in conjunction
-with the variables that follow it. For instance, the pointer in this example starts at the 30 and
-goes left until it readches the +, and then stores the value of 1 + 2. like so:
-
-	create	int	C	-	+	1	2	%	+	1	2	2
-	create	int	C	-	+	1	2	%	3			2
-
- The rest of the expression would evaluate in the following manner:
-
-	create	int	C	-	+	1	2	1
-	create	int	C	-	3			1
-	create	int	C	2
-
- In the end, C gets set to 2, the result of the expression.
-
- Well, now that we've got arithmetic covered, Run also includes some useful special system
-variables! The variables
+ Run also includes some useful special system variables! The variables
 
 	.mousex
 	.mousey
@@ -447,14 +381,6 @@ represent the mouse's current x- and y-coordinates. So for example,
 
 would create two variables, each with a mouse coordinate. If the mouse was at x-145, y-234, clickx
 would have a value of 145 and clicky would have a value of 234.
- There is also a timer variable,
-
-	.timer
-
-that tracks how many milliseconds have passed since the start of the program, or since the timer was
-last reset. You can reset it to 0 with the command
-
-	treset
 
  Variables created by the user cannot have a . at the beginning of the name. The autoclicker will
 not run if you try to do this.
@@ -477,10 +403,9 @@ is for the if commands that look like this:
 		[command1]
 	[command2]
 
- The way this works is that if the boolean is false, the next line gets skipped. You can also view
-it like this: if and only if the boolean is true, then the line next gets called. So if [boolean]
-is true, both [command1] and [command2] get called. If [boolean] is false, [command1] doesn't get
-called.
+ The way this works is that if the boolean is false, the next line gets skipped. If the boolean is
+true, the next line does not get skipped. So if [boolean] is true, both [command1] and [command2]
+get called. If [boolean] is false, [command1] doesn't get called, but [command2] does.
  In addition to this format, if has another syntax that can be used, and it looks like this:
 
 	if	[boolean]
@@ -494,46 +419,113 @@ called.
  Right after the if command, a line with a "[" bracket at the beginning signifies the start of the
 commands to be run. If the boolean is false, the pointer jumps to the "]" bracket and continues. You
 can also use "(" parentheses and "{" braces, or mix and match them, and they will all work the same.
- These can be paired with jumps for more complex if conditionals:
+ Now, if commands are very line-sensitive, so make sure your line formats are correct. Take this for
+example:
 
+	create	boolean	test	[value]
+	if	test
+		:here
+		[command]
+
+ Since if only skips the next line, the label will get skipped instead of [command]. So whether
+[value] is true or false, [command] will get executed anyways. Brackets are also sensitive: a
+bracket must appear immediately after the if command, or it won't get recognized- the following,
+
+	if	false
+	:here
+	[
+		[command]
+		...
+	]
+
+will execute [command] since the brackets are not linked to the if command. In addition, all
+brackets link to each other, so make sure they're all paired correctly.
+ So now that we have our if command, we can use it with jumps for more complex conditionals:
+
+	create	boolean	sety	true
 	create	int	x	100
 	create	int	y	100
-	if	true
+	if	sety
 		jump	thisisalabel
 	set	x	150
 	jump	end
 	:thisisalabel
 	set	y	150
-	jump	end
 	:end
 
  This will set y to 150 since the value given to it is true. If the true were replaced with false,
 x would get set to 150. The above is also equivalent to the following:
 
+	create	boolean	sety	true
 	create	int	x	100
 	create	int	y	100
 	if	true
 	[
-		set	x	150
+		set	y	150
 		jump	end
 	]
-	set	y	150
-	jump	end
+	set	x	150
 	:end
 
- Stored booleans are not the only booleans that can be put in an if clause. Ifs have multiple forms
-with different comparisons. Mentioned earlier was the ability to store clause values to boolean
-variables. These are those clauses. Here is one form:
+ Constant booleans are not the only booleans that can be put in an if clause. In fact, if commands
+are not the only places that these clauses can be used! And even further, these clauses are big
+enough that they get their own section, and we haven't even gotten to for loops!
+
+================================================================
+SECTION 3.1- Clauses
+================================================================
+
+ A clause is a big paramater consisting of a bunch of operators and variables. The commands create,
+set, setargto, and if all have access to these special clauses- create, set, and setargto only have
+access when storing to an int or boolean. The "at" paramater used in colors is unavailable in
+clauses.
+
+ Let's go over how the variable types are stored and represented in clauses. A clause stores all
+types as integers. All variable types have an integer representation.
+- Integers are stored as 32-bit numbers and are simply represented as themselves.
+- Booleans are stored as true or false. They represent a 1 if true, and a 0 if false. Now, in
+addition to a boolean being treated as a number, numbers can be used as booleans. When a result in a
+clause gets interpreted as a boolean, any number besides 0 is interpreted as true (0 is false).
+- Colors are stored as 3 different integer values. A color's integer representation is an integer
+with 3 values 0-255, with red in bits 16-23, green in 8-15, and blue in 0-8. What this means is that
+if you have a color with (r, g, b), then its value is (r * 256 * 256) + (g * 256) + b.
+- Timers are stored similarly to integers, and for the most part are treated as integers. The
+difference is that timers change over time, and have less access to commands than integers do.
+
+ A clause always returns an integer, but can be interpreted as a boolean when storing to a boolean
+variable or as the result of an if condition.
+
+ So now that we've gotten that over with, let's go over the clauses! They can be used in the
+following format:
+
+	if	[clause]
+	create	[type]	[name]	[clause]
+	set	[name]	[clause]
+	setargto	[prefix]	[name]
+
+ Note that for setargto, the clause has to be a paramater to the program, separated with commas
+rather than spaces. There'll be a bit on that a little later.
+ Clauses can be as simple or complicated as you make them. Take a look at this:
+
+	if	true
+
+ This will always pass, as the clause represents true, and nothing else. Here's another clause that
+does the same thing:
 
 	create	boolean	test	true
 	if	test
 
- The clause is true if the boolean is true. Booleans were already mentioned as able to store to
-other booleans. Here is another form:
+ The clause is true if the boolean is true. Here's a third way to do the same thing:
+
+	if	23
+
+ Since numbers can be treated as booleans, any number besides 0 represents true.
+ Here is another clause form:
 
 	if	input	[arg]
 
- This evaluates to true if [arg] was given as an argument to the program. For instance, calling
+ This evaluates to true if [arg] was given as an argument to the program. For instance, starting a
+script with
 
 	java run thisisascript hello
 
@@ -544,8 +536,7 @@ would make "hello" be an argument. These ifs,
 	if	input	he
 	if	input	helloo
 
-would evaluate to false, true, false, and false respectively. Remember, you can also use these
-clauses to store boolean variables.
+would evaluate to false, true, false, and false respectively.
  There are four integer-specific evaluation clauses:
 
 	if	>=	[value1]	[value2]
@@ -554,8 +545,9 @@ clauses to store boolean variables.
 	if	<	[value1]	[value2]
 
  These are pretty straight-forward, they evaluate to true if [value1] is greater-than-or-equal-to,
-greater than, less-than-or-equal-to, or less than [value2], respectively. There is an equals, but
-we'll get to that later.
+greater than, less-than-or-equal-to, or less than [value2], respectively. Remember that booleans are
+represented as a 1 or a 0, so you can use them like integers here; colors can also be used like
+integers, but those are a bit trickier. There is an equals, but we'll get to that later.
  There are two clause forms that deal with pixel colors. The first one,
 
 	if	colorat	[x]	[y]	[r]	[g]	[b]
@@ -564,7 +556,7 @@ evaluates to true if the pixel at x-[x], y-[y] is r-[r], g-[g], b-[b]. It also h
 
 	if	colorat	[x]	[y]	[color]
 
-which uses the color variables mentioned earlier. The second form,
+which uses the color variables, just like pauses. The second form,
 
 	if	scan	[x]	[y]	[w]	[h]	[r]	[g]	[b]
 
@@ -580,7 +572,7 @@ which uses the color variables. Scanning also introduces two new system variable
 	.scany
 
 which are the x- and y-coordinates of the pixel that triggered the scan to be true. If the scan was
-false, they are both 0.
+false, they are both -1.
  So now that there are some basic clauses, Run also supports standard boolean logic with the
 following five commands:
 
@@ -596,11 +588,12 @@ following five commands:
 
 will evaluate to false if [clause] IS true. For example,
 
-	create	boolean	beta	false
-	if	not	beta
-		set	beta	true
+	create	int	five	4
+	create	boolean	GoodValue	false
+	if	not	GoodValue
+		set	five	5
 
-will end up setting the value of beta to true, since beta is NOT true. The or clause,
+will end up setting the value of five to 5, since GoodValue is NOT true. The or clause,
 
 	if	or	[clause1]	[clause2]
 
@@ -608,11 +601,11 @@ will end up evaluating to true if [clause1] is true, [clause2] is true, or both 
 to run a command if either of two booleans was true:
 
 	create	boolean	a	true
-	creaet	boolean	b	true
-	if	and	a	b
+	create	boolean	b	true
+	if	or	a	b
 		move	100	100
 
- If both a and b are true, the mouse will move to x-100, y-100. Similarly, the and clause,
+ If either a and b is true, the mouse will move to x-100, y-100. Similarly, the and clause,
 
 	if	and	[clause1]	[clause2]
 
@@ -621,45 +614,162 @@ will evaluate to true only if both [clause1] and [clause2] are true. The last tw
 	if	==	[var1]	[var2]
 	if	!=	[var1]	[var2]
 
-will evaluate to true if [var1] is equal or not equal to [var2], respectively. Both [var1] and
-[var2] can be boolean clauses, integers, or colors. So if you had the following,
+will evaluate to true if [var1] is equal or not equal to [var2], respectively. The variables are
+equal to each other if their integer representations are equal. So if you had the following,
 
 	create	int	a	123
 	create	int	b	123
 	if	==	a	b
 		move	100	100
 
-then the mouse would move if a and b were equal.
- Now say that you had a more complex boolean expression such as the following:
+then the mouse would move since a and b are equal.
 
-	((A and B) or ((B != C) != A))
+ In addition to having your results evaluate to true or false (1 or 0), there are also a few
+arithmetic operators that produce standard integers:
 
- In order to use this as a clause for an if or boolean definition, the clause is treated similar to
-arithmetic. First move all operators to the left side of the parentheses,
+	set	var	+	[val1]	[val2]
+	set	var	-	[val1]	[val2]
+	set	var	*	[val1]	[val2]
+	set	var	/	[val1]	[val2]
+	set	var	%	[val1]	[val2]
+	set	var	random	[val1]
 
-	(or (and A B) (!= (!= B C) A))
+ The 5 change commands for integers are available here as operators. In this first example,
 
-remove the parentheses and assign variables,
+	set	var	+	[val1]	[val2]
+
+the variable called var would be given a value equal to the addition of [val1] and [val2]; the
+following,
+
+	create	int	var	3
+	set	var	+	2	3
+
+would create var as 3, and then set it to 5. If you then had a command,
+
+	set	var	+	var	2
+
+this var would be set to 7, which is equivalent to
+
+	+=	var	2
+
+ All of the first five symbols act equivalently to their change-command counterpart, in the same
+manner that addition was shown above.
+ In this example,
+
+	set	var	random	[val1]
+
+var gets set to random value. Using "random" will assign the variable to a number ranging from 0 to
+the argument that follows, minus 1. So in this example,
+
+	set	var	random	30
+
+var would be assigned a number from 0 to 29 inclusive.
+
+ So now that we have boolean logic and aritmetic, let's combine them to form more complex
+expressions! Say you created these variables,
 
 	create	boolean	A	true
-	create	boolean	B	true
-	create	boolean	C	false
-	create	int	X	1
-	create	int	Y	0
-	if	or	and	A	B	!=	!=	X	Y	A
+	create	boolean	B	false
+	create	int	C	1
+	create	int	D	7
 
-and it is a usable clause! Then, after replacing all variables with values, evaluation can begin.
+and then you had this complex expression:
 
-	if	or	and	true	true	!=	!=	true	false	true
-	if	or	and	true	true	!=	true			true
-	if	or	and	true	true	false
-	if	or	true			false
+	(A and B or (C + 6 != D / 3))
+
+ In order to use this as a clause, first make sure all operators are grouped with only two values:
+
+	((A and B) or ((C + 6) != (D / 3)))
+
+ Next, move all operators to the left side of the parentheses, since this is the format for
+operators:
+
+	(or (and A B) (!= (+ C 6) (/ D 3)))
+
+ After removing the parentheses, we can put it in a clause:
+
+	if	or	and	A	B	!=	+	C	6	/	D	3
+
+ As soon as this line gets reached, Run starts in on evaluating. How this works is that the pointer
+starts from the right, and goes left along the expression, evaluating the operators as it goes. The
+variables are given their values. As soon as the pointer reaches an operator, it uses it in
+conjunction with the values that follow it. For instance, the pointer in this example starts at the
+3, goes to the D and stores it as 6, and when it readches the /, it stores the value of D / 3. Take
+a look at the sequence of evaluation that takes place:
+
+												V
+	if	or	and	A	B	!=	+	C	6	/	D	3
+
+											V
+	if	or	and	A	B	!=	+	C	6	/	7	3
+
+										V
+	if	or	and	A	B	!=	+	C	6	2
+
+									V
+	if	or	and	A	B	!=	+	C	6	2
+
+								V
+	if	or	and	A	B	!=	+	1	6	2
+
+							V
+	if	or	and	A	B	!=	7			2
+
+						V
+	if	or	and	A	B	true
+
+					V
+	if	or	and	A	false	true
+
+				V
+	if	or	and	true	false	true
+
+			V
+	if	or	false			true
+
+		V
 	if	true
 
- At the end, the result is true, so the if does not skip lines.
+ At the end, the result is true, so the if does not skip lines. And that's how clauses work!
 
+ One last thing before we finish clauses, let's take a look at the way create, set, and setgargto
+all work. The create command uses clauses when creating integers and booleans. So you could assign
+a boolean or integer like this:
 
- Now on to for loops! A for loop has this form:
+	create	int	twelve	*	2	-	D	C
+	create	boolean	falsity	==	A	B
+
+ Set takes the same form:
+
+	set	twelve	+	+	D	C	4
+	set	falsity	and	A	B
+
+ For setargto, the clause has to take place on the command line. So take a look at this line:
+
+	set	twelve	-	*	7	2	2
+
+ To have setargto perform the same action, have something this line in your script:
+
+	setargto	t	twelve
+
+ Then, when you run your script, type
+
+	java myscript t-,*,7,2,2
+
+and the setargto command will perform just like the set command. Note that you cannot access
+variables from a setargto- variable access is limited to the script that the variables exist in, so
+something like this,
+
+	java myscript t-,*,D,2,2
+
+would not have the D turn into 7, even though there is a variable of name D.
+
+================================================================
+SECTION 3.2- For Loops
+================================================================
+
+ Now on to for loops! They don't really need their own section, but hey, why not? A for loop has
+this form:
 
 	for	[name]	[init]	[max]	[incr]
 
@@ -680,8 +790,9 @@ by the for loop, they take on the following properties:
 - Variables created with create commands are global, and will not disappear.
 - Jump and call commands can access labels outside of the for loop, but you should make sure you
     return to where it was called. Each end command is paired to a specific for command. If you have
-    nested for loops and the pointer reaches the wrong end command because of jumping, the loops will
+    nested for loops and the pointer reaches the wrong end command because of jumping, the loops may
     function incorrectly.
+
  Here is an example of a for loop:
 
 	for	x	100	200	10
@@ -699,11 +810,11 @@ varying power:
 	return
 	quit
 
- Break will exit out of the current loop, and do nothing if it is not in a loop. Return will exit
-out of the current script but the program will keep running if another script called it. Quit will
-stop all autoclicking and end the program.
- You'll notice that there is no while loop, this is because the same effect can be acheived with
-either of the following patterns:
+ Break will exit out of the current loop. Return will exit out of the current script, but the
+program will keep running if another script called it (break will also do this if it is not called
+from within a loop). Quit will stop all autoclicking and end the program.
+ You might have noticed that there is no while loop, this is because the same effect can be acheived
+with either of the following patterns:
 
 	:label1
 	if	not	[condition to keep it running]
@@ -727,12 +838,14 @@ SECTION 4- Miscellaneous Features
 
  In addition to clicking, run also allows you to type. There are three commands for key presses:
 
-	type	[text]
+	type	.[text]
 	press	[button]
 	release	[button]
 
- Type will type all remaining characters on the line, tabs spaces and all, uppercase and lowercase
-letters. The initial tab or space that follows the type is ignored.
+ Type will type any remaining characters on the line after the period- tabs, spaces, uppercase and
+lowercase letters, and any other keyboard characters. This special syntax means that any other
+characters before the period will be ignored (including whitespace), and that if you have no
+characters after the period, type will type nothing.
  Press will press down one of the following buttons when substituting [button]:
 
 	enter
@@ -747,8 +860,11 @@ letters. The initial tab or space that follows the type is ignored.
 	alt
 	capslock
 	escape
+	tab
+	space
 
- Release will release the key.
+ Release will release the key. You can also press/release any of the single characters that you can
+use in the type command (tab and space are included in the list since they are normally whitespace).
 
  There are also some miscellaneous options that can be set with these commands:
 
@@ -757,7 +873,7 @@ letters. The initial tab or space that follows the type is ignored.
 
  This will either turn on or turn off, respectively, certain settings that can be helpful while
 running scripts. Optionon settings may take extra arguments, but optionoff only needs the name of
-the option. There are currently five available settings. The first one,
+the option. There are currently six available settings. The first one,
 
 	optionon	quitafter	[number]
 
@@ -770,7 +886,11 @@ continue running the script. Quitafter is off by default.
 
 	optionon	endingcall	[label]
 
-will be described later in the README.
+triggers when the script ends in the middle. Endingcall jumps to the label [label], and runs any of
+3 specific commands, which will be explained later, that come after the label. Any other types of
+commands after the label will be ignored. The endingcall option will only work on the original
+script that was run from the command line, and is not called if the script ends normally. Endingcall
+is off by default.
  The third option,
 
 	optionon	variance	[number]
@@ -793,18 +913,51 @@ the entire Java program is ended. Mousequit is on by default.
 
 sets the order in which the scan clause runs. The first direction is the primary direction in which
 the scan searches the picture, the second direction is the secondary direction. The directions for
-the command are up, down, left, and right. If you had right for the first argument and up for the
-second, then scans would start at the bottom left corner, go right along the row, and once the end
-has been reached, it would move up a row, go the left side, and start again. If you have only rights
-and lefts as arguments, the first argument will be the primary direction, and down will be assigned
-as the secondary direction. Similarly, having only ups and downs will set right as the secondary
-direction. The default scanorder is right then up. Turning off scanorder sets it to the default.
+the command are up, down, left, and right. If you had the following, 
+
+	optionon	scanorder	right	up
+
+then scans would start at the bottom left corner, go right along the row, and once the end
+has been reached, it would move up a row, go the left side, and start again. If your first direction
+is invalid (not up, down, left, or right), the scanorder does not get set. If your second direction
+is invalid, or is on the same axis as the first direction (vertical or horizontal), a default second
+direction will be assigned: down for vertical and right for horizontal. The default scanorder is
+right then down. Turning off scanorder sets it to this default.
+ The sixth option,
+
+	optionon	offset	[x]	[y]
+
+allows you to set an offset to apply to all interactions with the screen. Any action that uses
+screen coordinates (move, pausenot, scan, etc.) will shift by this amount. For example, if you had
+the following commands,
+
+	optionon	offset	50	100
+	move	25	37
+
+the mouse would move to x-75, y-137. Similarly,
+
+	optionon	offset	2	43
+	pause	10	10	255	255	255
+
+would wait until the color at x-12, y-53 is the right color. All variables are unaffected, including
+the system variables .scanx and .scany. If you had
+
+	optionon	offset	34	56
+	if	scan	10	10	20	20	30	30	30
+		[command]
+
+the scan would start at x-44, y-66. If the pixel at x-44, y-66 was the correct color, then .scanx
+would be 10 and .scany would be 10. If you then had
+
+	move	.scanx	.scany
+
+your mouse would move to x-44, y-66. Offset is off by default.
 
  One last feature, you can print to the command line almost just like you can in Java. The command
 
-	print	[text]
+	print	.[text]
 
-will print everything after the print in the same format as type,
+will print everything after the period in the same format as type,
 
 	printval	[name]
 
@@ -823,37 +976,33 @@ clock displayed HH:MM:SS DD/MM/YYYY.
  Here's an example:
 
 	create	int	test	123
-	print	The value of "test" is 
+	print	.The value of "test" is 
 	printval	test
-	print	 at
+	print	. at
 	printval	.timestamp
-	print	.
+	print	..
 	println
-	println	Also, here's a tab:	.
+	println	.Also, here's a tab:	.
 
  This would print out these two lines:
 
 The value of "test" is 123 at 0:00:00 1/1/1970.
 Also, here's a tab:	.
 
- The time here would be replaced with the real time, rather than the epoch. Notice the spaces at the
-end of the first print line, and at the beginning of the second one. Tabs and spaces get treated
-like regular characters until the end of the line, just like in type.
+ The time here would be replaced with the real time, rather than the epoch.
  Mentioned earlier was the
 
 	optionon	endingcall	[label]
 
-option. This option will, at the end of the program, jump to the label [label], and run any of the 3
-print commands that come after the label. Any other types of commands after the label will be
-ignored. The endingcall option will only work on the original script that was run from the command
-line. Endingcall is off by default.
+option. The print commands are the 3 commands that endingcall will execute after jumping.
 
 
 
  And that's that! You now know how to create autoclicker scripts! The autoclicker will also
-automatically do a quick syntax check of all scripts to be run, but will not catch everything. Also,
-all comments get removed upon running the script. If you desire blank lines, for ifs or any other
-line skipping, you can use blank labels (lines that only contain ":").
+automatically do a quick syntax check of all scripts to be run (though it won't necessarily catch
+everything) to make sure that certain errors don't appear. All comments get removed upon running the
+script, as if they were never there (take this into account with your if commands).
 
  Run is a growing program, there are always plenty of things that can be added or changed. Feel free
-to send an e-mail with suggestions, misspellings, confusions, or bug reports.
+to send an e-mail to gregory.loden@gmail.com with suggestions, misspellings, confusions, or bug
+reports.

@@ -75,3 +75,19 @@ v5.2	Fixed a bug that prevented if brackets and for/ends being used at the end o
 	Updated README with removal of destroy command
 
 v5.3	Fixed a bug where breaks wouldn't remove the for loop's variable
+
+v6	Fixed a bug where scripts could not be run from within scripts
+	Fixed a bug where break would break out of all loops
+	Improved speed by preassigning variables
+	Arithmetic and boolean logic combined
+	Extended key pressing slightly
+	Changed format for type, print, and println commands
+	Added option to offset screen interactions
+	Added ability to scroll
+	Added timer variable, removed .timer system variable
+	Removed treset command
+	Updated README with large chunk about arithmetic format & clauses, extended key pressing, more info
+		on if command syntax, new info on type + print + println syntax, offset option, scrolling,
+		timer variables, various miscellanous small things
+	Backwards compatability issue: type, print, and println commands have a new syntax
+	Backwards compatibility issue: .timer no longer exists, treset no longet exists

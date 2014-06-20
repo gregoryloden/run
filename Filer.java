@@ -1,7 +1,6 @@
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileWriter;
-import java.net.URI;
 //lines start at 1
 public class Filer {
 	public class Stringlink {
@@ -9,32 +8,39 @@ public class Filer {
 		Stringlink next = null;
 		Stringlink last = null;
 	}
-	private Stringlink thefile = new Stringlink();
+	private Stringlink thefile = null;
 	private File file = new File("null");
-	private Stringlink rowlink = thefile;
+	private Stringlink rowlink = null;
 	private File[] filelist = null;
-	private int row = 1;
-	private int lines = 1;
+	private int row = 0;
+	private int lines = 0;
 	private int column = 0;
-	public Filer() {}
+	public Filer() {
+		newfile();
+	}
 	public Filer(String name) {
-		setfile(name);
+		setfile(new File(name));
+		newfile();
 	}
 	public Filer(File newfile) {
 		setfile(newfile);
+		newfile();
 	}
 	public void setfile(String name) {
-		file = new File(name);
-		file = file.getAbsoluteFile();
+		setfile(new File(name));
 	}
 	public void setfile(File newfile) {
-		file = newfile;
-		file = file.getAbsoluteFile();
+		file = newfile.getAbsoluteFile();
 	}
 	public boolean deletefile() {
 		return file.delete();
 	}
 //file information stuff
+//contains:
+//	lines
+//	files
+//	getfile
+//	fileisthere
 	public int lines() {
 		return lines;
 	}
@@ -46,6 +52,9 @@ public class Filer {
 	}
 	public File getfile() {
 		return file;
+	}
+	public boolean fileisthere() {
+		return file.exists();
 	}
 //folder changing stuff
 //contains:
@@ -65,24 +74,16 @@ public class Filer {
 	}
 //reader stuff
 //contains:
-//	fileisthere
 //	readfile
 //	getline
 //	getline
 //	getlines
 //	row
 //	column
-	public boolean fileisthere() {
-		return file.exists();
-	}
 	public void readfile() {
 		int next;
-		thefile = new Stringlink();
-		rowlink = thefile;
+		newfile();
 		Stringlink templink = thefile;
-		row = 1;
-		lines = 1;
-		column = 0;
 		try {
 			FileInputStream input = new FileInputStream(file);
 			next = input.read();
@@ -107,7 +108,7 @@ public class Filer {
 	}
 	public String getline(int line) {
 		moveto(line, 0);
-		return getline();
+		return rowlink.line;
 	}
 	public String[] getlines() {
 		Stringlink templink = thefile;
@@ -127,6 +128,7 @@ public class Filer {
 	}
 //writer stuff
 //contains:
+//	newfile
 //	write
 //	writeline
 //	move
@@ -134,6 +136,13 @@ public class Filer {
 //	delete
 //	savefile
 //	replace
+	public void newfile() {
+		thefile = new Stringlink();
+		rowlink = thefile;
+		row = 1;
+		lines = 1;
+		column = 0;
+	}
 	public void write(String text) {
 		rowlink.line = rowlink.line.substring(0, column) + text + rowlink.line.substring(column, rowlink.line.length());
 		column = column + text.length();
@@ -279,6 +288,10 @@ public class Filer {
 		write(newlines[newlines.length - 1]);
 	}
 //file stuff
+//	storefilelist
+//	getlistfile
+//	getlistfile
+//	getlistfiles
 	public void storefilelist() {
 		filelist = file.getParentFile().listFiles();
 	}
@@ -293,5 +306,8 @@ public class Filer {
 				return filelist[pos];
 		}
 		return null;
+	}
+	public File[] getlistfiles() {
+		return filelist;
 	}
 }
