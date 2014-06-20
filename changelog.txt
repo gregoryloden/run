@@ -91,3 +91,6 @@ v6	Fixed a bug where scripts could not be run from within scripts
 		timer variables, various miscellanous small things
 	Backwards compatability issue: type, print, and println commands have a new syntax
 	Backwards compatibility issue: .timer no longer exists, treset no longet exists
+
+v6.1	Added the ability to drag the mouse
+	Updated REAME with mouse dragging

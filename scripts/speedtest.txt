@@ -1,0 +1,45 @@
+//Initial variable creation
+	create	int	num	1
+	create	int	count	0
+	create	timer	time	0
+//Start up the loop
+	println	.Speedtest 1: loops/sec
+	:start
+	set	count	0
+	print	.Pass 
+	printval	num
+	print	.: 
+//Begin looping until 1 second has passed
+	set	time	0
+	:main
+	+=	count	1
+	if	<	time	1000
+		jump	main
+	print	.finished with 
+	printval	count
+	println	. loops/sec.
+	+=	num	1
+//Run 5 times
+	if	<	num	6
+		jump	start
+
+//Start up the second loop
+	println	.Speedtest 2: sec/loop
+	set	num	1
+	:start2
+	set	count	0
+	print	.Pass 
+	printval	num
+	print	.: 
+//Begin looping for 5,000,000 loops
+	set	time	0
+	:main2
+	+=	count	1
+	if	<	count	5000000
+		jump	main2
+	print	.ran 5000000 loops in 
+	printval	time
+	println	.ms.
+	+=	num	1
+	if	<	num	6
+		jump	start2

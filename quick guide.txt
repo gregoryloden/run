@@ -5,9 +5,9 @@ number changes due to evaluation. Some commands have more formats than are liste
 marked with a *.
 
 Commands:
-	left		[x]	[y]
-	right		[x]	[y]
-	move		[x]	[y]
+*	left		[x]	[y]
+*	right		[x]	[y]
+*	move		[x]	[y]
 *	scroll		[direction]
 *	pause		[time]
 *	pausenot	[params...]

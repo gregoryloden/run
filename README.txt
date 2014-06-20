@@ -80,6 +80,26 @@ account, so these two commands,
 	move	1,000	2jrgfsd3j.4
 
 will perform the same action (move the mouse to x-1000, y-234).
+ So commands can have multiple forms, and accept different amounts of arguments. Left and right can
+be used in this form:
+
+	left	[num]
+	right	[num]
+
+ Rather than move and click, this will have the mouse will perform differently depending on what
+[num] is: 2 will press and release the mouse, anything less than 2 will press the mouse, and
+anything greater than 2 will release the mouse. Take a look at this:
+
+	move	100	100
+	pause	1000
+	left	1
+	pause	1000
+	move	100	200
+	pause	1000
+	left	3
+
+ This would move the mouse to x-100, y-100, wait a second, press the left mouse button, wait a
+second, drag the mouse to x-100, y-200, wait a second, and release the button.
  You can also move the mouse scroll wheel in these different ways:
 
 	scroll	up

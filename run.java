@@ -420,11 +420,11 @@ public class run {
 		if (line.startsWith("left")) {
 			s.action[row] = 1;
 			s.val[row] = split(line.substring(4, line.length()), true);
-			argnum = 2;
+			argnum = 1;
 		} else if (line.startsWith("right")) {
 			s.action[row] = 2;
 			s.val[row] = split(line.substring(5, line.length()), true);
-			argnum = 2;
+			argnum = 1;
 		} else if (line.startsWith("move")) {
 			s.action[row] = 3;
 			s.val[row] = split(line.substring(4, line.length()), true);
@@ -729,11 +729,17 @@ System.out.println();
 				//left
 				if (action == 1) {
 					ints = intsplit(args, cvars, cints);
-					auto.left(ints[0] + offx, ints[1] + offy);
+					if (args.length > 1)
+						auto.left(ints[0] + offx, ints[1] + offy);
+					else
+						auto.left(ints[0]);
 				//right
 				} else if (action == 2) {
 					ints = intsplit(args, cvars, cints);
-					auto.right(ints[0] + offx, ints[1] + offy);
+					if (args.length > 1)
+						auto.right(ints[0] + offx, ints[1] + offy);
+					else
+						auto.right(ints[0]);
 				//move
 				} else if (action == 3) {
 					ints = intsplit(args, cvars, cints);
