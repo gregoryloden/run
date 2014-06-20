@@ -4,8 +4,8 @@ import java.awt.MouseInfo;
 import java.util.Scanner;
 import java.util.TreeMap;
 import java.util.Stack;
+import java.awt.Toolkit;
 //TO ADD:
-//?backwards compatibility?
 public class run {
 	public static final int CLEFT = 1;
 	public static final int CRIGHT = 2;
@@ -41,19 +41,13 @@ public class run {
 	public static final int CPRINT = 31;
 	public static String timestamp() {
 		Calendar c = Calendar.getInstance();
-		String s = ":";
 		int second = c.get(Calendar.SECOND);
-		if (second < 10)
-			s = ":0";
 		int minute = c.get(Calendar.MINUTE);
-		String m = ":";
-		if (minute < 10)
-			m = ":0";
 		int hour = c.get(Calendar.HOUR_OF_DAY);
 		int day = c.get(Calendar.DATE);
 		int month = c.get(Calendar.MONTH) + 1;
 		int year = c.get(Calendar.YEAR);
-		return (hour + m + minute + s + second + " " + day + "/" + month + "/" + year);
+		return (hour + (minute < 10 ? ":0" : ":") + minute + (second < 10 ? ":0" : ":") + second + " " + day + "/" + month + "/" + year);
 	}
 	public static int mousex() {
 		return MouseInfo.getPointerInfo().getLocation().x;
@@ -105,11 +99,13 @@ public class run {
 	public int offy = 0;
 	public boolean returnval = false;
 	public boolean endmessages = true;
+	public boolean skipped = false;
 	public static class Varslist {
 		public static final int INT = 1;
 		public static final int BOOLEAN = 2;
 		public static final int COLOR = 3;
 		public static final int TIMER = 4;
+		public static final int SCREENSHOT = 5;
 		public static final int SPECIAL = 100;
 		public String name;
 		public Varslist next;
@@ -188,7 +184,7 @@ public class run {
 			return t == COLOR;
 		}
 		public int ival() {
-			return (val[0] << 16) + (val[1] << 8) + val[2];
+			return -1;
 		}
 		public void setto(String[] args, int[] cptrs) {
 			Varslist[] vars = mainrun.vars;
@@ -230,6 +226,28 @@ public class run {
 			return new VarsTimer(name, val, next);
 		}
 	}
+/*
+	public static class VarsScreenshot extends Varslist {
+		public BufferedImage val;
+		public VarsScreenshot(String n, Varslist vl) {
+			super(n, vl);
+		}
+		public boolean istype(int t) {
+			return t == SCREENSHOT;
+		}
+		public int ival() {
+			return 0;
+		}
+		public void setto(String[] args, int[] cptrs) {
+		}
+		public String toString() {
+			return "screenshot";
+		}
+		public VarsTimer clone() {
+			return new VarsScreenshot(name, val, next);
+		}
+	}
+*/
 	public static class VarsSpecial extends Varslist {
 		public int val;
 		public VarsSpecial(String n) {
@@ -244,6 +262,12 @@ public class run {
 				val = 4;
 			else if (n.equals(".timestamp"))
 				val = 5;
+			else if (n.equals(".skipped"))
+				val = 6;
+			else if (n.equals(".screenwidth"))
+				val = 7;
+			else if (n.equals(".screenheight"))
+				val = 8;
 		}
 		public boolean istype(int t) {
 			return t == SPECIAL;
@@ -259,6 +283,12 @@ public class run {
 				return mainrun.scany;
 			else if (val == 5)
 				return (int)(System.currentTimeMillis());
+			else if (val == 6)
+				return mainrun.skipped ? 1 : 0;
+			else if (val == 7)
+				return Toolkit.getDefaultToolkit().getScreenSize().width;
+			else if (val == 8)
+				return Toolkit.getDefaultToolkit().getScreenSize().height;
 			return 0;
 		}
 		public String toString() {
@@ -272,10 +302,16 @@ public class run {
 				return String.valueOf(mainrun.scany);
 			else if (val == 5)
 				return timestamp();
+			else if (val == 6)
+				return String.valueOf(mainrun.skipped);
+			else if (val == 7)
+				return String.valueOf(Toolkit.getDefaultToolkit().getScreenSize().width);
+			else if (val == 8)
+				return String.valueOf(Toolkit.getDefaultToolkit().getScreenSize().height);
 			return name;
 		}
 		public VarsSpecial clone() {
-			return new VarsSpecial(name);
+			return this;
 		}
 	}
 	public static class Script {
@@ -507,9 +543,12 @@ public class run {
 				case CSETARGTO:
 				case CIF:
 				case CEND:
-				case COPTIONON:
 				case CCREATE:
 					i = 1;
+					break;
+				case COPTIONON:
+					if (!putter.val[row][0].equals("endingcall"))
+						i = 1;
 					break;
 			}
 			switch(action) {
@@ -938,11 +977,11 @@ System.out.println();
 				} else if (action == CPAUSENOT) {
 					variable = vars[cptrs[2]];
 					if (variable.istype(Varslist.COLOR)) {
-						VarsColor vc = (VarsColor)(variable);
+						int[] vcval = ((VarsColor)(variable)).val;
 						if (cptrs.length < 4)
-							pausenot(vars[cptrs[0]].ival() + offx, vars[cptrs[1]].ival() + offy, vc.val[0], vc.val[1], vc.val[2], -1);
+							pausenot(vars[cptrs[0]].ival() + offx, vars[cptrs[1]].ival() + offy, vcval[0], vcval[1], vcval[2], -1);
 						else
-							pausenot(vars[cptrs[0]].ival() + offx, vars[cptrs[1]].ival() + offy, vc.val[0], vc.val[1], vc.val[2], vars[cptrs[3]].ival());
+							pausenot(vars[cptrs[0]].ival() + offx, vars[cptrs[1]].ival() + offy, vcval[0], vcval[1], vcval[2], vars[cptrs[3]].ival());
 					} else {
 						if (cptrs.length < 6)
 							pausenot(vars[cptrs[0]].ival() + offx, vars[cptrs[1]].ival() + offy, vars[cptrs[2]].ival(), vars[cptrs[3]].ival(), vars[cptrs[4]].ival(), -1);
@@ -958,11 +997,11 @@ System.out.println();
 					else {
 						variable = vars[cptrs[2]];
 						if (variable.istype(Varslist.COLOR)) {
-							VarsColor vc = (VarsColor)(variable);
+							int[] vcval = ((VarsColor)(variable)).val;
 							if (cptrs.length < 4)
-								pause(vars[cptrs[0]].ival() + offx, vars[cptrs[1]].ival() + offy, vc.val[0], vc.val[1], vc.val[2], -1);
+								pause(vars[cptrs[0]].ival() + offx, vars[cptrs[1]].ival() + offy, vcval[0], vcval[1], vcval[2], -1);
 							else
-								pause(vars[cptrs[0]].ival() + offx, vars[cptrs[1]].ival() + offy, vc.val[0], vc.val[1], vc.val[2], vars[cptrs[3]].ival());
+								pause(vars[cptrs[0]].ival() + offx, vars[cptrs[1]].ival() + offy, vcval[0], vcval[1], vcval[2], vars[cptrs[3]].ival());
 						} else {
 							if (cptrs.length < 6)
 								pause(vars[cptrs[0]].ival() + offx, vars[cptrs[1]].ival() + offy, vars[cptrs[2]].ival(), vars[cptrs[3]].ival(), vars[cptrs[4]].ival(), -1);
@@ -1018,10 +1057,9 @@ System.out.println();
 						vars[cptrs[1]] = new VarsBoolean(args[1], evaluate(args, cptrs, 2) != 0, vars[cptrs[1]]);
 					else if (args[0].equals("color")) {
 						variable = vars[cptrs[2]];
-						if (variable.istype(Varslist.COLOR)) {
-							VarsColor vc = (VarsColor)(variable);
-							vars[cptrs[1]] = new VarsColor(args[1], vc.val, vars[cptrs[1]]);
-						} else if (args[2].equals("at"))
+						if (variable.istype(Varslist.COLOR))
+							vars[cptrs[1]] = new VarsColor(args[1], ((VarsColor)(variable)).val, vars[cptrs[1]]);
+						else if (args[2].equals("at"))
 							vars[cptrs[1]] = new VarsColor(args[1], auto.colorsat(vars[cptrs[3]].ival() + offx, vars[cptrs[4]].ival() + offy), vars[cptrs[1]]);
 						else
 							vars[cptrs[1]] = new VarsColor(args[1], new int[] {vars[cptrs[2]].ival(), vars[cptrs[3]].ival(), vars[cptrs[4]].ival()}, vars[cptrs[1]]);
@@ -1180,113 +1218,86 @@ System.out.println();
 	//evaluate the arithmetic/boolean equation
 	public int evaluate(String[] vals, int[] cptrs, int off) {
 		int length = vals.length;
-		int[] ints = new int[length];
 		int stack = length;
+		int[] ints = new int[stack];
 		for (int spot = length - 1; spot >= off; spot -= 1) {
 			if (vals[spot].startsWith(" ")) {
-				if (cptrs[spot] < 7) {
+				int cptr = cptrs[spot];
+				if (cptr < 7) {
 					// +
-					if (cptrs[spot] == 1) {
+					if (cptr == 1) {
 						stack += 1;
 						ints[stack] = ints[stack - 1] + ints[stack];
 					// -
-					} else if (cptrs[spot] == 2) {
+					} else if (cptr == 2) {
 						stack += 1;
 						ints[stack] = ints[stack - 1] - ints[stack];
 					// *
-					} else if (cptrs[spot] == 3) {
+					} else if (cptr == 3) {
 						stack += 1;
 						ints[stack] = ints[stack - 1] * ints[stack];
 					// /
-					} else if (cptrs[spot] == 4) {
+					} else if (cptr == 4) {
 						stack += 1;
 						ints[stack] = ints[stack - 1] / ints[stack];
 					// %
-					} else if (cptrs[spot] == 5) {
+					} else if (cptr == 5) {
 						stack += 1;
 						ints[stack] = ints[stack - 1] % ints[stack];
 					// random
-					} else if (cptrs[spot] == 6)
+					} else if (cptr == 6)
 						ints[stack] = (int)(Math.random() * ints[stack]);
-				} else if (cptrs[spot] < 13) {
+				} else if (cptr < 13) {
 					// ==
-					if (cptrs[spot] == 7) {
+					if (cptr == 7) {
 						stack += 1;
-						if (ints[stack - 1] == ints[stack])
-							ints[stack] = 1;
-						else
-							ints[stack] = 0;
+						ints[stack] = ints[stack - 1] == ints[stack] ? 1 : 0;
 					// !=
-					} else if (cptrs[spot] == 8) {
+					} else if (cptr == 8) {
 						stack += 1;
-						if (ints[stack - 1] != ints[stack])
-							ints[stack] = 1;
-						else
-							ints[stack] = 0;
+						ints[stack] = ints[stack - 1] != ints[stack] ? 1 : 0;
 					// >=
-					} else if (cptrs[spot] == 9) {
+					} else if (cptr == 9) {
 						stack += 1;
-						if (ints[stack - 1] >= ints[stack])
-							ints[stack] = 1;
-						else
-							ints[stack] = 0;
+						ints[stack] = ints[stack - 1] >= ints[stack] ? 1 : 0;
 					// >
-					} else if (cptrs[spot] == 10) {
+					} else if (cptr == 10) {
 						stack += 1;
-						if (ints[stack - 1] > ints[stack])
-							ints[stack] = 1;
-						else
-							ints[stack] = 0;
+						ints[stack] = ints[stack - 1] > ints[stack] ? 1 : 0;
 					// <=
-					} else if (cptrs[spot] == 11) {
+					} else if (cptr == 11) {
 						stack += 1;
-						if (ints[stack - 1] <= ints[stack])
-							ints[stack] = 1;
-						else
-							ints[stack] = 0;
+						ints[stack] = ints[stack - 1] <= ints[stack] ? 1 : 0;
 					// <
-					} else if (cptrs[spot] == 12) {
+					} else if (cptr == 12) {
 						stack += 1;
-						if (ints[stack - 1] < ints[stack])
-							ints[stack] = 1;
-						else
-							ints[stack] = 0;
+						ints[stack] = ints[stack - 1] < ints[stack] ? 1 : 0;
 					}
-				} else if (cptrs[spot] < 16) {
+				} else if (cptr < 16) {
 					// not
-					if (cptrs[spot] == 13) {
-						if (ints[stack] == 0)
-							ints[stack] = 1;
-						else
-							ints[stack] = 0;
+					if (cptr == 13)
+						ints[stack] = ints[stack] == 0 ? 1 : 0;
 					// or
-					} else if (cptrs[spot] == 14) {
+					else if (cptrs[spot] == 14) {
 						stack += 1;
-						if ((ints[stack - 1] | ints[stack]) != 0)
-							ints[stack] = 1;
-						else
-							ints[stack] = 0;
+						ints[stack] = (ints[stack - 1] != 0 || ints[stack] != 0) ? 1 : 0;
 					// and
 					} else if (cptrs[spot] == 15) {
 						stack += 1;
-						if ((ints[stack - 1] & ints[stack]) != 0)
-							ints[stack] = 1;
+						ints[stack] = (ints[stack - 1] != 0 && ints[stack] != 0) ? 1 : 0;
 					}
 				} else {
 					// redpart
-					if (cptrs[spot] == 16) {
-						VarsColor vc = (VarsColor)(vars[cptrs[spot + 1]]);
-						ints[stack] = vc.val[0];
+//					if (cptr == 16)
+//						ints[stack] = ((VarsColor)(vars[cptrs[spot + 1]])).val[0];
 					// greenpart
-					} else if (cptrs[spot] == 17) {
-						VarsColor vc = (VarsColor)(vars[cptrs[spot + 1]]);
-						ints[stack] = vc.val[1];
+//					else if (cptr == 17)
+//						ints[stack] = ((VarsColor)(vars[cptrs[spot + 1]])).val[1];
 					// bluepart
-					} else if (cptrs[spot] == 18) {
-						VarsColor vc = (VarsColor)(vars[cptrs[spot + 1]]);
-						ints[stack] = vc.val[2];
+//					else if (cptr == 18)
+//						ints[stack] = ((VarsColor)(vars[cptrs[spot + 1]])).val[2];
 					// input
-					} else if (cptrs[spot] == 19) {
+					if (cptr == 19) {
 						ints[stack] = 0;
 						for (int loc = 1; loc < input.length; loc += 1) {
 							if (input[loc].equals(vals[spot + 1])) {
@@ -1295,24 +1306,11 @@ System.out.println();
 							}
 						}
 					// colorat
-					} else if (cptrs[spot] == 20) {
-						variable = vars[cptrs[spot + 3]];
-						if (variable.istype(Varslist.COLOR)) {
-							stack += 2;
-							VarsColor vc = (VarsColor)(variable);
-							if (colorat(ints[stack - 2] + offx, ints[stack - 1] + offy, vc.val[0], vc.val[1], vc.val[2]))
-								ints[stack] = 1;
-							else
-								ints[stack] = 0;
-						} else {
-							stack += 4;
-							if (colorat(ints[stack - 4] + offx, ints[stack - 3] + offy, ints[stack - 2], ints[stack - 1], ints[stack]))
-								ints[stack] = 1;
-							else
-								ints[stack] = 0;
-						}
+					} else if (cptr == 20) {
+						stack += 4;
+						ints[stack] = colorat(ints[stack - 4] + offx, ints[stack - 3] + offy, ints[stack - 2], ints[stack - 1], ints[stack]) ? 1 : 0;
 					// scan
-					} else if (cptrs[spot] == 21) {
+					} else if (cptr == 21) {
 						scanx = -1;
 						scany = -1;
 						BufferedImage image = auto.screenshot(ints[stack] + offx, ints[stack + 1] + offy, ints[stack + 2], ints[stack + 3]);
@@ -1320,23 +1318,10 @@ System.out.println();
 						int r = 0;
 						int g = 0;
 						int b = 0;
-						int ir = 0;
-						int ig = 0;
-						int ib = 0;
-						int oldstack = stack;
-						variable = vars[cptrs[stack + 4]];
-						if (variable.istype(Varslist.COLOR)) {
-							stack += 4;
-							VarsColor vc = (VarsColor)(variable);
-							ir = vc.val[0];
-							ig = vc.val[1];
-							ib = vc.val[2];
-						} else {
-							stack += 6;
-							ir = ints[stack - 2];
-							ig = ints[stack - 1];
-							ib = ints[stack];
-						}
+						stack += 6;
+						int ir = ints[stack - 2];
+						int ig = ints[stack - 1];
+						int ib = ints[stack];
 						int loc0 = 0;
 						int loc1 = 0;
 						int add0 = 1;
@@ -1373,8 +1358,8 @@ System.out.println();
 								g = (pixel >> 8) & 255;
 								b = pixel & 255;
 								if (r <= ir + rvariance && r >= ir - rvariance && g <= ig + gvariance && g >= ig - gvariance && b <= ib + bvariance && b >= ib - bvariance) {
-									scanx = ints[oldstack] + coords[getx];
-									scany = ints[oldstack + 1] + coords[gety];
+									scanx = ints[stack - 6] + coords[getx];
+									scany = ints[stack - 5] + coords[gety];
 									ints[stack] = 1;
 									break outer;
 								}
@@ -1386,8 +1371,31 @@ System.out.println();
 					}
 				}
 			} else {
-				stack -= 1;
-				ints[stack] = vars[cptrs[spot]].ival();
+				variable = vars[cptrs[spot]];
+				if (variable.istype(Varslist.COLOR)) {
+					int[] vcval = ((VarsColor)(variable)).val;
+					int sm1;
+					//check if redpart, greenpart, or bluepart
+					if (spot > off && vals[sm1 = spot - 1].startsWith(" ")) {
+						int cptr = cptrs[sm1];
+						if (cptr == 16)
+							ints[stack -= 1] = vcval[0];
+						else if (cptr == 17)
+							ints[stack -= 1] = vcval[1];
+						else if (cptr == 18)
+							ints[stack -= 1] = vcval[2];
+						else {
+							ints[stack -= 1] = vcval[2];
+							ints[stack -= 1] = vcval[1];
+							ints[stack -= 1] = vcval[0];
+						}
+					} else {
+						ints[stack -= 1] = vcval[2];
+						ints[stack -= 1] = vcval[1];
+						ints[stack -= 1] = vcval[0];
+					}
+				} else
+					ints[stack -= 1] = variable.ival();
 			}
 		}
 		return ints[stack];
@@ -1415,8 +1423,9 @@ System.out.println();
 	public void pause(int x, int y, int r, int g, int b, int waittime) {
 		int xx = mousex();
 		int yy = mousey();
+		skipped = false;
 		long now = System.currentTimeMillis();
-		while (!colorat(x, y, r, g, b) && (waittime < 0 || System.currentTimeMillis() - now < waittime)) {
+		while (!colorat(x, y, r, g, b)) {
 			if (!mousewithin(xx, yy)) {
 				end("You moved the mouse at a pause on line " + rows[pos] + " in script \"" + mainscript.name + "\"");
 				return;
@@ -1425,19 +1434,28 @@ System.out.println();
 				end("Quitting a pause from script \"" + mainscript.name + "\" at line " + rows[pos]);
 				return;
 			}
+			if (waittime >= 0 && System.currentTimeMillis() - now >= waittime) {
+				skipped = true;
+				return;
+			}
 		}
 	}
 	public void pausenot(int x, int y, int r, int g, int b, int waittime) {
 		int xx = mousex();
 		int yy = mousey();
+		skipped = false;
 		long now = System.currentTimeMillis();
-		while (colorat(x, y, r, g, b) && (waittime < 0 || System.currentTimeMillis() - now < waittime)) {
+		while (colorat(x, y, r, g, b)) {
 			if (!mousewithin(xx, yy)) {
 				end("You moved the mouse at a pausenot on line " + rows[pos] + " in script \"" + mainscript.name + "\"");
 				return;
 			}
 			if (quitafter >= 0 && System.currentTimeMillis() - now >= quitafter) {
 				end("Quitting a pausenot from script \"" + mainscript.name + "\" at line " + rows[pos]);
+				return;
+			}
+			if (waittime >= 0 && System.currentTimeMillis() - now >= waittime) {
+				skipped = true;
 				return;
 			}
 		}

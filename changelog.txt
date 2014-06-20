@@ -1,22 +1,86 @@
-V1	Initial run, Autoer, Filer, and numbers
+v8	Added .skipped, .screenwidth, and .screenheight system variables
+	Changed how color variables work in clauses
+	Fixed a bug with endingcall
+	Updated README with new system variables, change to color variables
+	Rearranged order of changelog changes
 
-V2	Added colorsat to Autoer
-	Added run.verify function, syntax checking, extended variables, added breaking, more if clauses
-	Created a README file
+v7.2	Fixed a problem with Java's mouse movements only executing after a delay
 
-v3	Added not clauses
-	Changed the format of printing to print, println, and printvar
-	Fixed run.split function
-	Added random variables
-	Changed Varslist format, removed obsolete run$Varslist functions
-	Changed the behavior of create, can also now hold colors
-	Expanded colorat
-	Changed the behavior and syntax of setargto
-	Changed the behavior of set
-	Added string typing
-	Updated README with new info: lots of variable syntax, random numbers, timer variable, not clauses,
-		colorat usage, printing format, typing, buttons
-	Backwards compatibility issue: setargto commands need to have the type removed
+v7.1	Added single argument optionon variance
+	Added single argument optionon mousetolerance
+	Fixed a bug that with endingcall
+	Updated README with optionon variance + mousetolerance changes
+
+v7	Fixed scrolling not working
+	Fixed created colors not using the option offset for the at creator
+	Enabled endingcall calls to be used in every inner script that gets called, not just the outer one,
+		and for endingcalls to use more of the program than just the prints
+	Enabled for loops to perform descending loops when the last number is negative
+	Added ability to press/release home, end, page up, page down keys
+	Changed some underlying implementation to improve speed
+	Fixed colorats not recognizing colors
+	Added redpart, greenpart, bluepart clause operators
+	Added another pause form
+	Added endmessages option
+	Added mousetolerance option, removed mousequit option
+	Updated README with endingcall changes, for loop change, extra key presses, change to set command,
+		redpart + greenpart + bluepart operators for claueses, other pause form, endmessages option,
+		mousetolerance option
+	Put the README in HTML format
+	Backwards compatibility issue: breaks no longer exit scripts (reenabled accidentally in v6)
+	Backwards compatibility issue: mousequit is replaced by mousetolerance
+
+v6.1	Added the ability to drag the mouse
+	Updated REAME with mouse dragging
+
+v6	Fixed a bug where scripts could not be run from within scripts
+	Fixed a bug where break would break out of all loops
+	Improved speed by preassigning variables
+	Arithmetic and boolean logic combined
+	Extended key pressing slightly
+	Changed format for type, print, and println commands
+	Added option to offset screen interactions
+	Added ability to scroll
+	Added timer variable, removed .timer system variable
+	Removed treset command
+	Updated README with large chunk about arithmetic format & clauses, extended key pressing, more info
+		on if command syntax, new info on type + print + println syntax, offset option, scrolling,
+		timer variables, various miscellanous small things
+	Backwards compatability issue: type, print, and println commands have a new syntax
+	Backwards compatibility issue: .timer no longer exists, treset no longet exists
+
+v5.3	Fixed a bug where breaks wouldn't remove the for loop's variable
+
+v5.2	Fixed a bug that prevented if brackets and for/ends being used at the end of a script
+	Fixed setargto allowing variables to be set to the wrong values
+	Fixed endingcall misinterpreting commands
+	Removed the ability to destroy created variables
+	Updated README with removal of destroy command
+
+v5.1	Added the ability to destroy created variables
+	Fixed a bug that was causing boolean clauses to erase themselves
+	Updated README with destroy command
+
+v5	Added option for scanorder
+	Made timestamps show 00 instead of 0
+	Fixed jumps looking at nulls when label searching
+	Fixed quitting giving the wrong line number
+	Fixed run.commasplit function that caused setargto not to read arguments properly
+	Changed verify to display all syntax errors it can find
+	Allowed println to print strings just as print does, in addition to its current function
+	Made jumps run quicker
+	Made for loops to run quicker
+	Allowed jumps within for loops to use labels outside of the loop
+	Added bracket syntax for ifs
+	Breaks no longer exit scripts
+	Allowed printval to print all system variables
+	Added !=, or, & and to the if clauses
+	Added arithmetic, though change commands still remain
+	Added more exclamation points!
+	Updated README with option command usage for scanorder, println, if bracket syntax, break update,
+		endingcall, printval abilities, if clause expansion, arithmetic expansion
+	Backwards compatibility issue: breaks no longer exit scripts
+	Backwards compatibility issue: optionon endingtimestamp is replaced by optionon endingcall [label]
 
 v4	Made numbers.readint function run quicker
 	Removed some Autoer functions that got replaced with Autoer.button
@@ -43,80 +107,22 @@ v4	Made numbers.readint function run quicker
 		quitafter & timestamps & variance & mousequit, printval timestamps, change in booleans, scanning,
 		call and jumpback
 
-v5	Added option for scanorder
-	Made timestamps show 00 instead of 0
-	Fixed jumps looking at nulls when label searching
-	Fixed quitting giving the wrong line number
-	Fixed run.commasplit function that caused setargto not to read arguments properly
-	Changed verify to display all syntax errors it can find
-	Allowed println to print strings just as print does, in addition to its current function
-	Made jumps run quicker
-	Made for loops to run quicker
-	Allowed jumps within for loops to use labels outside of the loop
-	Added bracket syntax for ifs
-	Breaks no longer exit scripts
-	Allowed printval to print all system variables
-	Added !=, or, & and to the if clauses
-	Added arithmetic, though change commands still remain
-	Added more exclamation points!
-	Updated README with option command usage for scanorder, println, if bracket syntax, break update,
-		endingcall, printval abilities, if clause expansion, arithmetic expansion
-	Backwards compatibility issue: breaks no longer exit scripts
-	Backwards compatibility issue: optionon endingtimestamp is replaced by optionon endingcall [label]
+v3	Added not clauses
+	Changed the format of printing to print, println, and printvar
+	Fixed run.split function
+	Added random variables
+	Changed Varslist format, removed obsolete run$Varslist functions
+	Changed the behavior of create, can also now hold colors
+	Expanded colorat
+	Changed the behavior and syntax of setargto
+	Changed the behavior of set
+	Added string typing
+	Updated README with new info: lots of variable syntax, random numbers, timer variable, not clauses,
+		colorat usage, printing format, typing, buttons
+	Backwards compatibility issue: setargto commands need to have the type removed
 
-v5.1	Added the ability to destroy created variables
-	Fixed a bug that was causing boolean clauses to erase themselves
-	Updated README with destroy command
+V2	Added colorsat to Autoer
+	Added run.verify function, syntax checking, extended variables, added breaking, more if clauses
+	Created a README file
 
-v5.2	Fixed a bug that prevented if brackets and for/ends being used at the end of a script
-	Fixed setargto allowing variables to be set to the wrong values
-	Fixed endingcall misinterpreting commands
-	Removed the ability to destroy created variables
-	Updated README with removal of destroy command
-
-v5.3	Fixed a bug where breaks wouldn't remove the for loop's variable
-
-v6	Fixed a bug where scripts could not be run from within scripts
-	Fixed a bug where break would break out of all loops
-	Improved speed by preassigning variables
-	Arithmetic and boolean logic combined
-	Extended key pressing slightly
-	Changed format for type, print, and println commands
-	Added option to offset screen interactions
-	Added ability to scroll
-	Added timer variable, removed .timer system variable
-	Removed treset command
-	Updated README with large chunk about arithmetic format & clauses, extended key pressing, more info
-		on if command syntax, new info on type + print + println syntax, offset option, scrolling,
-		timer variables, various miscellanous small things
-	Backwards compatability issue: type, print, and println commands have a new syntax
-	Backwards compatibility issue: .timer no longer exists, treset no longet exists
-
-v6.1	Added the ability to drag the mouse
-	Updated REAME with mouse dragging
-
-v7	Fixed scrolling not working
-	Fixed created colors not using the option offset for the at creator
-	Enabled endingcall calls to be used in every inner script that gets called, not just the outer one,
-		and for endingcalls to use more of the program than just the prints
-	Enabled for loops to perform descending loops when the last number is negative
-	Added ability to press/release home, end, page up, page down keys
-	Changed some underlying implementation to improve speed
-	Fixed colorats not recognizing colors
-	Added redpart, greenpart, bluepart clause operators
-	Added another pause form
-	Added endmessages option
-	Added mousetolerance option, removed mousequit option
-	Updated README with endingcall changes, for loop change, extra key presses, change to set command,
-		redpart + greenpart + bluepart operators for claueses, other pause form, endmessages option,
-		mousetolerance option
-	Put the README in HTML format
-	Backwards compatibility issue: breaks no longer exit scripts (reenabled accidentally in v6)
-	Backwards compatibility issue: mousequit is replaced by mousetolerance
-
-v7.1	Added single argument optionon variance
-	Added single argument optionon mousetolerance
-	Fixed a bug that with endingcall
-	Updated README with optionon variance + mousetolerance changes
-
-v7.2	Fixed a problem with Java's mouse movements only executing after a delay
+V1	Initial run, Autoer, Filer, and numbers

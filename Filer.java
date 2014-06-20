@@ -10,9 +10,9 @@ public class Filer {
 		Stringlink last = null;
 	}
 	private String eol() {
-		if (!windows)
-			return "\n";
-		return "\r\n";
+		if (windows)
+			return "\r\n";
+		return "\n";
 	}
 	private Stringlink thefile = new Stringlink();
 	private File file = new File("null");

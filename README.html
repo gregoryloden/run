@@ -12,7 +12,7 @@ body {font-family:"Verdana";font-size:13px;}
 &nbsp;Congratulations! You are now the proud owner of a Gregory Loden <i>Run</i>-class autoclicker!<br>
 <br>
 &nbsp;This wonderful piece of software allows you to write your own mouse-controlling programs using text files and a simple syntax, allowing for easy and quick program creation.<br>
-&nbsp;To start off, there is a folder named "scripts" in the same directory as the run.class file. This is where all autoclick scripts will live. To be recognized, all scripts should end with .txt. Two sample scripts have been provided.<br>
+&nbsp;To start off, there is a folder named "scripts" in the same directory as the run.class file. This is where all autoclick scripts will be located. To be recognized, all scripts should end with .txt. Two sample scripts have been provided.<br>
 <br>
 <br>
 <br>
@@ -248,6 +248,15 @@ represent the mouse's current x- and y-coordinates. So for example,
 <pre><code>	create	int	clickx	.mousex
 	create	int	clicky	.mousey</code></pre>
 would create two variables, each with a mouse coordinate. If the mouse was at x-<code>145</code>, y-<code>234</code>, <code>clickx</code> would have a value of <code>145</code> and <code>clicky</code> would have a value of <code>234</code>.<br>
+&nbsp;Similarly, you can use
+<pre><code>	.screenwidth
+	.screenheight</code></pre>
+to get the current screen display's width and height.<br>
+&nbsp;There is also a system variable
+<pre><code>	.skipped</code></pre>
+that you can use after using a pause or pausenot with a millisecond count at the end. This variable indicates that the pause exited before the color was correct. For example, if you had
+<pre><code>	pause	100	100	255	255	255	1000</code></pre>
+and a second went by without seeing white, <code>.skipped</code> would be set to <code>true</code>.<br>
 <br>
 <br>
 <br>
@@ -315,10 +324,10 @@ SECTION 3.1- Clauses<br>
 ================================================================</h4>
 &nbsp;A clause is a big paramater consisting of a bunch of operators and variables. The commands <code>create</code>, <code>set</code>, <code>setargto</code>, and <code>if</code> all have access to these special clauses, although <code>create</code>, <code>set</code>, and <code>setargto</code> only have access when storing to an <code>int</code> or <code>boolean</code>. The <code>at</code> paramater used in colors is unavailable in clauses.<br>
 <br>
-&nbsp;Let's go over how the variable types are stored and represented in clauses. A clause stores all types as integers. All variable types have an integer representation.<br>
+&nbsp;Let's go over how the variable types are stored and represented in clauses. A clause stores all types as integers. All variable types (except colors) have an integer representation.<br>
 - <code>int</code>s are stored as 32-bit numbers and are simply represented as themselves.<br>
 - <code>boolean</code>s are stored as <code>true</code> or <code>false</code>. They represent <code>1</code> if they are <code>true</code>, and <code>0</code> if they are <code>false</code>. Now, in addition to a <code>boolean</code> being treated as a number, numbers can be used as booleans. When a result in a clause gets interpreted as a <code>boolean</code>, any number besides <code>0</code> is interpreted as <code>true</code> (<code>0</code> is <code>false</code>). For the most part, you won't be using <code>boolean</code> variables as integers.<br>
-- <code>color</code>s are stored as 3 different integer values. A <code>color</code>'s integer representation is an integer with 3 values in the range <code>0</code>-<code>255</code>, with red in bits <code>16-23</code>, green in <code>8-15</code>, and blue in <code>0-8</code>. What this means is that if you have a color with (<code>r</code>, <code>g</code>, <code>b</code>), then its value is <code>(r * 256 * 256) + (g * 256) + b</code>. Like booleans, you can probably ignore using <code>color</code> variables as integers.<br>
+- <code>color</code>s are stored as 3 different integer values. A <code>color</code> does not have a single integer representation- rather, they are converted into three integers, one for each of their red, green, and blue components. Colors should generally only be used with special color clauses.<br>
 - <code>timer</code>s are stored similarly to <code>int</code>s, and for the most part are treated as integers. The difference is that <code>timer</code>s change over time, and can only receive single values when creating or setting, rather than a clause.<br>
 <br>
 &nbsp;A clause always returns an <code>int</code>, but can be interpreted as a <code>boolean</code> when storing to a <code>boolean</code> variable or as the result of an <code>if</code> condition.<br>
