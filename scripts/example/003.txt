@@ -1,0 +1,18 @@
+	//Right click then left click in 3 spots each, scroll down, and then repeat
+
+	:main
+	right	200	100
+	pause	500
+	left	100	100
+	pause	500
+	right	200	200
+	pause	500
+	left	100	200
+	pause	500
+	right	200	300
+	pause	500
+	left	100	300
+	pause	500
+	scroll	down
+	pause	1000
+	jump	main

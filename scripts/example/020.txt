@@ -1,0 +1,23 @@
+	// Move to 100, 200 then 200, 200 then 300, 200 then repeat by calling the script a second time
+
+	for	x	100	1000	100
+		move	x	200
+		pause	1000
+		if	==	x	300
+			break
+	end
+
+	if	input	secondtime
+	[
+		return
+
+		// These lines are never reached
+		move	400	400
+		pause	10000
+	]
+	run	example/020	secondtime
+	quit
+
+	// These lines are never reached
+	move	500	500
+	pause	10000

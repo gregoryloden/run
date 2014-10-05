@@ -1,0 +1,31 @@
+	// Move the mouse to 100, 200 then 350, 200 then 205, 200 then 100, 100
+	// Then move to positions with y-200 and x between 0 and 255 based on the different pixel values of 300, 400
+
+	create	color	c	0	250	105
+
+	move	+	redpart	c	100	200
+	pause	1000
+
+	move	+	greenpart	c	100	200
+	pause	1000
+
+	move	+	bluepart	c	100	200
+	pause	1000
+
+	move	5	5
+	pause	1000
+
+	create	screenshot	s	200	300	250	150
+
+	move	imagered	s	300	400	200
+	pause	500
+	move	5	5
+	pause	500
+
+	move	imagegreen	s	300	400	200
+	pause	500
+	move	5	5
+	pause	500
+
+	move	imageblue	s	300	400	200
+

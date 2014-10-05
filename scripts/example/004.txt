@@ -1,0 +1,19 @@
+	// Click 100, 100, pause 1/2 second, move to 200, 100, pause a second, and repeat twice
+
+	call	test
+	call	test
+	call	test
+	jump	end
+	
+	:test
+	left	100	100
+	call	test2
+	pause	1000
+	jumpback
+	
+	:test2
+	pause	500
+	move	200	100
+	jumpback
+	
+	:end

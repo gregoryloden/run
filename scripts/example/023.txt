@@ -1,0 +1,25 @@
+	// Move the mouse to the physical location 150, 150 then reset the offset
+	// Pause and quit after either the color at 100, 100 changes a lot, the mouse moves over 100 pixels, or 5 seconds pass
+	// Move the mouse to 200, 200 once the script quits
+
+	optionon	offset	34	45
+	move	116	105
+	optionoff	offset
+	pause	1000
+
+	// Run will not display "Quitting ..." when the script ends
+	optionoff	endmessages
+	optionon	mousetolerance	100
+	optionon	quitafter	5000
+	optionon	variance	64	64	64
+	optionon	endingcall	end
+
+	create	color	c	at	100	100
+	pausenot	100	100	c
+	quit
+
+	//This never gets called
+	move	600	600
+
+	:end
+	move	200	200

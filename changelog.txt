@@ -1,3 +1,20 @@
+v9	Fixed printing out starting period in print commands
+	Fixed mousepos script to match the new print format
+	Fixed bug where break would not properly restore the variable value
+	Fixed bug where timers would store the negative value of what it was given
+	Fixed a problem where moving the mouse to a spot outside of the screen would cause the
+		script to freeze
+	Added warnings for prints and types with missing text
+	Added clause arithmetic for many commands
+	Added middle click
+	Added screenshot variables
+	Added operators to get and check colors of screenshots
+	Added commands to save and load screenshots
+	Renamed README.html to tutorial.html
+	Renamed quick guide.txt to Github README.md file
+	Updated tutorial with screenshots, arithmetic everywhere, middle click
+	Big reformat of the tutorial page, added command contracts
+
 v8	Added .skipped, .screenwidth, and .screenheight system variables
 	Changed how color variables work in clauses
 	Fixed a bug with endingcall

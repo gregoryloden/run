@@ -1,0 +1,11 @@
+	// Move approximately to 3 spots: 100, 100 then 400, 100 then 700, 100
+
+	create	timer	t	100
+
+	move	t	100
+	pause	300
+
+	move	t	100
+	pause	300
+
+	move	t	100

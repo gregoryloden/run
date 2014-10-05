@@ -1,0 +1,19 @@
+	// Move to 100, 200 then 200, 200 then 300, 200 then 400, 200
+
+	create	color	c	at	300	400
+	if	colorat	300	400	c
+		move	100	200
+	pause	1000
+
+	set	c	at	100	300
+	if	scan	75	275	50	50	c
+		move	200	200
+	pause	1000
+
+	create	screenshot	s	300	200	100	250
+	if	scan	s	imagecolor	s	300	200
+		move	.scanx	.scany
+	pause	1000
+
+	if	imagecolorat	s	350	425	imagecolor s	350	425
+		move	400	200

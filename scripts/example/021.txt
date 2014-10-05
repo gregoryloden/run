@@ -1,0 +1,9 @@
+	// Pause for 5 seconds, type a message, pause 3 seconds, then delete 58 characters (there are no key repeats)
+
+	pause	5000
+	type	.This is a message from the example/021 script! After this message is typed, much of it will get deleted.
+	pause	3000
+	for	loop	1	58	1
+		press	backspace
+		release	backspace
+	end

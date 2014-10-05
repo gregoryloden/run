@@ -1,0 +1,6 @@
+	// Move the mouse to the center of the screen
+	create	int	x	.screenwidth
+	create	int	y	.screenheight
+	/=	x	2
+	/=	y	2
+	move	x	y

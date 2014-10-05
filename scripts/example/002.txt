@@ -1,0 +1,9 @@
+// Drag from 100, 100 to 150, 200
+
+move	100	100
+pause	1000
+left	1
+pause	1000
+move	150	200
+pause	1000
+left	3

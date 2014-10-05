@@ -1,0 +1,29 @@
+	// Comparisons before movement commands
+	// The mouse moves to 200, 200 then 300, 200 then 600, 200
+
+	create	int	a	100
+	create	int	b	33
+	create	int	c	40
+
+	if	>	a	100
+		move	100	200
+	pause	1000
+
+	if	>=	a	100
+		move	200	200
+	pause	1000
+
+	if	<	b	a
+		move	300	200
+	pause	1000
+
+	if	<=	c	b
+		move	400	200
+	pause	1000
+
+	if	==	b	c
+		move	500	200
+	pause	1000
+
+	if	!=	20	a
+		move	600	200

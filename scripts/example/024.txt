@@ -1,0 +1,10 @@
+	// Use all of the print commands to print out some text
+
+	create	int	test	123
+	print	.The value of "test" is 
+	printval	test
+	print	. at 
+	printval	.timestamp
+	print	..
+	println
+	println	.Also, here's a tab:	.

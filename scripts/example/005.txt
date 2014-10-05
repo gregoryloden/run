@@ -1,0 +1,12 @@
+	// Move to 200, 100, then to 150, 200 then pause for at most 5 seconds then move to 300, 250
+
+	create	int	a	100
+	move	a	100
+	pause	1000
+
+	set	a	200
+	move	a	150
+
+	create	color	p300_250	at	300	250
+	pausenot	300	250	p300_250	5000
+	move	300	250

@@ -1,0 +1,13 @@
+	// Move to 400, 100 and then pause
+	. Middle click 300, 150 and then pause
+	~ Right click 400, 200 and then pause
+	- Left click 200, 100
+	These first five lines are all comments since none of them start with a command.
+
+	move	400	100
+	pause	1000
+	middle	300	150
+	pause	1000
+	right	400	200
+	pause	1000
+	left	200	100

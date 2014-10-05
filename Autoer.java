@@ -23,25 +23,9 @@ public class Autoer {
 		auto.mouseRelease(InputEvent.BUTTON1_MASK);
 	}
 	public void leftEnsure(int x, int y) {
-		auto.mouseMove(x, y);
-		Point loc = MouseInfo.getPointerInfo().getLocation();
-		while (loc.x != x || loc.y != y)
-			loc = MouseInfo.getPointerInfo().getLocation();
+		moveEnsure(x, y);
 		auto.mousePress(InputEvent.BUTTON1_MASK);
 		auto.mouseRelease(InputEvent.BUTTON1_MASK);
-	}
-	public void right(int x, int y) {
-		auto.mouseMove(x, y);
-		auto.mousePress(InputEvent.BUTTON3_MASK);
-		auto.mouseRelease(InputEvent.BUTTON3_MASK);
-	}
-	public void rightEnsure(int x, int y) {
-		auto.mouseMove(x, y);
-		Point loc = MouseInfo.getPointerInfo().getLocation();
-		while (loc.x != x || loc.y != y)
-			loc = MouseInfo.getPointerInfo().getLocation();
-		auto.mousePress(InputEvent.BUTTON3_MASK);
-		auto.mouseRelease(InputEvent.BUTTON3_MASK);
 	}
 	public void left(int type) {
 		if (type < 3)
@@ -49,19 +33,47 @@ public class Autoer {
 		if (type > 1)
 			auto.mouseRelease(InputEvent.BUTTON1_MASK);
 	}
+	public void right(int x, int y) {
+		auto.mouseMove(x, y);
+		auto.mousePress(InputEvent.BUTTON3_MASK);
+		auto.mouseRelease(InputEvent.BUTTON3_MASK);
+	}
+	public void rightEnsure(int x, int y) {
+		moveEnsure(x, y);
+		auto.mousePress(InputEvent.BUTTON3_MASK);
+		auto.mouseRelease(InputEvent.BUTTON3_MASK);
+	}
 	public void right(int type) {
 		if (type < 3)
 			auto.mousePress(InputEvent.BUTTON3_MASK);
 		if (type > 1)
 			auto.mouseRelease(InputEvent.BUTTON3_MASK);
 	}
+	public void middle(int x, int y) {
+		auto.mouseMove(x, y);
+		auto.mousePress(InputEvent.BUTTON2_MASK);
+		auto.mouseRelease(InputEvent.BUTTON2_MASK);
+	}
+	public void middleEnsure(int x, int y) {
+		moveEnsure(x, y);
+		auto.mousePress(InputEvent.BUTTON2_MASK);
+		auto.mouseRelease(InputEvent.BUTTON2_MASK);
+	}
+	public void middle(int type) {
+		if (type < 3)
+			auto.mousePress(InputEvent.BUTTON2_MASK);
+		if (type > 1)
+			auto.mouseRelease(InputEvent.BUTTON2_MASK);
+	}
 	public void move(int x, int y) {
 		auto.mouseMove(x, y);
 	}
 	public void moveEnsure(int x, int y) {
 		auto.mouseMove(x, y);
+		long now = System.currentTimeMillis();
 		Point loc = MouseInfo.getPointerInfo().getLocation();
-		while (loc.x != x || loc.y != y)
+		//wait until the mouse is in the right spot or 5 milliseconds have passed
+		while ((loc.x != x || loc.y != y) && System.currentTimeMillis() - now < 5)
 			loc = MouseInfo.getPointerInfo().getLocation();
 	}
 	public void wait(int wait) {

@@ -1,0 +1,29 @@
+	// Move to 100, 150
+
+	create	boolean	sety	true
+	create	int	x	100
+	create	int	y	100
+	if	sety
+		jump	thisisalabel
+	set	x	150
+	jump	end1
+	:thisisalabel
+	set	y	150
+	:end1
+
+	move	x	y
+	pause	1000
+
+	// Move to 150, 100
+	set	sety	false
+	set	x	100
+	set	y	100
+	if	sety
+	[
+		set	y	150
+		jump	end
+	]
+	set	x	150
+	:end
+
+	move	x	y

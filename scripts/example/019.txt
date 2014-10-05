@@ -1,0 +1,18 @@
+	// Move to 100, 200 then 200, 200 up until 500, 200 and then repeat twice
+
+	for	x	100	500	100
+		move	x	100
+		pause	500
+	end
+	
+	create	int	total	0
+	for	x	0	-400	-100
+		set	total	-	100	x
+		move	total	100
+		pause	500
+	end
+	
+	for	x	0	-400	-100
+		move	-	100	x	100
+		pause	500
+	end

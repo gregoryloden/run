@@ -1,0 +1,16 @@
+	// Comparisons before movement commands
+	// The mouse moves to 100, 200 then 300, 200
+
+	create	boolean	a	true
+	create	boolean	b	false
+
+	if	not	b
+		move	100	200
+	pause	1000
+
+	if	and	a	false
+		move	200	200
+	pause	1000
+
+	if	or	b	a
+		move	300	200

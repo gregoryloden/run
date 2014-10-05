@@ -1,0 +1,11 @@
+	// If secondtime was provided as input, move to 200, 200, otherwise move to 100, 100 and call the script a second time
+	if	input	secondtime
+	[
+		move	200	200
+		pause	1000
+		jump	end
+	]
+	move	100	100
+	pause	1000
+	run	example/016	secondtime
+	:end

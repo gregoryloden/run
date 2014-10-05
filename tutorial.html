@@ -1,0 +1,1717 @@
+<html>
+<head>
+<title>
+Run Autoclicker Tutorial
+</title>
+<style type="text/css">
+code {
+	font-family: "Courier", monospace;
+	font-size: 15px;
+}
+code, pre.contract {
+	background-color: #E0E0E0;
+}
+pre.contract {
+	display: inline-block;
+	margin-top: 2px;
+}
+body {
+	font-family: "Verdana", sans-serif;
+	font-size: 13px;
+}
+h4 {
+	margin-bottom: 0px;
+}
+b {
+	background-color: #C0C0C0;
+}
+</style>
+</head>
+<body>
+&nbsp;Congratulations! You are now the proud owner of a Gregory Loden <i>Run</i>-class autoclicker!<br>
+<br>
+&nbsp;This wonderful piece of software allows you to write your own mouse-and-keyboard-controlling programs using text files and a simple syntax, allowing for easy and quick program creation.<br>
+&nbsp;To start off, there is a folder named "scripts" in the same directory as the run.class file. This is where all autoclick scripts will be located. To be recognized, all scripts must end with .txt. Two sample utility scripts have been provided, in addition to a variety of example scripts.<br>
+&nbsp;To run a script, type <code>java run ??? ...</code> in a command line/console/terminal (for the purpose of this tutorial, we'll use "command line" for input and "console" for output). This will run the script named <code>???</code>. You can run scripts in subfolders by including slashes, such as <code>java run example/001</code>. The <code>...</code> is an arbitrary amount of parameters to be passed to the autoclicker for use in the script. We'll see why we need these later.<br>
+&nbsp;In all commands, command calls and parameters are separated by whitespace tabs or spaces. Tabs and spaces are recognized by the program as separators.<br>
+<br>
+<h2><hr>
+Table Of Contents
+<hr></h2>
+<ol>
+	<li>
+		<a href="#section-1">Section 1 - Standard Autoclicking Features</a>
+		<ul>
+			<li><a href="#left-contract">left</a></li>
+			<li><a href="#right-contract">right</a></li>
+			<li><a href="#middle-contract">middle</a></li>
+			<li><a href="#move-contract">move</a></li>
+			<li><a href="#pause-contract">pause</a></li>
+			<li><a href="#scroll-contract">scroll</a></li>
+			<li><a href="#pausenot-contract">pausenot</a></li>
+			<li><a href="#jump-contract">jump</a></li>
+			<li><a href="#labels-contract">(labels)</a></li>
+			<li><a href="#call-contract">call</a></li>
+			<li><a href="#jumpback-contract">jumpback</a></li>
+			<li><a href="#run-contract">run</a></li>
+		</ul>
+	</li>
+	<li>
+		<a href="#section-2">Section 2 - Programming Language Features- Variables</a>
+		<ul>
+			<li><a href="#create-contract">create</a></li>
+			<li><a href="#set-contract">set</a></li>
+			<li><a href="#setargto-contract">setargto</a></li>
+			<li><a href="#plusequals-contract">+=</a></li>
+			<li><a href="#minusequals-contract">-=</a></li>
+			<li><a href="#timesequals-contract">*=</a></li>
+			<li><a href="#divideequals-contract">/=</a></li>
+			<li><a href="#modequals-contract">%=</a></li>
+			<li><a href="#system-variables">system variables</a></li>
+		</ul>
+	</li>
+	<li>
+		<a href="#section-3">Section 3 - Programming Language Features- Conditionals and Loops</a>
+		<ul>
+			<li><a href="#if-contract">if</a></li>
+			<li>
+				<a href="#section-3.1">Section 3.1 - Clauses</a>
+				<ul>
+					<li><a href="#comparison-operators">comparison operators</a></li>
+					<li><a href="#boolean-operators">boolean operators</a></li>
+					<li><a href="#arithmetic-operators">arithmetic operators</a></li>
+					<li><a href="#input-operator">input operator</a></li>
+					<li><a href="#screen-color-operators">screen color operators</a></li>
+					<li><a href="#color-value-operators">color value operators</a></li>
+				</ul>
+			</li>
+			<li>
+				<a href="#section-3.2">Section 3.2 - For Loops</a>
+				<ul>
+					<li><a href="#for-contract">for</a></li>
+					<li><a href="#end-contract">end</a></li>
+					<li><a href="#break-contract">break</a></li>
+					<li><a href="#return-contract">return</a></li>
+					<li><a href="#quit-contract">quit</a></li>
+				</ul>
+			</li>
+		</ul>
+	</li>
+	<li>
+		<a href="#section-4">Section 4 - Miscellaneous Features</a>
+		<ul>
+			<li><a href="#type-contract">type</a></li>
+			<li><a href="#press-contract">press</a></li>
+			<li><a href="#release-contract">release</a></li>
+			<li><a href="#saveimage-contract">saveimage</a></li>
+			<li><a href="#loadimage-contract">loadimage</a></li>
+			<li><a href="#optionon-contract">optionon</a></li>
+			<li><a href="#optionoff-contract">optionoff</a></li>
+			<li><a href="#print-contract">print</a></li>
+			<li><a href="#printval-contract">printval</a></li>
+			<li><a href="#println-contract">println</a></li>
+		</ul>
+	</li>
+</ol>
+<h2 id="section-1"><hr>
+SECTION 1- Standard Autoclicking Features
+<hr></h2>
+&nbsp;The core of any autoclicker is the ability to perform right clicks, left clicks, mouse moving, and pausing.<br>
+&nbsp;In this autoclicker, a command looks like this:
+<pre><code>	left	[x]	[y]</code></pre>
+&nbsp;When the autoclicker's line pointer reaches a line, the command on that line is executed<br>
+&nbsp;In this case, a left click. The name goes at the beginning, followed by the parameters. In this tutorial file, anything, within <code>[]</code> brackets stands for something that would get replaced by actual values written by the scriptmaker (you or someone else).<br>
+&nbsp;The snippet above is for a left click; let's take a look at how it works. When the autoclicker reaches a line with this <code>left</code> command, the mouse moves to the x-<code>[x]</code> and y-<code>[y]</code> coordinates provided, and left clicks that spot. For example,
+<pre><code>	left	100	200</code></pre>
+will left-click at x-<code>100</code>, y-<code>200</code>.<br>
+&nbsp;All commands take up one line only, and contain only lowercase letters. Uppercase letters are not used by any words defined by the autoclicker. You can also leave yourself comments by starting a line with anything except one of the commands.  All comments get removed upon running the script, as if they were never there. Here are examples of two more commands:
+<pre><code>	// Right click:
+	right	[x]	[y]
+	
+	~ Middle click:
+	middle	[x]	[y]
+	
+	. Move:
+	move	[x]	[y]</code></pre>
+&nbsp;<code>right</code> will move and perform a right click, <code>middle</code> will move and perform a middle click, and <code>move</code> will move the mouse without clicking. Any number of tabs and spaces can be added between parameters and commands, and the interpreter will pass right over them. That means that
+<pre><code>	move	[x]	[y]</code></pre>
+is the same as
+<pre><code>	   move			[x] [y]</code></pre>
+but not
+<pre><code>	move	[x][y]</code></pre>
+as whitespace is needed to separate parameters (so <code>53 4</code> is different than <code>534</code>). In commands, when writing a number, only the digits (and possibly negative sign before the digits) are taken into account, so these two commands,
+<pre><code>	move	1000	234
+	move	1,000	2jrgfsd3j.4</code></pre>
+will perform the same action (move the mouse to x-<code>1000</code>, y-<code>234</code>).<br>
+&nbsp;And because it covers all your core autoclicking needs, <i>Run</i> of course supports pausing for certain periods of time. The command
+<pre><code>	pause	[t]</code></pre>
+will pause for <code>[t]</code> milliseconds. For instance,
+<pre><code>	pause	1000</code></pre>
+will have the autoclicker pause for 1 second before resuming to the next line.<br>
+<br>
+&nbsp;With all of these commands, we can now start to form autoclick scripts. Take a look at the <code>example/001</code> script, a simple example containing clicks, moves, and pauses.<br>
+<br>
+&nbsp;When new commands are introduced, a command contract will follow to explain how to use the commands. Here are the contracts for all the commands we've seen so far (left and right are syntactically identical):<br>
+<h4 id="left-contract">left:</h4>
+<pre class="contract"><code><b>left	[x]	[y]</b>
+
+	input:
+		[x] - the x coordinate of the mouse position to click at
+		[y] - the y coordinate of the mouse position to click at
+	output:
+		- move the mouse to the position [x], [y] on the screen and left click
+
+
+<b>left	[num]</b>
+
+	input:
+		[num] - type of click to perform
+	output
+		- [num] is 1 or less: presses the left mouse button
+		- [num] is 2: presses and releases the left mouse button
+		- [num] is 3 or greater: releases the left mouse button
+</code></pre>
+<h4 id="right-contract">right:</h4>
+<pre class="contract"><code><b>right	[x]	[y]</b>
+
+	input:
+		[x] - the x coordinate of the mouse position to click at
+		[y] - the y coordinate of the mouse position to click at
+	output:
+		- move the mouse to the position [x], [y] on the screen and right click
+
+
+<b>right	[num]</b>
+
+	input:
+		[num] - type of click to perform
+	output
+		- [num] is 1 or less: presses the right mouse button
+		- [num] is 2: presses and releases the right mouse button
+		- [num] is 3 or greater: releases the right mouse button
+</code></pre>
+<h4 id="middle-contract">middle:</h4>
+<pre class="contract"><code><b>middle	[x]	[y]</b>
+
+	input:
+		[x] - the x coordinate of the mouse position to click at
+		[y] - the y coordinate of the mouse position to click at
+	output:
+		- move the mouse to the position [x], [y] on the screen and middle click
+
+
+<b>middle	[num]</b>
+
+	input:
+		[num] - type of click to perform
+	output
+		- [num] is 1 or less: presses the middle mouse button
+		- [num] is 2: presses and releases the middle mouse button
+		- [num] is 3 or greater: releases the middle mouse button
+</code></pre>
+<h4 id="move-contract">move:</h4>
+<pre class="contract"><code><b>move	[x]	[y]</b>
+
+	input:
+		[x] - the x coordinate of the mouse position to move to
+		[y] - the y coordinate of the mouse position to move to
+	output:
+		- moves the mouse to the position [x], [y] on the screen
+</code></pre>
+<h4 id="pause-contract">pause:</h4>
+<pre class="contract"><code><b>pause</b>
+
+	output:
+		- pause the script until the user presses ENTER on the command line used to run the program
+
+
+<b>pause	[t]</b>
+
+	input:
+		[t] - number of milliseconds to pause for
+	output:
+		- pauses the script until [t] milliseconds pass
+		- performs a <b>quit</b> if the mouse moves beyond the permitted tolerance
+
+
+<b>pause	[x]	[y]	[r]	[g]	[b]	<i>[t?]</i></b>
+
+	input:
+		[x] - x coordinate of the screen to check
+		[y] - y coordinate of the screen to check
+		[r] - target pixel red value
+		[g] - target pixel green value
+		[b] - target pixel blue value
+		<i>[t] (optional) - milliseconds to wait before skipping past the pause command</i>
+	output:
+		- wait until the pixel at position [x], [y] on the screen is approximately [r], [g], [b]
+		- sets <b>.skipped</b> to true if the pause skipped out, false if not
+		- performs a <b>quit</b> if the mouse moves beyond the permitted tolerance, or if the <b>quitafter</b>
+			option has been turned on
+
+
+<b>pause	[x]	[y]	[color]	<i>[t?]</i></b>
+
+	input:
+		[x] - x coordinate of the screen to check
+		[y] - y coordinate of the screen to check
+		[color] - color variable to represent the target pixel color value
+		<i>[t] (optional) - milliseconds to wait before skipping past the pause command</i>
+	output:
+		- wait until the pixel at position [x], [y] on the screen is approximately [color]
+		- sets <b>.skipped</b> to true if the pause skipped out, false if not
+		- performs a <b>quit</b> if the mouse moves beyond the permitted tolerance, or if the <b>quitafter</b>
+			option has been turned on
+</code></pre><br>
+&nbsp;Each command can have multiple different forms that accept different amounts of parameters; the contract will list the syntax of each form and what it does. Some forms will be explained further in the tutorial than when the contract is presented.<br>
+&nbsp;Let's take a look at the different forms in both the <code>left</code> and <code>right</code> commands:
+<pre><code>	left	[num]
+	right	[num]</code></pre>
+&nbsp;Rather than move and click, this will have the mouse will perform differently depending on what <code>[num]</code> is: 2 will press and release the mouse, anything less than 2 will press the mouse, and anything greater than 2 will release the mouse. Neither of these two forms will cause the mouse to move. Take a look at this:
+<pre><code>	move	100	100
+	pause	1000
+	left	1
+	pause	1000
+	move	150	200
+	pause	1000
+	left	3</code></pre>
+&nbsp;This would move the mouse to x-<code>100</code>, y-<code>100</code>, wait a second, press the left mouse button, wait a second, drag the mouse to x-<code>150</code>, y-<code>200</code>, wait a second, and release the button. This snippet is provided as <code>example/002</code>.<br>
+&nbsp;In addition to moving the mouse position, you can also move the mouse scroll wheel with the following commands:
+<pre><code>	scroll	up
+	scroll	down
+	scroll	up	[number]
+	scroll	down	[number]</code></pre>
+&nbsp;The <code>scroll</code> command will execute one scroll "click" in the given direction, or <code>[number]</code> "clicks" if a number is provided.<br>
+<h4 id="scroll-contract">scroll:</h4>
+<pre class="contract"><code><b>scroll	[direction]	<i>[amount?]</i></b>
+
+	input:
+		[direction] - either "up" or "down"
+		<i>[amount] (optional) - number of "clicks" to scroll</i>
+	output:
+		- scrolls 1 or [amount] "clicks" in the provided direction
+</code></pre><br>
+&nbsp;The second form of <code>pause</code> has been explained, but let's take a look at the first and third forms. You can have the <code>pause</code> command by itself:
+<pre><code>	pause</code></pre>
+&nbsp;This will pause until you press ENTER on the command line that you ran the script from.<br>
+&nbsp;The remaining forms of <code>pause</code> all deal with screen colors:
+<pre><code>	pause	[x]	[y]	[r]	[g]	[b]</code></pre>
+&nbsp;will pause until the red-green-blue color at x-<code>[x]</code>, y-<code>[y]</code> is red-<code>[r]</code>, green-<code>[g]</code>, and blue-<code>[b]</code>. This is useful for verifying that a particular action causes the screen to change in the right way.<br>
+&nbsp;This five-parameter pause can also take a sixth parameter, combining both ways of pausing. This number, a time in milliseconds, tells the pause how long to wait before ignoring the color and resuming the program. This is useful if the color does not change in time, but the program can catch this and handle it. Whichever comes first, the pause will resume. This command,
+<pre><code>	pause	123	456	255	255	255	1000</code></pre>
+will wait for the pixel to change, but if a second goes by, it will stop pausing and resume anyway.<br>
+&nbsp;You may come across a need to end your script early. For this purpose, moving the mouse during pauses (except for the no-parameter <code>pause</code>) will stop the script and end the program (you can change this, but we'll get to that later).<br>
+&nbsp;You can also have pauses that wait until a specific pixel is NOT a specific color:
+<pre><code>	pausenot	[x]	[y]	[r]	[g]	[b]</code></pre>
+&nbsp;This will pause until the color is in the range of colors that <code>pause</code> will pause on.<br>
+<h4 id="pausenot-contract">pausenot:</h4>
+<pre class="contract"><code><b>pausenot	[x]	[y]	[r]	[g]	[b]	<i>[t?]</i></b>
+
+	input:
+		[x] - x coordinate of the screen to check
+		[y] - y coordinate of the screen to check
+		[r] - target pixel red value
+		[g] - target pixel green value
+		[b] - target pixel blue value
+		<i>[t] (optional) - milliseconds to wait before skipping past the pausenot command</i>
+	output:
+		- wait until the pixel at position [x], [y] on the screen is certainly not [r], [g], [b]
+		- sets <b>.skipped</b> to true if the pausenot skipped out, false if not
+		- performs a <b>quit</b> if the mouse moves beyond the permitted tolerance, or if the <b>quitafter</b>
+			option has been turned on
+
+
+<b>pausenot	[x]	[y]	[color]	<i>[t?]</i></b>
+
+	input:
+		[x] - x coordinate of the screen to check
+		[y] - y coordinate of the screen to check
+		[color] - color variable to represent the target pixel color value
+		<i>[t] (optional) - milliseconds to wait before skipping past the pausenot command</i>
+	output:
+		- wait until the pixel at position [x], [y] on the screen is certainly not [color]
+		- sets <b>.skipped</b> to true if the pausenot skipped out, false if not
+		- performs a <b>quit</b> if the mouse moves beyond the permitted tolerance, or if the <b>quitafter</b>
+			option has been turned on
+</code></pre><br>
+<br>
+<br>
+&nbsp;And of course, we can't forget looping! For this, the following command is provided:
+<pre><code>	jump	[LABEL]</code></pre>
+&nbsp;This will move the line pointer to a label in the format
+<pre><code>	:[LABEL]</code></pre>
+&nbsp;For example,
+<pre><code>	:Endless
+	jump	Endless</code></pre>
+is an infinite loop.<br>
+<h4 id="jump-contract">jump:</h4>
+<pre class="contract"><code><b>jump	[label]</b>
+
+	input:
+		[label] - the name of a label to jump to
+	output:
+		- moves the script pointer to the provided label
+</code></pre>
+<h4 id="labels-contract">(labels):</h4>
+<pre class="contract"><code><b>:[label]</b>
+
+	output:
+		- provides a label for the <b>jump</b> and <b>call</b> commands
+</code></pre><br>
+&nbsp;Labels must contain no whitespace. Here's an example of clicking in a loop:
+<pre><code>	:main
+	right		100	200
+	pause		110	210	255	255	255
+	left		110	210
+	pausenot	110	210	255	255	255
+	move		90	190
+	pause		500
+	jump		main</code></pre>
+&nbsp;This will right click at x-<code>100</code>, y-<code>200</code>, wait until the pixel at x-<code>110</code>, y-<code>210</code> is white (r-<code>255</code>, g-<code>255</code>, b-<code>255</code>), left click  at x-<code>110</code>, y-<code>210</code>, wait for it to stop being white, move the mouse to x-<code>90</code>, y-<code>190</code>, wait half a second, and repeat. You can find another example script with jumping in <code>example/003</code>.<br>
+&nbsp;<i>Run</i> will not perform any automatic looping. If the <code>jump</code> were removed, the above script would end after the last pause.<br>
+<br>
+&nbsp;In addition to standard jumping, there is also a command to use a part of the script in multiple places at once! This is done with two related commands. The first one,
+<pre><code>	call	[label]</code></pre>
+does the exact same thing that <code>jump</code> does, but it will remember where it got called. Paired with it is another command,
+<pre><code>	jumpback</code></pre>
+which will return to the most recent <code>call</code> command that got executed. That means that if there are multiple <code>call</code>s, <code>jumpback</code> commands will go back down the list of <code>call</code> commands in the reverse order that they were called.<br>
+<h4 id="call-contract">call:</h4>
+<pre class="contract"><code><b>call	[label]</b>
+
+	input:
+		[label] - the name of a label to jump to
+	output:
+		- moves the script pointer to the provided label, remembering the current position
+</code></pre>
+<h4 id="jumpback-contract">jumpback:</h4>
+<pre class="contract"><code><b>jumpback</b>
+
+	output:
+		- returns to the position of the most recently performed <b>call</b> command
+</code></pre><br>
+&nbsp;Here's an example of multiple <code>call</code> and <code>jumpback</code> commands:
+<pre><code>	call	test
+	call	test
+	call	test
+	jump	end
+	
+	:test
+	left	100	100
+	call	test2
+	pause	1000
+	jumpback
+	
+	:test2
+	pause	500
+	move	200	100
+	jumpback
+	
+	:end</code></pre>
+&nbsp;This will left click at x-<code>100</code>, y-<code>100</code>, pause for a second, and repeat that twice more. You can find this script as <code>example/004</code>.<br>
+<br>
+&nbsp;The autoclicker can also run scripts from within a script:
+<pre><code>	run	[script]	...</code></pre>
+will run the script <code>[script]</code> as if you typed
+<pre><code>	java run [scripts] ...</code></pre>
+on the command line with the parameters <code>...</code> like a regular command line <code>run</code> execution. Scripts cannot have spaces in the name.<br>
+<h4 id="run-contract">run:</h4>
+<pre class="contract"><code><b>run	[script]	<i>[input...?]</i></b>
+
+	input:
+		[script] - the name of a script
+		<i>[input] (optional) - 0 or more command line inputs to pass to the script</i>
+	output:
+		- runs the provided script with any provided inputs as if run from the command line
+</code></pre><br>
+<h2 id="section-2"><hr>
+SECTION 2- Programming Language Features- Variables
+<hr></h2>
+&nbsp;To improve what you can do with it, <i>Run</i> serves as a very simple programming language! This of course means that you'll need some variables and a means of changing them. You can define variables with this command:
+<pre><code>	create	[type]	[name]	[value]</code></pre>
+&nbsp;The above command will create a variable of type <code>[type]</code> called <code>[name]</code> with starting value <code>[value]</code>. These variables will probably be of type <code>int</code> (integer), used to base clicks on other data, but there are multiple other variable types. All variables are for use only within the active script. Scripts cannot use variables from scripts they called, nor from the scripts that called them. Variables are case-sensitive.<br>
+&nbsp;Here's a bunch of variable creation examples, using all of the currently available variable types:
+<pre><code>	create	int	x	100
+	create	boolean	Good?	true
+	create	color	white	255	255	255
+	create	color	brown	at	123	456
+	create	timer	time	0
+	create	screenshot	pic	100	55	80	60
+	create	int	y	x
+	create	color	brown~2	brown
+	create	screenshot	pic2	pic</code></pre>
+&nbsp;Let's go over these examples!<br>
+<br>
+&nbsp;In the first example, the variable <code>x</code> was created as an <code>int</code>, or a whole number. To create an integer, the only parameter that must be supplied is the value to store to it.<br>
+&nbsp;In the second example, <code>Good?</code> is created as a <code>boolean</code>. A boolean value simply means either a <code>true</code> or a <code>false</code>. To create a boolean, the only value that must be provided is a <code>true</code> or a <code>false</code>. Booleans serve a special purpose which will be mentioned later on.<br>
+&nbsp;In the third example, <code>white</code> was created as a <code>color</code>, a type used for special commands that track colors. This is one of two ways to initiate a color, both of which take three parameters. The first way, used to create <code>white</code>, is to give the red, green, and blue values of a color, in that order.<br>
+&nbsp;In the fourth example, <code>brown</code> demonstrates the second way to create a <code>color</code>: the parameters are the word <code>at</code>, followed by two more parameters- the x and y coordinates of a pixel location. The value stored to the variable is the color at that pixel.<br>
+&nbsp;In the fifth example, the variable <code>time</code> was created as a <code>timer</code>. This timer's value is an integer, and increases by <code>1</code> every millisecond. To create a timer, the only value that needs to be provided is its initial value.<br>
+&nbsp;In the sixth example, the variable <code>pic</code> was created as a <code>screenshot</code>. To create a screenshot, you supply the top and left coordinates of the image on the screen to capture, followed by the width and the height. <code>pic</code> is the screenshot at x-<code>100</code>, y-<code>55</code> with a width of <code>80</code> and a height of <code>60</code>. These will be used in special screen-processing explained later in the tutorial.<br>
+&nbsp;In the seventh, eigth, and ninth examples, variables were created using other variables as a single parameter. This will create a variable with the same value of the other variable (or the same screenshot image and top left corner). All variable types can be made by providing another variable of the same type (<code>boolean</code>s, <code>int</code>s, and <code>timer</code>s can all accept each other as inputs, more on that later).<br>
+<br>
+&nbsp;Your variable names can consist of any non-whitespace characters, but cannot start with a period. Be careful with your naming conventions to avoid errors in your scripts related to variable overwriting. Some names are reserved by the autoclicker.<br>
+<h4 id="create-contract">create:</h4>
+<pre class="contract"><code><b>create	[type]	[name]	[value]</b>
+
+	input:
+		[type] - data type of the variable, either "int", "boolean", or "timer"
+		[name] - variable name
+		[value] - a value to set to the variable
+	output:
+		- initializes a variable to the specified type and value
+
+
+<b>create	color	[name]	[r]	[g]	[b]</b>
+
+	input:
+		[name] - variable name
+		[r] - the red value to store to the color
+		[g] - the green value to store to the color
+		[b] - the blue value to store to the color
+	output:
+		- initializes a color with the 3 given values
+
+
+<b>create	color	[name]	at	[x]	[y]</b>
+
+	input:
+		[name] - variable name
+		[x] - the x coordinate of a pixel to take the color of
+		[y] - the y coordinate of a pixel to take the color of
+	output:
+		- initializes a color with the color of the provided pixel
+
+
+<b>create	color	[name]	[color]</b>
+
+	input:
+		[name] - variable name
+		[color] - a color variable
+	output:
+		- initializes a color with the values of the other color
+
+
+<b>create	screenshot	[name]	[x]	[y]	[w]	[h]</b>
+
+	input:
+		[name] - variable name
+		[x] - the left x coordinate of a screenshot to capture
+		[y] - the top y coordinate of a screenshot to capture
+		[w] - the width of a screenshot to capture
+		[h] - the height of of a screenshot to capture
+	output:
+		- initializes a screenshot with a screen capture of the given area of the screen
+
+
+<b>create	screenshot	[name]	[screenshot]</b>
+
+	input:
+		[name] - variable name
+		[screenshot] - a screenshot variable
+	output:
+		- initializes a screenshot with the image and top left corner of the other screenshot variable
+</code></pre><br>
+&nbsp;So now that we have variables, we can use them in other commands! Using the above variable assignments from the examples, the command
+<pre><code>	left	x	y</code></pre>
+would left click at x-<code>100</code>, y-<code>100</code>.<br>
+&nbsp;In addition to copying variables, they can also be used as regular parameters. This command,
+<pre><code>	create	color	brown	x	y	0</code></pre>
+would create a color with a red value of <code>100</code>, green value of <code>100</code>, and blue value of 0.<br>
+&nbsp;<code>color</code> variables are used to replace sets of 3 parameters that make up a color. Assuming the same variable assignments, these two commands,
+<pre><code>	pause	123	456	255	255	255
+	pause	123	456	white</code></pre>
+would function exactly the same, pausing until the pixel is white. This is the fourth form of <code>pause</code> and the second form of <code>pausenot</code>. The extra parameter at the end will still function, so
+<pre><code>	pause	123	456	white	1000</code></pre>
+will quit out after a second. Of all commands mentioned so far, only <code>pause</code>s and <code>pausenot</code>s use colors, but they are used in commands later in the tutorial.<br>
+<br>
+&nbsp;In addition to creating variables, variables already created can be set to new values like this:
+<pre><code>	set	[name]	[value...]</code></pre>
+&nbsp;Setting variables works just like creating variables, for all types of variables, except you don't need a variable type. <code>set</code> changes the variable of name <code>[name]</code> to the value that the parameters <code>[value...]</code> produce. Variables can also technically be changed with <code>create</code>, and you can change the type of the variable by doing this, but <code>set</code> is recommended for just changing the value.<br>
+&nbsp;Here are some examples of <code>set</code>:
+<pre><code>	set	x	200
+	set	time	43
+	set	brown	at	43	96</code></pre>
+&nbsp;Still assuming the same variable assignments, this would change <code>x</code>'s value to be <code>200</code>. So now,
+<pre><code>	left	x	y</code></pre>
+would left click at x-<code>200</code>, y-<code>100</code>. All variables are <code>int</code>s unless they have been created as something else via the <code>create</code> command. This means that
+<pre><code>	set	z	100</code></pre>
+would set <code>z</code> to <code>100</code> even though <code>z</code> has not been created. You can check out some examples of create, set, and using variables in commands in <code>example/005</code> and <code>example/006</code>.<br>
+<h4 id="set-contract">set:</h4>
+<pre class="contract"><code><b>set	[name]	[value]</b>
+
+	input:
+		[name] - variable name of an int, boolean, or timer
+		[value] - a value to set to the variable
+	output:
+		- sets a pre-created variable to the specified value
+
+
+<b>set	[name]	[r]	[g]	[b]</b>
+
+	input:
+		[name] - variable name of a color
+		[r] - the red value to store to the color
+		[g] - the green value to store to the color
+		[b] - the blue value to store to the color
+	output:
+		- sets a color to the 3 given values
+
+
+<b>set	[name]	at	[x]	[y]</b>
+
+	input:
+		[name] - variable name of a color
+		[x] - the x coordinate of a pixel to take the color of
+		[y] - the y coordinate of a pixel to take the color of
+	output:
+		- sets a color to the color of the provided pixel
+
+
+<b>set	[name]	[color]</b>
+
+	input:
+		[name] - variable name of a color
+		[color] - another color variable
+	output:
+		- sets a color to the values of the other color
+
+
+<b>set	[name]	[x]	[y]	[w]	[h]</b>
+
+	input:
+		[name] - variable name of a screenshot
+		[x] - the left x coordinate of a screenshot to capture
+		[y] - the top y coordinate of a screenshot to capture
+		[w] - the width of a screenshot to capture
+		[h] - the height of of a screenshot to capture
+	output:
+		- sets a screenshot to a screen capture of the given area of the screen
+
+
+<b>set	[name]	[screenshot]</b>
+
+	input:
+		[name] - variable name of a screenshot
+		[screenshot] - another screenshot variable
+	output:
+		- sets a screenshot to have the image and top left corner of the other screenshot variable
+</code></pre><br>
+&nbsp;There is also a special set command for using command line parameters with the script:
+<pre><code>	setargto	[prefix]	[name]</code></pre>
+&nbsp;This works as if you called
+<pre><code>	set	[name]	[value]</code></pre>
+assuming that <code>[prefix][value]</code> is one parameter to the program, and is a single string of characters without spaces or tabs.<br>
+&nbsp;As an example, say you had a script called <code>test</code> and you typed this on the command line:
+<pre><code>	java run test abc123</code></pre>
+&nbsp;If you had
+<pre><code>	create	int	doremi	0
+	setargto	abc	doremi</code></pre>
+within that script, it would end up changing <code>doremi</code> as if you called
+<pre><code>	set	doremi	123</code></pre>
+which sets the variable to <code>123</code>, omitting the <code>abc</code> in the parameter. The provided script <code>example/007</code> will move the mouse to the coordinates given on the command line. Try it out by running something like <code>java run example/007 x200 y100</code>.<br>
+&nbsp;Now, since some of the variable creations take in multiple parameters, but input parameters cannot include tabs or spaces, you will have to type commas between them when typing them on the command line. This means that parameters should be typed like <code>alphaat,123,456</code> and <code>beta255,255,255</code> for the following commands:
+<pre><code>	create	color	test1	0	0	0
+	create	color	test2	0	0	0
+	setargto	alpha	test1
+	setargto	beta	test2</code></pre>
+&nbsp;These will end up acting as if you had these commands instead:
+<pre><code>	create	color	test1	at	123	456
+	create	color	test2	255	255	255</code></pre>
+&nbsp;If you call <code>setargto</code> and there was no parameter that started with <code>[prefix]</code>, the command will do nothing.<br>
+<h4 id="setargto-contract">setargto:</h4>
+<pre class="contract"><code><b>setargto	[prefix]	[name]</b>
+
+	input:
+		[prefix] - text that will appear before parameters in the command line
+		[name] - the name of the variable to set
+	output:
+		- sets the variable to the values specified on the command line
+</code></pre><br>
+<br>
+<br>
+&nbsp;In addition to using <code>set</code> to store to variables, there are 5 available integer arithmetic-and-assignment commands:
+<pre><code>	+=	[name]	[value]
+	-=	[name]	[value]
+	*=	[name]	[value]
+	/=	[name]	[value]
+	%=	[name]	[value]</code></pre>
+&nbsp;The first four will respectively add, subtract, multiply, and divide the value of <code>[name]</code> by <code>[value]</code>, and store the result back in <code>[name]</code>. The fifth one will set name to the remainder of <code>[name]</code> divided by <code>[value]</code> (modulus division). Here's an example:
+<pre><code>	create	y	1
+	+=	y	1
+	*=	y	9
+	%=	y	4
+	-=	y	10
+	/=	y	-8</code></pre>
+&nbsp;This will create a variable <code>y</code> equal to <code>1</code>, add <code>1</code> to it to give it a value of <code>2</code>, multiply it by <code>9</code> to give it a value of <code>18</code>, modulo-divide it by <code>4</code> to give it a value of <code>2</code>, subtract <code>10</code> to set it to <code>-8</code>, and divide it by <code>-8</code> to set it back to <code>1</code>. All operators work like most programming languages with 32-bit integers: division will result in an integer rounded down, overflows will make the number go crazy. The <code>example/008</code> script uses these commands.<br>
+<h4 id="plusequals-contract">+=:</h4>
+<pre class="contract"><code><b>+=	[name]	[value]</b>
+
+	input:
+		[name] - variable name
+		[value] - integer value
+	output:
+		- increases the value of the variable by [value]
+</code></pre><br>
+<h4 id="minusequals-contract">-=:</h4>
+<pre class="contract"><code><b>-=	[name]	[value]</b>
+
+	input:
+		[name] - variable name
+		[value] - integer value
+	output:
+		- decreases the value of the variable by [value]
+</code></pre><br>
+<h4 id="timesequals-contract">*=:</h4>
+<pre class="contract"><code><b>*=	[name]	[value]</b>
+
+	input:
+		[name] - variable name
+		[value] - integer value
+	output:
+		- multiplies the value of the variable by [value]
+</code></pre><br>
+<h4 id="divideequals-contract">/=:</h4>
+<pre class="contract"><code><b>/=	[name]	[value]</b>
+
+	input:
+		[name] - variable name
+		[value] - integer value
+	output:
+		- divides the value of the variable by [value], rounding to 0
+</code></pre><br>
+<h4 id="modequals-contract">%=:</h4>
+<pre class="contract"><code><b>%=	[name]	[value]</b>
+
+	input:
+		[name] - variable name
+		[value] - integer value
+	output:
+		- sets the value of the variable to the remainder of [name] / [value]
+</code></pre><br>
+<br>
+<br>
+&nbsp;<i>Run</i> also includes some useful special system variables! The variables
+<pre><code>	.mousex
+	.mousey</code></pre>
+represent the mouse's current x- and y-coordinates. So for example,
+<pre><code>	create	int	clickx	.mousex
+	create	int	clicky	.mousey</code></pre>
+would create two variables, each with a mouse coordinate. If the mouse was at x-<code>145</code>, y-<code>234</code>, <code>clickx</code> would have a value of <code>145</code> and <code>clicky</code> would have a value of <code>234</code>. Script <code>example/009</code> moves the mouse 100 pixels left and 100 pixels up.<br>
+&nbsp;Similarly, you can use
+<pre><code>	.screenwidth
+	.screenheight</code></pre>
+to get the current screen display's width and height. Script <code>example/010</code> moves the mouse to the center of the screen.<br>
+&nbsp;There is also a system variable
+<pre><code>	.skipped</code></pre>
+that you can use after using a pause or pausenot with a millisecond count at the end. This variable indicates that the pause exited before the color was correct. For example, if you had
+<pre><code>	pause	100	100	255	255	255	1000</code></pre>
+and a second went by without seeing white, <code>.skipped</code> would be set to <code>true</code>.<br>
+<h4 id="system-variables">system variables:</h4>
+<pre class="contract"><code><b>.mousex</b> - x coordinate of the mouse on the screen
+<b>.mousey</b> - y coordinate of the mouse on the screen
+<b>.screenwidth</b> - width of the screen
+<b>.screenheight</b> - height of the screen
+<b>.skipped</b> - whether or not the last pause or pausenot skipped out
+<b>.scanx</b> - x coordinate of the last correctly scanned pixel on the screen
+<b>.scany</b> - y coordinate of the last correctly scanned pixel on the screen
+<b>.timestamp</b> - display of the current time and date
+</code></pre><br>
+<h2 id="section-3"><hr>
+SECTION 3- Programming Language Features- Conditionals and Loops
+<hr></h2>
+&nbsp;So now we have autoclicking and variables. What more could we possibly want? Conditionals and <code>for</code> loops, that's what!<br>
+&nbsp;Earlier, it was mentioned that you could create variables of type <code>boolean</code>. The main use of these is for the <code>if</code> commands that look like this:
+<pre><code>	if	[boolean]
+		[command1]
+	[command2]</code></pre>
+&nbsp;The way this works is that if <code>[boolean]</code> is <code>true</code>, both <code>[command1]</code> and <code>[command2]</code> get called. If <code>[boolean]</code> is <code>false</code>, <code>[command1]</code> doesn't get called, but <code>[command2]</code> does.<br>
+&nbsp;In addition to this format, <code>if</code> has another syntax that can be used, and it looks like this:
+<pre><code>	if	[boolean]
+	[
+		[command1]
+		[command2]
+		...
+	]
+	[some-other-commands]</code></pre>
+&nbsp;Right after the <code>if</code> command, a line with a <code>[</code> bracket at the beginning signifies the start of the commands to be run conditionally. If <code>[boolean]</code> is <code>false</code>, the pointer jumps to the <code>]</code> bracket and continues. You can also use <code>(</code> parentheses and <code>{</code> braces, or mix and match them, and they will all work the same.<br>
+&nbsp;Now, <code>if</code> commands are very line-sensitive, so make sure your line formats are correct (although comments can be placed anywhere). Take this for example:
+<pre><code>	create	boolean	test	[value]
+	if	test
+		:here
+		[command]</code></pre>
+&nbsp;Since <code>if</code> only skips the next line, the label will get skipped instead of <code>[command]</code>. So whether <code>[value]</code> is <code>true</code> or <code>false</code>, <code>[command]</code> will get executed anyways. Brackets are also sensitive: a bracket must appear immediately after the <code>if</code> command, or it won't get recognized. The following,
+<pre><code>	if	false
+	:here
+	[
+		[command]
+		...
+	]</code></pre>
+will execute <code>[command]</code> since the brackets are not linked to the <code>if</code> command. In addition, all brackets link to each other, so make sure they're all paired correctly.<br>
+&nbsp;Note that the following,<br>
+<pre><code>	if	false
+	//abc
+	[
+		[command]
+		...
+	]</code></pre>
+will not execute <code>[command]</code> since the comment is removed and the bracket is paired with the <code>if</code> command.<br>
+<h4 id="if-contract">if:</h4>
+<pre class="contract"><code><b>if	[value]</b>
+
+	input:
+		[value] - result value
+	output:
+		- skips the following line or block if [value] evaluates to true
+</code></pre><br>
+&nbsp;So now that we have our <code>if</code> command, we can use it with jumps for more complex conditionals:
+<pre><code>	create	boolean	sety	true
+	create	int	x	100
+	create	int	y	100
+	if	sety
+		jump	thisisalabel
+	set	x	150
+	jump	end
+	:thisisalabel
+	set	y	150
+	:end</code></pre>
+&nbsp;This will set <code>y</code> to <code>150</code> since the value given to it is <code>true</code>. If the <code>true</code> were replaced with <code>false</code>, <code>x</code> would get set to <code>150</code>. The above is also equivalent to the following:
+<pre><code>	create	boolean	sety	true
+	create	int	x	100
+	create	int	y	100
+	if	sety
+	[
+		set	y	150
+		jump	end
+	]
+	set	x	150
+	:end</code></pre>
+&nbsp;An example of these <code>if</code> forms is available in <code>example/011</code>.<br>
+<br>
+&nbsp;Constant and variable booleans are not the only booleans that can be put in an <code>if</code> clause. Clauses can contain multiple operations, and <code>if</code> commands are not the only places that these clauses can be used! These clauses are big enough that they get their own section, and we haven't even gotten to <code>for</code> loops!<br>
+<h3 id="section-3.1"><hr>
+SECTION 3.1- Clauses
+<hr></h3>
+&nbsp;A clause is a big paramater consisting of a bunch of operators and variables. For many commands, a single value can be replaced with one of these clauses (a full list can be found in the README file). The <code>at</code> operator used in colors is only available in <code>create</code> and <code>set</code> commands, and only when placed immediately after the variable name.<br>
+<br>
+&nbsp;Let's go over how the variable types are stored and represented in clauses. A clause stores all types as integers. The variable types <code>int</code>, <code>boolean</code>, and <code>timer</code> can each be represented with a single integer; other variable types are used with other operators to obtain integer representations.<br>
+- <code>int</code>s are stored as 32-bit numbers and are simply represented as themselves.<br>
+- <code>boolean</code>s are stored as <code>true</code> or <code>false</code>. They represent <code>1</code> if they are <code>true</code>, and <code>0</code> if they are <code>false</code>. Now, in addition to a <code>boolean</code> being treated as a number, numbers can be used as booleans. When a result in a clause gets interpreted as a <code>boolean</code>, any number besides <code>0</code> is interpreted as <code>true</code> (<code>0</code> is <code>false</code>); this is how <code>if</code> commands determine whether to skip the line/block or not. For the most part, you won't be using <code>boolean</code> variables as integers.<br>
+- <code>timer</code>s are stored similarly to <code>int</code>s, and for the most part are treated as integers. The difference is that <code>timer</code>s change over time.<br>
+- <code>color</code>s are stored as 3 integers, this is how many commands are able to use both 3 RGB values and color variables. Some operators and commands specifically require color variables.<br>
+<br>
+&nbsp;A clause always returns an <code>int</code>, but can be interpreted as a <code>boolean</code> when storing to a <code>boolean</code> variable or as the result of an <code>if</code> condition.<br>
+<br>
+&nbsp;So now that we've gotten that over with, let's go over the clauses! Here are a few examples:
+<pre><code>	if	[clause]
+	create	[type]	[name]	[clause]
+	left	[xclause]	[yclause]
+	pause	[timeclause]
+	setargto	[prefix]	[name]</code></pre>
+&nbsp;Note that for <code>setargto</code>, the clause has to be a paramater to the program, separated with commas rather than spaces. There'll be a bit on that a little later.<br>
+&nbsp;Clauses can be as simple or complicated as you make them. Take a look at this:
+<pre><code>	if	true</code></pre>
+&nbsp;This will always pass, as the clause represents <code>true</code>, and nothing else. Here's another clause that does the same thing:
+<pre><code>	create	boolean	test	true
+	if	test</code></pre>
+&nbsp;The clause is <code>true</code> if the <code>boolean</code> is <code>true</code>. Here's a third way to do the same thing:
+<pre><code>	if	23</pre></code>
+&nbsp;Since numbers can be treated as booleans, any number besides <code>0</code> represents <code>true</code>.<br>
+&nbsp;There are six integer-value evaluation clauses:
+<pre><code>	if	>=	[value1]	[value2]
+	if	>	[value1]	[value2]
+	if	<=	[value1]	[value2]
+	if	<	[value1]	[value2]
+	if	==	[value1]	[value2]
+	if	!=	[value1]	[value2]</code></pre>
+&nbsp;These are pretty straight-forward, they evaluate to <code>true</code> if <code>[value1]</code> is greater-than-or-equal-to, greater than, less-than-or-equal-to, less than, equal to, or not equal to <code>[value2]</code>, respectively. Remember that <code>boolean</code>s are represented as a <code>1</code> or a <code>0</code>, so you can use them like integers here. Script <code>example/012</code> contains examples of comparisons.<br>
+<h4 id="comparison-operators">comparison operators:</h4>
+<pre class="contract"><code><b>...	>=	[value1]	[value2]</b>
+
+	operands:
+		[value1] - integer value
+		[value2] - integer value
+	result:
+		- true if [value1] is greater than [value2] or equal to [value2], false if not
+
+
+<b>...	>	[value1]	[value2]</b>
+
+	operands:
+		[value1] - integer value
+		[value2] - integer value
+	result:
+		- true if [value1] is greater than [value2], false if not
+
+
+<b>...	<=	[value1]	[value2]</b>
+
+	operands:
+		[value1] - integer value
+		[value2] - integer value
+	result:
+		- true if [value1] is less than [value2] or equal to [value2], false if not
+
+
+<b>...	<	[value1]	[value2]</b>
+
+	operands:
+		[value1] - integer value
+		[value2] - integer value
+	result:
+		- true if [value1] is less than [value2], false if not
+
+
+<b>...	==	[value1]	[value2]</b>
+
+	operands:
+		[value1] - integer value
+		[value2] - integer value
+	result:
+		- true if [value1] is equal to [value2], false if not
+
+
+<b>...	!=	[value1]	[value2]</b>
+
+	operands:
+		[value1] - integer value
+		[value2] - integer value
+	result:
+		- true if [value1] is different from [value2], false if not
+</code></pre><br>
+&nbsp;Along with these basic comparison clauses for integers, <i>Run</i> also supports standard boolean logic with the following three commands:
+<pre><code>	if	not	[clause]
+	if	or	[clause1]	[clause2]
+	if	and	[clause1]	[clause2]</code></pre>
+&nbsp;Let's go over how these work. The <code>not</code> clause,
+<pre><code>	if	not	[clause]</code></pre>
+will evaluate to <code>false</code> if <code>[clause]</code> IS <code>true</code>. For example,
+<pre><code>	create	int	five	4
+	create	boolean	correct	false
+	if	not	correct
+		set	five	5</code></pre>
+will end up setting the value of <code>five</code> to <code>5</code>, since <code>correct</code> is NOT <code>true</code>. The <code>or</code> clause,
+<pre><code>	if	or	[clause1]	[clause2]</code></pre>
+will end up evaluating to <code>true</code> if <code>[clause1]</code> is <code>true</code>, <code>[clause2]</code> is <code>true</code>, or both are. Say you wanted to run a command if either of two <code>boolean</code>s were <code>true</code>:
+<pre><code>	create	boolean	a	true
+	create	boolean	b	true
+	if	or	a	b
+		move	100	100</code></pre>
+&nbsp;If either <code>a</code> or <code>b</code> is <code>true</code>, the mouse will move to x-<code>100</code>, y-<code>100</code>. Similarly, the <code>and</code> clause,
+<pre><code>	if	and	[clause1]	[clause2]</code></pre>
+will evaluate to <code>true</code> only if both <code>[clause1]</code> and <code>[clause2]</code> are true.<br>
+&nbsp;Note that since integer values can evaluate to booleans, you can have clauses like
+<pre><code>	create	int	a	32
+	if	and	a	false
+		move	100	100</code></pre>
+or
+<pre><code>	create	int	two	2
+	if	not	a
+		move	100	100</code></pre>
+&nbsp;Both of those will skip the following <code>move</code> command. Script <code>example/013</code> contains examples of boolean operators.<br>
+<h4 id="boolean-operators">boolean operators:</h4>
+<pre class="contract"><code><b>...	not	[value]</b>
+
+	operands:
+		[value] - integer or boolean value
+	result:
+		- true if [value] is false or 0, false if not
+
+
+<b>...	or	[value1]	[value2]</b>
+
+	operands:
+		[value1] - integer or boolean value
+		[value2] - integer or boolean value
+	result:
+		- true if either [value1] or [value2] is true or not 0, false if not
+
+
+<b>...	and	[value1]	[value2]</b>
+
+	operands:
+		[value1] - integer or boolean value
+		[value2] - integer or boolean value
+	result:
+		- true if both [value1] and [value2] are true or not 0, false if not
+</code></pre><br>
+&nbsp;In addition to having your results evaluate to <code>true</code> or <code>false</code> (<code>1</code> or <code>0</code>), there are also a few arithmetic operators that produce standard integers:
+<pre><code>	set	var	+	[val1]	[val2]
+	set	var	-	[val1]	[val2]
+	set	var	*	[val1]	[val2]
+	set	var	/	[val1]	[val2]
+	set	var	%	[val1]	[val2]
+	set	var	random	[val1]</code></pre>
+&nbsp;The 5 arithmetic operators from the arithmetic-and-assignment are available in clauses. In this first example,
+<pre><code>	set	var	+	[val1]	[val2]</code></pre>
+the variable called var would be given a value equal to the addition of <code>[val1]</code> and <code>[val2]</code>; the following,
+<pre><code>	create	int	var	3
+	set	var	+	2	3</code></pre>
+would create <code>var</code> as <code>3</code>, and then set it to <code>5</code>. If you then had a command,
+<pre><code>	set	var	+	var	2</code></pre>
+this var would be set to <code>7</code>, which is equivalent to
+<pre><code>	+=	var	2</code></pre>
+&nbsp;All of the first five symbols act equivalently to their change-command counterpart, in the same manner that addition was shown above.<br>
+&nbsp;The <code>random</code> operator, however, does not have a previously mentioned counterpart. In this example,
+<pre><code>	set	var	random	[val1]</code></pre>
+<code>var</code> gets set to a random value. Using <code>random</code> will assign the variable to a number ranging from <code>0</code> to the parameter that follows, minus <code>1</code>. So in this example,
+<pre><code>	set	var	random	30</code></pre>
+<code>var</code> would be assigned one of the 30 numbers from <code>0</code> to <code>29</code> inclusive. Script <code>example/014</code> has some examples of arithmetic.<br>
+<h4 id="arithmetic-operators">arithmetic operators:</h4>
+<pre class="contract"><code><b>...	+	[value1]	[value2]</b>
+
+	operands:
+		[value1] - integer value
+		[value2] - integer value
+	result:
+		- the sum of [value1] and [value2]
+
+
+<b>...	-	[value1]	[value2]</b>
+
+	operands:
+		[value1] - integer value
+		[value2] - integer value
+	result:
+		- the difference of [value1] minus [value2]
+
+
+<b>...	*	[value1]	[value2]</b>
+
+	operands:
+		[value1] - integer value
+		[value2] - integer value
+	result:
+		- the multiplication of [value1] and [value2]
+
+
+<b>...	/	[value1]	[value2]</b>
+
+	operands:
+		[value1] - integer value
+		[value2] - integer value
+	result:
+		- the division of [value1] by [value2] rounded to 0
+
+
+<b>...	%	[value1]	[value2]</b>
+
+	operands:
+		[value1] - integer value
+		[value2] - integer value
+	result:
+		- the remainder of dividing [value1] by [value2]
+
+
+<b>...	random	[value]</b>
+
+	operands:
+		[value] - integer value
+	result:
+		- a random number between 0 and [value] minus 1, inclusive
+</code></pre><br>
+&nbsp;So now that we have boolean logic and arithmetic, let's combine them to form more complex expressions! Say you created these variables,
+<pre><code>	create	boolean	A	true
+	create	boolean	B	false
+	create	int	C	1
+	create	int	D	7</code></pre>
+and then you wanted to implement this expression:
+<pre><code>	(A and B or (C + 6 != D / 3))</code></pre>
+&nbsp;In order to use this as a clause, it has to be formatted properly. First make sure all operators are grouped with only two values:
+<pre><code>	((A and B) or ((C + 6) != (D / 3)))</code></pre>
+&nbsp;Next, move all operators to the left side of the parentheses, since this is the format for operators:
+<pre><code>	(or (and A B) (!= (+ C 6) (/ D 3)))</code></pre>
+&nbsp;After removing the parentheses, we can put it in a clause:
+<pre><code>	if	or	and	A	B	!=	+	C	6	/	D	3</code></pre>
+&nbsp;As soon as this line gets reached, <i>Run</i> starts evaluating. How this works is that the pointer starts from the right, and goes left along the expression, evaluating the operators as it goes. The variables are given their values. As soon as the pointer reaches an operator, it uses it in conjunction with the values that follow it. For instance, the pointer in this example starts at the <code>3</code>, goes to the <code>D</code> and stores it as <code>6</code>, and when it reaches the <code>/</code>, it stores the value of <code>D / 3</code>. Take a look at the sequence of evaluation steps that take place:
+<pre><code>												V
+	if	or	and	A	B	!=	+	C	6	/	D	3
+	
+											V
+	if	or	and	A	B	!=	+	C	6	/	7	3
+	
+										V
+	if	or	and	A	B	!=	+	C	6	2
+	
+									V
+	if	or	and	A	B	!=	+	C	6	2
+	
+								V
+	if	or	and	A	B	!=	+	1	6	2
+	
+							V
+	if	or	and	A	B	!=	7			2
+	
+						V
+	if	or	and	A	B	true
+	
+					V
+	if	or	and	A	false	true
+	
+				V
+	if	or	and	true	false	true
+	
+			V
+	if	or	false			true
+	
+		V
+	if	true</code></pre>
+&nbsp;At the end, the result is true, so the <code>if</code> does not skip lines. And that's how clauses work! As mentioned before, the README contains a list of all places where values can be clauses. The above clause and other long clauses are included in <code>example/015</code>.<br>
+&nbsp;For <code>setgargto</code>, the clauses must take place on the command line. Take a look at this line:
+<pre><code>	set	twelve	-	*	7	2	2</code></pre>
+&nbsp;To have <code>setargto</code> perform the same action, have something this line in your script:
+<pre><code>	setargto	t	twelve</code></pre>
+&nbsp;Then, when you run your script, type
+<pre><code>	java myscript t-,*,7,2,2</code></pre>
+and the <code>setargto</code> command will perform just like the <code>set</code> command. Note that you cannot access variables from a <code>setargto</code>- variable access is limited to the script that the variables exist in, so something like this,
+<pre><code>	java myscript t-,*,D,2,2</code></pre>
+would not have the <code>D</code> turn into <code>7</code>, even though there is a variable of name <code>D</code>.<br>
+<br>
+&nbsp;Besides just manipulating numbers and booleans, <i>Run</i> has a variety of operators for other uses. Here is an operator that checks command line input:
+<pre><code>	if	input	[arg]</code></pre>
+&nbsp;This evaluates to <code>true</code> if <code>[arg]</code> was given as a parameter to the program. For instance, starting a script with
+<pre><code>	java run thisisascript hello</code></pre>
+would make <code>hello</code> be a parameter. These <code>if</code>s,
+<pre><code>	if	input	goodbye
+	if	input	hello
+	if	input	he
+	if	input	helloo</code></pre>
+would evaluate to <code>false</code>, <code>true</code>, <code>false</code>, and <code>false</code> respectively. <code>input</code> is not supported in <code>setargto</code> clauses. Script <code>example/016</code> has a neat example of calling itself with extra input.<br>
+<h4 id="input-operator">input operator:</h4>
+<pre class="contract"><code><b>...	input	[arg]</b>
+
+	operands:
+		[arg] - a string of characters expected from the command line
+	result:
+		- true if [arg] was provided on the command line, false if not
+</code></pre><br>
+&nbsp;There are two clause forms that check for screen pixel colors. The first one,
+<pre><code>	if	colorat	[x]	[y]	[r]	[g]	[b]</code></pre>
+evaluates to <code>true</code> if the pixel at x-<code>[x]</code>, y-<code>[y]</code> is r-<code>[r]</code>, g-<code>[g]</code>, b-<code>[b]</code>, similar to the <code>pause</code> command. Likewise, it also has a format
+<pre><code>	if	colorat	[x]	[y]	[color]</code></pre>
+which uses the <code>color</code> variables. The second form,
+<pre><code>	if	scan	[x]	[y]	[w]	[h]	[r]	[g]	[b]</code></pre>
+takes a screenshot of the rectangle with top-left corner at x-<code>[x]</code>, y-<code>[y]</code>, with width <code>[w]</code> and height <code>[h]</code>. If any of the pixels in that rectangle are r-<code>[r]</code>, g-<code>[g]</code>, b-<code>[b]</code>, then it returns <code>true</code>. A single <code>scan</code> runs about as fast as a single <code>colorat</code> search. Like <code>colorat</code>s, <code>scan</code> also has the form
+<pre><code>	if	scan	[x]	[y]	[w]	[h]	[color]</code></pre>
+which uses the <code>color</code> variables. Scanning also introduces two new system variables,
+<pre><code>	.scanx
+	.scany</code></pre>
+which are the x- and y-coordinates of the pixel that triggered the scan to be <code>true</code>. If the scan returns <code>false</code>, they are both <code>-1</code>.<br>
+&nbsp;Color searches don't have to search only on the current screen- you can also scan stored <code>screenshot</code> variables. The <code>scan</code> operator can exchange <code>[x]</code>, <code>[y]</code>, <code>[w]</code> and <code>[h]</code> for a <code>screenshot</code> like in the following:<br>
+<pre><code>	if	scan	[screenshot]	[r]	[g]	[b]</code></pre>
+&nbsp;Here's an example:
+<pre><code>	create	screenshot	p	100	300	50	30
+	if	scan	p	255	255	255
+		move	100	100</code></pre>
+&nbsp;<code>p</code> stores a capture of the screen for later. When the script reaches the <code>if</code> command, it uses <code>p</code> instead of taking a new screenshot. You can also substitute <code>[r]</code>, <code>[g]</code>, <code>[b]</code> with <code>[color]</code> just like <code>pause</code>s.<br>
+&nbsp;The <code>colorat</code> operator can't work with <code>screenshot</code>s, but the operator <code>imagecolorat</code> does, in either of the following two formats (also like pause):
+<pre><code>	if	imagecolorat	[screenshot]	[x]	[y]	[r]	[g]	[b]
+	if	imagecolorat	[screenshot]	[x]	[y]	[color]</code></pre>
+&nbsp;Using the above <code>screenshot</code> variable, this snippet,
+<pre><code>	if	imagecolorat	p	100	300	255	255	255
+		move	100	100
+	
+	create	color	white	255	255	255
+	if	imagecolorat	p	100	300	white
+		move	100	100</code></pre>
+shows both ways of using <code>imagecolorat</code>. <code>imagecolorat</code> is not supported in <code>setargto</code> clauses.<br>
+&nbsp;In addition to using screenshots to check for colors, you can also retrieve the color of a pixel from the screenshot with the <code>imagecolor</code> operator:
+<pre><code>	create	color	pixel	imagecolor	[screenshot]	[x]	[y]
+	create	color	pixel	imagecolor	p	100	300</pre></code>
+&nbsp;You can use <code>imagecolor</code> anywhere that can accept both <code>[r]</code>, <code>[g]</code>, <code>[b]</code> and <code>[color]</code>, including other operators. <code>imagecolor</code> is not supported in <code>setargto</code> clauses.<br>
+<br>
+&nbsp;**SPECIAL NOTE**: When using <code>scan</code> with <code>screenshot</code>s or any of the operators that start with <code>image</code> (the two already mentioned plus ones mentioned further down), the <code>[x]</code> and <code>[y]</code> or <code>.scanx</code> and <code>.scany</code> correspond to the location <i>on the screen</i> rather than the location <i>in the image</i>. Take a look at the following:<br>
+<pre><code>	create	screenshot	s	130	190	75	50
+	
+	create	color	pixel	imagecolor	s	165	210
+	if	imagecolorat	s	130	239	pixel
+		move	100	100
+	if	scan	s	pixel
+		move	.scanx	.scany</code></pre>
+&nbsp;In the first example, the pixel location is <code>165</code>, <code>210</code> on the screen. This corresponds to <code>35</code>, <code>20</code> with respect to the top left corner of the <code>screenshot</code>.<br>
+&nbsp;Similarly, the second example will check the color of the pixel that represents <code>130</code>, <code>239</code> on the screen and <code>0</code>, <code>49</code> in the <code>screenshot</code>.<br>
+&nbsp;In the third example, if the <code>scan</code> found a pixel corresponding to <code>10</code>, <code>35</code> on the picture, it would correspond to <code>140</code>, <code>225</code>; <code>.scanx</code> would be <code>140</code> and <code>.scany</code> would be <code>225</code>.<br>
+<br>
+&nbsp;Script <code>example/017</code> uses these different color operators.
+<h4 id="screen-color-operators">screen color operators:</h4>
+<pre class="contract"><code><b>...	colorat	[x]	[y]	[r]	[g]	[b]</b>
+
+	operands:
+		[x] - x coordinate of the screen to check
+		[y] - y coordinate of the screen to check
+		[r] - target pixel red value
+		[g] - target pixel green value
+		[b] - target pixel blue value
+	result:
+		- true if the pixel at position [x], [y] on the screen is approximately [r], [g], [b],
+			false if not
+
+
+<b>...	colorat	[x]	[y]	[color]</b>
+
+	operands:
+		[x] - x coordinate of the screen to check
+		[y] - y coordinate of the screen to check
+		[color] - color variable to represent the target pixel color value
+	result:
+		- true if the pixel at position [x], [y] on the screen is approximately [color], false if not
+
+
+<b>...	scan	[x]	[y]	[w]	[h]	[r]	[g]	[b]</b>
+
+	operands:
+		[x] - left x coordinate of screen area to check
+		[y] - top y coordinate of screen area to check
+		[w] - width of screen area to check
+		[h] - height of screen area to check
+		[r] - target pixel red value
+		[g] - target pixel green value
+		[b] - target pixel blue value
+	result:
+		- true if there is a pixel in the rectangle with top left corner [x], [y] and size [w], [h]
+			that is approximately [r], [g], [b], false if not
+		- sets <b>.scanx</b> and <b>.scany</b> to the location of the found pixel if found, sets them to -1 if not
+
+
+<b>...	scan	[x]	[y]	[w]	[h]	[color]</b>
+
+	operands:
+		[x] - left x coordinate of screen area to check
+		[y] - top y coordinate of screen area to check
+		[w] - width of screen area to check
+		[h] - height of screen area to check
+		[color] - color variable to represent the target pixel color value
+	result:
+		- true if there is a pixel in the rectangle with top left corner [x], [y] and size [w], [h]
+			that is approximately [color], false if not
+		- sets <b>.scanx</b> and <b>.scany</b> to the location of the found pixel, sets them to -1 if not
+
+
+<b>...	scan	[screenshot]	[r]	[g]	[b]</b>
+
+	operands:
+		[screenshot] - screenshot to check
+		[r] - target pixel red value
+		[g] - target pixel green value
+		[b] - target pixel blue value
+	result:
+		- true if there is a pixel in [screenshot] that is approximately [r], [g], [b], false if not
+		- sets <b>.scanx</b> and <b>.scany</b> to the location of the found pixel if found, sets them to -1 if not
+
+
+<b>...	scan	[screenshot]	[color]</b>
+
+	operands:
+		[screenshot] - screenshot to check
+		[color] - color variable to represent the target pixel color value
+	result:
+		- true if there is a pixel in [screenshot] that is approximately [color], false if not
+		- sets <b>.scanx</b> and <b>.scany</b> to the location of the found pixel, sets them to -1 if not
+
+
+<b>...	imagecolorat	[screenshot]	[x]	[y]	[r]	[g]	[b]</b>
+
+	operands:
+		[screenshot] - screenshot to check a pixel of
+		[x] - x coordinate of the screenshot to check
+		[y] - y coordinate of the screenshot to check
+		[r] - target pixel red value
+		[g] - target pixel green value
+		[b] - target pixel blue value
+	result:
+		- true if the pixel at position [x], [y] in the screenshot is approximately [r], [g], [b],
+			false if not
+
+
+<b>...	imagecolorat	[screenshot]	[x]	[y]	[color]</b>
+
+	operands:
+		[screenshot] - screenshot to check a pixel of
+		[x] - x coordinate of the screenshot to check
+		[y] - y coordinate of the screenshot to check
+		[color] - color variable to represent the target pixel color value
+	result:
+		- true if the pixel at position [x], [y] in the screenshot is approximately [color],
+			false if not
+
+
+<b>...	imagecolor	[screenshot]	[x]	[y]</b>
+
+	operands:
+		[screenshot] - screenshot to with a pixel to get the color of
+		[x] - x coordinate of the screenshot pixel
+		[y] - y coordinate of the screenshot pixel
+	result:
+		- a set of 3 numbers- the red, green, and blue values of the pixel at position [x], [y]
+			in the screenshot
+</code></pre><br>
+&nbsp;Now so far, when we've been dealing with colors, we've been dealing with them in sets of 3- the red, green, and blue values all together at the same time. What if you wanted to get just one of those values? Fortunately, there are also operators that allow you to use the values of color variables, <code>redpart</code>, <code>greenpart</code>, and <code>bluepart</code>, as well as operators that let you get the individual color values of pixels within images, <code>imagered</code>, <code>imagegreen</code>, and <code>imageblue</code>:
+<pre><code>	create	color	orange	255	192	0
+	create	int	fullred	1
+	create	int	mostlygreen	1
+	create	int	noblue	1
+	set	fullred	redpart	orange
+	set	mostlygreen	greenpart	orange
+	set	noblue	bluepart	orange
+	
+	create	screenshot	s	100	200	50	30
+	create	int	redof110_220	imagered	s	110	220
+	create	int	greenof110_220	imagegreen	s	110	220
+	create	int	blueof110_220	imageblue	s	110	220</code></pre>
+&nbsp;The <code>fullred</code> variable would be <code>255</code>, <code>mostlygreen</code> would be <code>192</code>, and <code>noblue</code> would be <code>0</code>. The variables <code>redof110_220</code>, <code>greenof110_220</code>, and <code>blueof110_220</code> would be the values that the pixel at <code>110</code>, <code>220</code> had been when the screenshot was taken. <code>redpart</code>, <code>greenpart</code>, <code>bluepart</code>, <code>imagered</code>, <code>imagegreen</code>, and <code>imageblue</code> are not supported in <code>setargto</code> clauses. Examples of these operators are available in <code>example/018</code>.<br>
+<h4 id="color-value-operators">color value operators:</h4>
+<pre class="contract"><code><b>...	redpart	[color]</b>
+
+	operands:
+		[color] - color variable
+	result:
+		- the red value of [color]
+
+
+<b>...	greenpart	[color]</b>
+
+	operands:
+		[color] - color variable
+	result:
+		- the green value of [color]
+
+
+<b>...	bluepart	[color]</b>
+
+	operands:
+		[color] - color variable
+	result:
+		- the blue value of [color]
+
+
+<b>...	imagered	[screenshot]	[x]	[y]</b>
+
+	operands:
+		[screenshot] - screenshot to with a pixel to get the color of
+		[x] - x coordinate of the screenshot pixel
+		[y] - y coordinate of the screenshot pixel
+	result:
+		- the red value of the pixel at position [x], [y] in the screenshot
+
+
+<b>...	imagegreen	[screenshot]	[x]	[y]</b>
+
+	operands:
+		[screenshot] - screenshot to with a pixel to get the color of
+		[x] - x coordinate of the screenshot pixel
+		[y] - y coordinate of the screenshot pixel
+	result:
+		- the green value of the pixel at position [x], [y] in the screenshot
+
+
+<b>...	imageblue	[screenshot]	[x]	[y]</b>
+
+	operands:
+		[screenshot] - screenshot to with a pixel to get the color of
+		[x] - x coordinate of the screenshot pixel
+		[y] - y coordinate of the screenshot pixel
+	result:
+		- the blue value of the pixel at position [x], [y] in the screenshot
+</code></pre><br>
+<h3 id="section-3.2"><hr>
+SECTION 3.2- For Loops
+<hr></h3>
+&nbsp;Now on to <code>for</code> loops! They don't really need their own section, but hey, why not? <code>for</code> loops run their contents once "for" each value between the starting and ending values. A <code>for</code> loop starts with the command
+<pre><code>	for	[name]	[init]	[max]	[incr]</code></pre>
+and ends with the command
+<pre><code>	end</code></pre>
+&nbsp;The <code>for</code> command generates a variable named <code>[name]</code> with a value of <code>[init]</code>. When the script reaches the <code>end</code> command, it increases <code>[name]</code> by <code>[incr]</code>. If the variable is greater than <code>[max]</code> (when <code>[incr]</code> is positive or <code>0</code>) or less than <code>[max]</code> (when <code>[incr]</code> is negative), the pointer jumps to the line after the <code>end</code> command; otherwise, it jumps back to the top. As for the variables defined by the <code>for</code> command, they take on the following properties:<br>
+- They are available to all commands within the script<br>
+- If there is a global variable outside the <code>for</code> loop with the same name as that variable, the <code>for</code> loop one will get picked if it gets referenced<br>
+- Variables only exist while the <code>for</code> loop is in effect: once the <code>for</code> loop ends, the variables are no longer available (unless they were created earlier, in which case their values are restored)<br>
+- Nested <code>for</code> loops have access to all variables from the previous <code>for</code> loops<br>
+- None of the numbers in the command can be clauses; <code>[init]</code>, <code>[max]</code>, and <code>[incr]</code> must all be single integers or variables with single integer values<br>
+- <code>jump</code> and <code>call</code> commands can access labels outside of the for loop, but you should make sure you return to where it was called. Each <code>end</code> command is paired to a specific <code>for</code> command. If you have nested <code>for</code> loops and the pointer reaches the wrong <code>end</code> command because of jumping, the loops may function incorrectly.<br>
+<br>
+&nbsp;Note that variables created with <code>create</code> commands within the loop are global, and will not disappear.<br>
+<br>
+&nbsp;Here is an example of three <code>for</code> loops that do the same thing:
+<pre><code>	for	x	100	200	10
+		left	x	100
+		pause	1000
+	end
+	
+	create	int	total	0
+	for	x	0	-100	-10
+		set	total	-	100	x
+		left	total	100
+		pause	1000
+	end
+	
+	for	x	0	-100	-10
+		left	-	100	x	100
+		pause	1000
+	end</code></pre>
+&nbsp;These will left click at x-<code>100</code>, y-<code>100</code>, pause a second, left click at x-<code>110</code>, y-<code>100</code>, pause a second, and so on. At the end, they will click at x-<code>200</code>, y-<code>100</code>, pause a second, and then continue on. A similar set of <code>for</code> loops is available in <code>example/019</code>.<br>
+<h4 id="for-contract">for:</h4>
+<pre class="contract"><code><b>for	[name]	[init]	[max]	[incr]</b>
+
+	input:
+		[name] - variable name to use in the loop
+		[init] - starting variable value
+		[max] - maximum variable value
+		[incr] - increment to use each loop
+	output:
+		- when reached for the first time:
+			- creates a variable with starting value [init]
+		- when jumped to by an <b>end</b> command:
+			- adds [incr] to [name]
+			- checks if either ([incr] is positive or 0 and [name] is greater than [max]) or
+				([incr] is negative and [name] is less than [max])
+			- if the check is false, proceeds to the next command
+			- if the check is true, jumps to the command after the <b>end</b> command
+</code></pre>
+<h4 id="end-contract">end:</h4>
+<pre class="contract"><code><b>end</b>
+
+	output:
+		- jumps up to the corresponding <b>for</b> command and goes to the next loop iteration
+</code></pre><br>
+&nbsp;Paired with <code>for</code> loops is the ability to exit them early. This is done with 3 breaking commands of varying power:
+<pre><code>	break
+	return
+	quit</code></pre>
+&nbsp;<code>break</code> will exit out of the current loop (it must be within a loop). <code>return</code> will exit out of the current script, but the program will keep running if another script called it. <code>quit</code> will stop all autoclicking and end the program. Moving the mouse during a <code>pause</code> functions the same as performing a <code>quit</code>. Script <code>example/020</code> has an example of all three of these.<br>
+<h4 id="break-contract">break:</h4>
+<pre class="contract"><code><b>break</b>
+
+	output:
+		- jumps up to the line after the <code>end</code> command of the current <b>for</b> loop
+</code></pre>
+<h4 id="return-contract">return:</h4>
+<pre class="contract"><code><b>return</b>
+
+	output:
+		- leaves the current script and either stops the program or resumes the script from which this
+			script was run
+</code></pre>
+<h4 id="quit-contract">quit:</h4>
+<pre class="contract"><code><b>quit</b>
+
+	output:
+		- ends the current script, triggering an "abnormal" ending which may be caught by any
+			<b>endingcall</b> options that have been turned on
+		- causes all <b>run</b> commands from previous scripts to also trigger "abnormal" endings
+</code></pre><br>
+<h2 id="section-4"><hr>
+SECTION 4- Miscellaneous Features
+<hr></h2>
+<br>
+&nbsp;In addition to clicking, <i>Run</i> also allows you to type. There are three commands for key presses:
+<pre><code>	type	.[text]
+	press	[button]
+	release	[button]</code></pre>
+&nbsp;<code>type</code> will type any remaining characters on the line after the period- tabs, spaces, uppercase and lowercase letters, and any of the 32 special characters on a standard US keyboard. This special syntax means that any other characters before the period will be ignored (including whitespace), and that if you have no characters after the period, <code>type</code> will type nothing. Whitespace at the end is included, so the following command,<br>
+<pre><code>	type	.Hello, </code></pre>
+will type "<code>Hello, </code>".<br>
+&nbsp;<code>press</code> will press down one of the following buttons when substituting <code>[button]</code>:
+<pre><code>	enter
+	backspace
+	delete
+	control
+	up
+	down
+	left
+	right
+	shift
+	alt
+	capslock
+	escape
+	tab
+	space
+	home
+	end
+	pageup
+	pagedown</code></pre>
+&nbsp;<code>release</code> will release the key. You can also press/release any of the single characters that you can use in the type command, other than tab or space (tab and space are included in the list since they are normally whitespace). Script <code>example/021</code> uses these three commands.<br>
+<h4 id="type-contract">type:</h4>
+<pre class="contract"><code><b>type	.[text]</b>
+
+	input:
+		[text] - a string of characters, which can include tabs, spaces, uppercase and lowercase
+			letters, and any of the 32 special characters on a standard US keyboard
+	output:
+		- types the provided text
+</code></pre>
+<h4 id="press-contract">press:</h4>
+<pre class="contract"><code><b>press	[button]</b>
+
+	input:
+		[button] - either one of "enter", "backspace", "delete", "control", "up", "down", "left",
+			"right", "shift", "alt", "capslock", "escape", "tab", "space", "home", "end",
+			"pageup", "pagedown", or a lowercase letter (uppercase gets converted to lowercase)
+			or any of the 32 special characters on a standard US keyboard
+	output:
+		- presses down the provided key
+</code></pre>
+<h4 id="release-contract">release:</h4>
+<pre class="contract"><code><b>release	[button]</b>
+
+	input:
+		[button] - either one of "enter", "backspace", "delete", "control", "up", "down", "left",
+			"right", "shift", "alt", "capslock", "escape", "tab", "space", "home", "end",
+			"pageup", "pagedown", or a lowercase letter (uppercase gets converted to lowercase)
+			or any of the 32 special characters on a standard US keyboard
+	output:
+		- releases down the provided key
+</code></pre><br>
+&nbsp;Screenshots are good, but how nice would it be if you could save and load images? Pretty nice! <i>Run</i> lets you save and load screenshots with the following two commands:
+<pre><code>	saveimage	[screenshot]
+	loadimage	[screenshot]	[x]	[y]</code></pre>
+&nbsp;The <code>saveimage</code> command will save a .png file with the same name as your variable. So if you had
+<pre><code>	create	screenshot	leftbox	100	50	500	200
+	saveimage	leftbox</code></pre>
+then the <code>saveimage</code> command would create a "leftbox.png" file in the same directory as the run.class file.
+&nbsp;The <code>loadimage</code> command does the reverse- it takes an existing image in the run.class directory and creates a screenshot variable with the saved image. When loading an image, you do not need to create the variable with a <code>create</code> command. Loaded images are given left x and top y coordinates since those aren't stored with the file. This snippet,
+<pre><code>	load	rightbox	200	400</code></pre>
+would create a new screenshot and load a "rightbox.png" as the variable's inner image, with a top left corner of <code>200</code>, <code>400</code>. You can also omit the x and y coordinates,
+<pre><code>	load	rightbox</code></pre>
+and it will create a screenshot with a top left corner of <code>0</code>, <code>0</code>. Script <code>example/022</code> uses <code>saveimage</code> and <code>loadimage</code>.
+<h4 id="saveimage-contract">saveimage:</h4>
+<pre class="contract"><code><b>saveimage	[name]</b>
+
+	input:
+		[name] - the name of a screenshot variable
+	output:
+		- saves an image with the same name as the variable and a ".png" extension
+</code></pre>
+<h4 id="loadimage-contract">loadimage:</h4>
+<pre class="contract"><code><b>loadimage	[name]	[x]	[y]</b>
+
+	input:
+		[name] - variable name
+		[x] - left x coordinate for the loaded image
+		[y] - top y coordinate for the loaded image
+	output:
+		- initializes a new variable with the top left corner [x], [y] and an internal image loaded
+			from the file [name].png
+
+
+<b>loadimage	[name]</b>
+
+	input:
+		[name] - variable name
+	output:
+		- initializes a new variable with the top left corner 0, 0 and an internal image loaded from
+			the file [name].png
+</code></pre><br>
+&nbsp;<i>Run</i> also provides some miscellaneous options that can be set with these two commands:
+<pre><code>	optionon	[setting]
+	optionoff	[setting]</code></pre>
+&nbsp;This will either turn on or turn off, respectively, certain settings that can be helpful while running scripts. All settings apply only to the script that called it. <code>optionon</code> settings may take extra parameters, but <code>optionoff</code> only needs the name of the option. There are currently seven available settings.<br>
+&nbsp;The first one,
+<pre><code>	optionon	quitafter	[number]</code></pre>
+takes an integer parameter, <code>[number]</code>. Since <code>pause</code>s and <code>pausenot</code>s only continue once the pixel changes, the script might run indefinitely if the pixel doesn't change properly. This option will end the script if <code>[number]</code> milliseconds pass without the pixel changing. Note that this is different than an extra parameter at the end of the pause/pausenot, because that parameter will continue running the script. <code>quitafter</code> is off by default.<br>
+&nbsp;The second option,
+<pre><code>	optionon	endingcall	[label]</code></pre>
+triggers when the script ends in the middle "abnormally", which happens when the mouse is moved during a <code>pause</code> or <code>pausenot</code>, a <code>quit</code> command is called, or a <code>pause</code> reaches its <code>quitafter</code> point. <code>endingcall</code> jumps to the label <code>[label]</code>, and turns off the <code>endingcall</code> option. It can be reenabled if there is another <code>optionon endingcall</code> command after the label, but when the script ends it will always end "abnormally". <code>endingcall</code> is not called for scripts that end "normally" (by reaching the bottom of the script). If a script ends "abnormally", then any scripts that called it will end abnormally as well, triggering those scripts' <code>endingcall</code>s if they were set. You can, however, have future <code>run</code> commands which will not automatically end "abnormally". <code>endingcall</code> is off by default.<br>
+&nbsp;The third option,
+<pre><code>	optionon	variance	[red]	[green]	[blue]</code></pre>
+is for use with checking pixel colors. The <code>variance</code> is how much higher or lower each of the three color values (red, green, blue) can be to be accepted as correct (this is why <code>pause</code>s only say "approximately" the right color). If a value of the <code>variance</code> is <code>5</code>, then in any command that uses pixel colors, an acceptable pixel value can be between <code>5</code> higher and <code>5</code> lower than the given value. If the red variance is 5, checking for a red of <code>128</code> would accept anything from <code>123</code> to <code>133</code> as the right color value. You can also use
+<pre><code>	optionon	variance	[value]</code></pre>
+to set <code>[value]</code> to all three color variances. <code>variance</code> is <code>5 5 5</code> by default. Turning off the <code>variance</code> sets it to <code>0 0 0</code>. Setting a negative <code>variance</code> is a bad idea.<br>
+&nbsp;The fourth option,
+<pre><code>	optionon	mousetolerance	[xtolerance]	[ytolerance]</code></pre>
+allows you to adjust the how easy it is to end the script "abnormally" in a pause command. Setting the tolerance will set how much distance the mouse can move during a pause. When a pause command executes, it records the mouse position at the beginning. If the mouse moves too far away from that spot, the script will end "abnormally". If the tolerance were <code>0 0</code>, then any mouse movement would trigger an "abnormal" ending. If the tolerance were <code>5 10</code> and the mouse started at x-<code>115</code>, y-<code>130</code>, then the mouse could move anywhere in the rectangle within x-<code>110-120</code> and y-<code>120-140</code> without triggering an abnormal ending. Like <code>variance</code>, you can also use
+<pre><code>	optionon	mousetolerance	[tolerance]</code></pre>
+to set <code>[tolerance]</code> to both the x and y tolerance. <code>mousetolerance</code> is <code>0 0</code> by default. Turning off <code>mousetolerance</code> sets it to this default. Setting a negative <code>mousetolerance</code> is a bad idea.<br>
+&nbsp;The fifth option,
+<pre><code>	optionon	scanorder	[direction]	[direction]</code></pre>
+sets the order in which the <code>scan</code> clause runs. The first direction is the primary direction in which the <code>scan</code> searches the picture, the second direction is the secondary direction. The directions for the command are <code>up</code>, <code>down</code>, <code>left</code>, and <code>right</code>. If you had the following, 
+<pre><code>	optionon	scanorder	right	up</code></pre>
+then <code>scan</code>s would start at the bottom left corner, go right along the bottom row of pixels, and once the end has been reached, it would move up one row of pixels, go the left side, and start again. If your first direction is invalid (not <code>up</code>, <code>down</code>, <code>left</code>, or <code>right</code>), the <code>scanorder</code> does not get set. If your second direction is invalid, or is on the same axis as the first direction (vertical or horizontal), a default second direction will be assigned: <code>down</code> for vertical and <code>right</code> for horizontal. The default <code>scanorder</code> is <code>right</code> then <code>down</code>. Turning off <code>scanorder</code> sets it to this default.<br>
+&nbsp;The sixth option,
+<pre><code>	optionon	offset	[x]	[y]</code></pre>
+allows you to set an offset to apply to all interactions with the screen. Any command or operator that uses screen coordinates (<code>move</code>, <code>pausenot</code>, <code>scan</code>, etc.), including ones used with screenshots, will shift by this amount relative to the physical location of the screen, essentially setting the screen so that this new location is the top left corner. Setting an <code>offset</code> will override any old one. For example, if you had a script with the following commands,
+<pre><code>	optionon	offset	23	57
+	optionon	offset	50	100
+	move	25	37</code></pre>
+the mouse would move to the physical position x-<code>75</code>, y-<code>137</code>. Similarly,
+<pre><code>	optionon	offset	2	43
+	pause	10	10	255	255	255</code></pre>
+would wait until the color at x-<code>12</code>, y-<code>53</code> is the right color. All variables are unaffected, and .<code>scanx</code>, <code>.scany</code>, <code>.mousex</code>, and <code>.mousey</code> take the offset into account. If you had
+<pre><code>	optionon	offset	34	56
+	if	scan	10	10	20	20	30	30	30
+		[command]</code></pre>
+the scan would start at x-<code>44</code>, y-<code>66</code>. If the pixel at x-<code>44</code>, y-<code>66</code> is the correct color, then <code>.scanx</code> would be <code>10</code> and <code>.scany</code> would be <code>10</code>. If you then had
+<pre><code>	move	.scanx	.scany</code></pre>
+your mouse would move to x-<code>44</code>, y-<code>66</code>. Similarly, for <code>.mousex</code> and <code>.mousey</code>, if you had
+<pre><code>	optionon	offset	12	33
+	create	int	mx	.mousex
+	create	int	my	.mousey
+	move	mx	my
+	
+	optionon	offset	12	33
+	move	.mousex	.mousey</code></pre>
+and your mouse was physically at x-<code>125</code>, y-<code>150</code>, then for the first part, mx and my would be <code>113</code> and <code>117</code>, respectively, and the mouse would effectively not move. The second part would do the same thing, moving the mouse nowhere. Setting <code>offset</code> to <code>0 0</code> is equivalent to turning it off. <code>offset</code> is off by default.<br>
+&nbsp;The seventh option,
+<pre><code>	optionon	endmessages</code></pre>
+sets whether or not <i>Run</i> will display a descriptive ending message when the program exits "abnormally". <code>endmessages</code> is on by default.<br>
+<br>
+&nbsp;Script <code>example/023</code> uses some of these options.<br>
+<h4 id="optionon-contract">optionon:</h4>
+<pre class="contract"><code><b>optionon	quitafter	[number]</b>
+
+	input:
+		[number] - number of milliseconds to wait
+	output:
+		- triggers an "abnormal" ending if a <b>pause</b> or <b>pausenot</b> has not found an acceptable
+			color after this amount of time
+
+
+<b>optionon	endingcall	[label]</b>
+
+	input:
+		[label] - the name of a label
+	output:
+		- when an "abnormal" ending is triggered, have the pointer jump to [label]
+
+
+<b>optionon	variance	[r]	[g]	[b]</b>
+
+	input:
+		[r] - target pixel red variance
+		[g] - target pixel green variance
+		[b] - target pixel blue variance
+	output:
+		- allows commands and operators that check for colors to accept red, green, or blue values
+			between (the provided value plus the corresponding variance) and (the provided value
+			minus the corresponding variance)
+
+
+<b>optionon	variance	[value]</b>
+
+	input:
+		[value] - target pixel red, green, and blue variance
+	output:
+		- allows commands and operators that check for colors to accept red, green, or blue values
+			between (the provided value plus [value]) and (the provided value minus [value])
+
+
+<b>optionon	mousetolerance	[xtolerance]	[ytolerance]</b>
+
+	input:
+		[xtolerance] - maximum distance from original mouse x coordinate
+		[ytolerance] - maximum distance from original mouse y coordinate
+	output:
+		- pauses will not trigger an "abnormal" ending if the mouse position is within [xtolerance]
+			pixels to the left or right and [ytolerance] pixels above or below the position at the
+			start of the pause
+
+
+<b>optionon	mousetolerance	[tolerance]</b>
+
+	input:
+		[tolerance] - maximum distance from original mouse x or y coordinate
+	output:
+		- pauses will not trigger an "abnormal" ending if the mouse position is within [tolerance]
+			pixels to the left or right and [tolerance] pixels above or below the position at the
+			start of the pause
+
+
+<b>optionon	scanorder	[direction1]	[direction2]</b>
+
+	input:
+		[diretion1] - either "up", "down", "left", or "right"
+		[diretion2] - either "up", "down", "left", or "right"
+	output:
+		- sets the <b>scan</b> operator to traverse pixels within a row in the direction [direction1] and to
+			traverse rows within the image in the direction [direction2]
+
+
+<b>optionon	offset	[x]	[y]</b>
+
+	input:
+		[x] - new screen left coordinate
+		[y] - new screen top coordinate
+	output:
+		- offsets the screen so that [x], [y] is effectively the new 0, 0 on the screen
+
+
+<b>optionon	endmessages</b>
+
+	output:
+		- turns on descriptive messages when a script ends "abnormally"
+</code></pre>
+<h4 id="optionoff-contract">optionoff:</h4>
+<pre class="contract"><code><b>optionoff	[setting]</b>
+
+	input:
+		[setting] - the name of a setting usable in <b>optionon</b>
+	output:
+		- disables the effect of <b>[setting]</b>
+</code></pre><br>
+<br>
+&nbsp;One last feature, you can print to the console almost just like you can in Java. The command
+<pre><code>	print	.[text]</code></pre>
+will print everything after the period (in the same format as <code>type</code>), the command
+<pre><code>	printval	[name]</code></pre>
+will print out a representation of the value of the variable named <code>[name]</code>, and the command
+<pre><code>	println</code></pre>
+will start a new line. <code>println</code> can also accept text as a parameter just like <code>print</code>, printing the text out and starting a new line.<br>
+&nbsp;<code>printval</code> can also print out any of the system variables, plus a special system variable,
+<pre><code>	printval	.timestamp</code></pre>
+that will print the time & date, rather than a variable's value. The timestamp format is a 24-hour clock displayed <code>HH:MM:SS DD/MM/YYYY</code>.<br>
+&nbsp;Here's an example:
+<pre><code>	create	int	test	123
+	print	.The value of "test" is 
+	printval	test
+	print	. at 
+	printval	.timestamp
+	print	..
+	println
+	println	.Also, here's a tab:	.</code></pre>
+&nbsp;This would print out these two lines:
+<pre><code>The value of "test" is 123 at 0:00:00 1/1/1970.
+Also, here's a tab:	.</code></pre>
+&nbsp;The time here would be replaced with the real time, rather than the epoch. This snipped is provided in <code>example/024</code>. You can also check out <code>example/000</code>.<br>
+<h4 id="print-contract">print:</h4>
+<pre class="contract"><code><b>print	.[text]</b>
+
+	input:
+		[text] - a string of characters, which can include tabs, spaces, uppercase and lowercase
+			letters, and any of the 32 special characters on a standard US keyboard
+	output:
+		- prints out the provided text to the console
+</code></pre>
+<h4 id="printval-contract">printval:</h4>
+<pre class="contract"><code><b>printval	[var]</b>
+
+	input:
+		[var] - the name of a variable
+	output:
+		- [var] is <b>.mousex</b>, <b>.mousey</b>, <b>.scanx</b>, <b>.scany</b>, <b>.screenwidth</b>, <b>.screenheight</b> or an int or timer:
+			prints out the decimal representation of [var] to the console
+		- [var] is <b>.skipped</b> or a boolean: prints out "true" if [var] is true, "false" if not to the
+			console
+		- [var] is a color: prints out the decimal representation of the red, green, and blue values
+			with values separated by a comma followed by a space to the console
+		- [var] is a screenshot: prints out "screenshot" to the console
+		- [var] is <b>.timestamp</b>: prints out the current local time in a 24-hour "HH:MM:SS DD/MM/YYYY"
+			format to the console
+</code></pre>
+<h4 id="println-contract">println:</h4>
+<pre class="contract"><code><b>println</b>
+
+	output:
+		- prints a newline character to the console
+
+
+<b>println	.[text]</b>
+
+	input:
+		[text] - a string of characters, which can include tabs, spaces, uppercase and lowercase
+			letters, and any of the 32 special characters on a standard US keyboard
+	output:
+		- prints out the provided text followed by a newline character to the console
+</code></pre><br>
+<br>
+&nbsp;And that's that! You now know how to create autoclicker scripts! The autoclicker will also automatically do a quick syntax check of all scripts to be run (though it won't necessarily catch everything) to make sure that certain errors don't appear.<br>
+<br>
+&nbsp;<i>Run</i> is a growing program, there are always plenty of things that can be added or changed. Feel free to open an issue or pull request on <a href="https://github.com/gregoryloden/run">https://github.com/gregoryloden/run</a> with suggestions, misspellings, confusions, or bug reports.<br>
+</body>
+</html>

@@ -1,0 +1,20 @@
+	// Use arithmetic in clauses
+	// The mouse will move to 100, 100 then 240, 100, then 3 times to a random spot in the rectangle between 0, 0 and 199, 299
+
+	create	int	a	40
+	create	int	b	60
+	create	int	c	75
+	create	int	x	0
+
+	set	x	+	a	b
+	move	x	100
+	pause	1000
+
+	move	*	b	4	100
+	pause	1000
+
+	move	random	200	random	300
+	pause	1000
+	move	random	200	random	300
+	pause	1000
+	move	random	200	random	300

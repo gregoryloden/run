@@ -1,0 +1,25 @@
+	// Manipulate a variable to change where the mouse moves
+	// Moves to 100, 200 then 300, 200 then 200, 200 then 600, 200 then 300, 200 then 100, 200
+
+	create	int	x	100
+	move	x	200
+	pause	1000
+
+	+=	x	200
+	move	x	200
+	pause	1000
+
+	-=	x	100
+	move	x	200
+	pause	1000
+
+	*=	x	3
+	move	x	200
+	pause	1000
+
+	/=	x	2
+	move	x	200
+	pause	1000
+
+	%=	x	200
+	move	x	200

@@ -1,0 +1,6 @@
+	// Move the mouse 100 pixels left and 100 pixels up
+	create	int	movex	.mousex
+	create	int	movey	.mousey
+	-=	movex	100
+	-=	movey	100
+	move	movex	movey

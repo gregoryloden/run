@@ -1,0 +1,7 @@
+	// Move to the coordinates provided on the command line
+	// If an input is missing, it will be set to 1
+	create	int	movex	1
+	create	int	movey	1
+	setargto	x	movex
+	setargto	y	movey
+	move	movex	movey

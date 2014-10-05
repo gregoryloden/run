@@ -1,0 +1,25 @@
+	// Move the mouse according to long conditionals
+	// The mouse moves to 100, 200 then 300, 200 then to a random spot between 400, 100 and 499, 149
+
+	create	boolean	A	true
+	create	boolean	B	false
+	create	int	C	1
+	create	int	D	7
+
+	// if ((A and B) or ((C + 6) != (D / 3)))
+	if	or	and	A	B	!=	+	C	6	/	D	3
+		move	100	200
+	pause	1000
+
+	// if ((D >= C) and ((D % 4) == C))
+	if	and	>=	D	C	==	%	D	4	C
+		move	200	200
+	pause	1000
+
+	// if (not ((true and (D != 7)) or (4 < C))
+	if	not	or	and	true	!=	D	7	<	4	C
+		move	300	200
+	pause	1000
+
+	// move (400 + (random (40 + 60))) (100 + (random (5 * 10))
+	move	+	400	random	+	40	60	+	100	random	*	5	10

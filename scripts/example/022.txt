@@ -1,0 +1,17 @@
+	// Take a screenshot, then get a pixel color from it then move the mouse to 200, 200
+	// Recreate the variable as an int and move the mouse to 100, 100 
+	// Load it back from the file and verify that a pixel is the same color, then move the mouse to 200, 200
+
+	create	screenshot	scripts/example/022_pic	50	200	80	60
+	create	color	c	imagecolor	scripts/example/022_pic	129	259
+	saveimage	scripts/example/022_pic
+	move	200	200
+	pause	1000
+
+	create	int	scripts/example/022_pic	100
+	move	scripts/example/022_pic	100
+	pause	1000
+
+	loadimage	scripts/example/022_pic	500	600
+	if	imagecolorat	scripts/example/022_pic	579	659	c
+		move	200	200
