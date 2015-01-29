@@ -1,3 +1,7 @@
+v9.1	Fixed problems with creating/setting a variable and using arithmetic values
+	Fixed crash arising from calling two scripts from within one script
+	Added a verify check for using printval with an operator
+
 v9	Fixed printing out starting period in print commands
 	Fixed mousepos script to match the new print format
 	Fixed bug where break would not properly restore the variable value

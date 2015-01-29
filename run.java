@@ -268,8 +268,9 @@ public class run {
 			return 0;
 		}
 		public void setto(String[] args, int[] cptrs) {
-			if (mainrun.vars[cptrs[1]].istype(Varslist.VSCREENSHOT)) {
-				VarsScreenshot vs = (VarsScreenshot)(mainrun.vars[cptrs[1]]);
+			int cptr1 = cptrs[1];
+			if (cptr1 >= 0 && (variable = mainrun.vars[cptr1]).istype(Varslist.VSCREENSHOT)) {
+				VarsScreenshot vs = (VarsScreenshot)(variable);
 				left = vs.left;
 				top = vs.top;
 				val = vs.val;
@@ -638,8 +639,11 @@ public class run {
 				Filer inner = new Filer("scripts/" + putter.val[row][0] + ".txt");
 				if (inner.fileisthere()) {
 					inner.readfile();
-					putter.next = new Script(putter.val[row][0], inner.lines());
-					valid = verify(inner.getlines(), putter.next) && valid;
+					Script lastscript = putter;
+					while (lastscript.next != null)
+						lastscript = lastscript.next;
+					lastscript.next = new Script(putter.val[row][0], inner.lines());
+					valid = verify(inner.getlines(), lastscript.next) && valid;
 				} else {
 					System.out.println("Missing content in " + putter.name + " on line " + (row + 1) + ": script \"" + putter.val[row][0] + "\" was not found");
 					valid = false;
@@ -861,6 +865,10 @@ public class run {
 						putter.ival[row][col] = ptr;
 					}
 				}
+			}
+			if (action == CPRINTVAL && putter.ival[row][0] < 0) {
+				System.out.println("Bad syntax in " + putter.name + " on line " + putter.rows[row] + ": cannot print the value of an operator");
+				valid = false;
 			}
 			//push or pop the id of a for variable
 			if (putter.action[row] == CFOR)
@@ -1148,8 +1156,9 @@ System.out.println();
 						evaluate(args, cptrs, 2);
 						vars[cptr] = new VarsTimer(args[1], ints[0], vars[cptr]);
 					} else if (args[0].equals("screenshot")) {
-						if (vars[cptrs[2]].istype(Varslist.VSCREENSHOT)) {
-							VarsScreenshot vs = (VarsScreenshot)(vars[cptrs[2]]);
+						int cptr2 = cptrs[2];
+						if (cptr2 > 0 && (variable = vars[cptr2]).istype(Varslist.VSCREENSHOT)) {
+							VarsScreenshot vs = (VarsScreenshot)(variable);
 							vars[cptr] = new VarsScreenshot(args[1], vs.left, vs.top, vs.val, vars[cptr]);
 						} else {
 							evaluate(args, cptrs, 2);
@@ -1474,8 +1483,9 @@ System.out.println();
 						scany = -1;
 						BufferedImage image;
 						int sleft, stop;
-						if (vars[cptrs[spot + 1]].istype(Varslist.VSCREENSHOT)) {
-							VarsScreenshot vs = (VarsScreenshot)(vars[cptrs[spot + 1]]);
+						cptr = cptrs[spot + 1];
+						if (cptr >= 0 && vars[cptr].istype(Varslist.VSCREENSHOT)) {
+							VarsScreenshot vs = (VarsScreenshot)(vars[cptr]);
 							image = vs.val;
 							sleft = vs.left;
 							stop = vs.top;
@@ -1562,6 +1572,8 @@ System.out.println();
 		int yy = mousey();
 		long now = System.currentTimeMillis();
 		while (System.currentTimeMillis() - now < time) {
+			//wait a millisecond at a time
+			auto.wait(1);
 			if (!mousewithin(xx, yy)) {
 				end("You moved the mouse at a pause on line " + innerscript.rows[pos] + " in script \"" + innerscript.name + "\"");
 				return;
