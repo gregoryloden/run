@@ -1,5 +1,9 @@
+//Get the moues coordinates, unless coordinates are provided
 	create	int	mousex	.mousex
+	setargto	x	mousex
 	create	int	mousey	.mousey
+	setargto	y	mousey
+//Find the color at the mouse's position
 	create	color	pixel	at	mousex	mousey
 	print	.The mouse is at 
 	printval	mousex
